@@ -52,5 +52,7 @@ public class User {
 
     private LocalDateTime deletedAt;
 
-
+    public void updateRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
+    }
 }
