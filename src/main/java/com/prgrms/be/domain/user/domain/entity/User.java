@@ -52,6 +52,10 @@ public class User {
 
     private LocalDateTime deletedAt;
 
+    public void authorizeUser() {
+        this.role = Role.USER;
+    }
+
     public void updateRefreshToken(String refreshToken) {
         this.refreshToken = refreshToken;
     }
