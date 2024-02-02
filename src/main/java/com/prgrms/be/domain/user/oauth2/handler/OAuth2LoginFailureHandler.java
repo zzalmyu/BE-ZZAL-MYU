@@ -6,7 +6,9 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.springframework.stereotype.Component;
 
+@Component
 public class OAuth2LoginFailureHandler implements AuthenticationFailureHandler {
 
     @Override
