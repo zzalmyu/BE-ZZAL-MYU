@@ -1,7 +1,5 @@
 package com.prgrms.be.domain.user.oauth2.handler;
 
-import static com.nimbusds.oauth2.sdk.token.AccessTokenType.BEARER;
-
 import com.prgrms.be.domain.user.domain.entity.User;
 import com.prgrms.be.domain.user.domain.enums.Role;
 import com.prgrms.be.domain.user.infrastructure.UserJPARepository;
@@ -12,6 +10,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
@@ -24,12 +23,14 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
     private final JwtService jwtService;
     private final UserJPARepository userJPARepository;
 
+    private static final String BEARER = "Bearer ";
+
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
         Authentication authentication) throws IOException, ServletException {
         CustomOAuth2User oAuth2User = (CustomOAuth2User) authentication.getPrincipal();
 
-        if(oAuth2User.getRole() == Role.GUEST) { // 첫 로그인 시 회원가입 페이지로 리다이렉트
+        if (oAuth2User.getRole() == Role.GUEST) { // 첫 로그인 시 회원가입 페이지로 리다이렉트
             firstLogin(response, oAuth2User);
         } else {
             notFirstLogin(response, oAuth2User);
