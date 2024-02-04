@@ -5,6 +5,7 @@ import com.prgrms.be.domain.user.domain.enums.SocialType;
 import com.prgrms.be.domain.user.infrastructure.UserJPARepository;
 import com.prgrms.be.domain.user.oauth2.CustomOAuth2User;
 import com.prgrms.be.domain.user.oauth2.OAuthDto;
+import com.prgrms.be.domain.user.oauth2.userinfo.OAuth2UserInfo;
 import java.util.Collections;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
@@ -35,7 +36,6 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
         OAuth2UserService<OAuth2UserRequest, OAuth2User> delegate = new DefaultOAuth2UserService();
         OAuth2User oAuth2User = delegate.loadUser(userRequest);
-
         /*
         userRequest에서 registrationId 추출 -> registrationId로 SocialType 저장
         http://localhost:8080/oauth2/authorization/kakao에서 kakao가 registrationId
@@ -65,27 +65,28 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
     회원이 존재한다면 그대로 반환, 없다면 회원 저장
      */
     private User getUser(OAuthDto oAuthDto, SocialType socialType) {
+        OAuth2UserInfo oAuth2UserInfo = oAuthDto.getOAuth2UserInfo();
         User findUser = userJPARepository.findBySocialTypeAndSocialId(socialType,
-            oAuthDto.getOAuth2UserInfo().getId()).orElse(null);
+            oAuth2UserInfo.getId()).orElse(null);
 
-        if(findUser == null) {
-            return saveUser(oAuthDto, socialType);
+        if (findUser == null) {
+            return saveUser(oAuthDto, socialType, oAuth2UserInfo);
         }
         return findUser;
     }
 
-    private User saveUser(OAuthDto oAuthDto, SocialType socialType) {
-        User createdUser = oAuthDto.toUser(socialType);
+    private User saveUser(OAuthDto oAuthDto, SocialType socialType, OAuth2UserInfo oAuth2UserInfo) {
+        User createdUser = oAuthDto.toUser(socialType, oAuth2UserInfo);
         return userJPARepository.save(createdUser);
     }
 
     private SocialType getSocialType(OAuth2UserRequest userRequest) {
         String registrationId = userRequest.getClientRegistration().getRegistrationId();
 
-        if(registrationId.equals(NAVER)) {
+        if (registrationId.equals(NAVER)) {
             return SocialType.NAVER;
         }
-        if(registrationId.equals(KAKAO)) {
+        if (registrationId.equals(KAKAO)) {
             return SocialType.KAKAO;
         }
         return SocialType.GOOGLE;
