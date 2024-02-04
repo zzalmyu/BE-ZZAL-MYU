@@ -52,7 +52,8 @@ public class SecurityConfig {
                         httpSecuritySessionManagementConfigurer.sessionCreationPolicy(
                                 SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/api/v1/**").permitAll())
+                        .requestMatchers("/api/v1/**").permitAll()
+                    .requestMatchers("/**").permitAll())
                 .oauth2Login(oauth2 -> oauth2
                         .userInfoEndpoint(userInfoEndPoint -> userInfoEndPoint
                                 .userService(customOAuth2UserService))
