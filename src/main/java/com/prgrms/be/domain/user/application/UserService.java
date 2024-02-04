@@ -27,15 +27,15 @@ public class UserService {
 
     private void checkEmailDuplication(String email) {
         userJPARepository.findByEmail(email)
-                .ifPresent(user -> {
-                    throw new RuntimeException("이미 존재하는 이메일입니다.");
-                });
+            .ifPresent(user -> {
+                throw new RuntimeException("이미 존재하는 이메일입니다.");
+            });
     }
 
     private void checkNicknameDuplication(String nickname) {
         userJPARepository.findByNickname(nickname)
-                .ifPresent(user -> {
-                    throw new RuntimeException("이미 존재하는 닉네임입니다.");
-                });
+            .ifPresent(user -> {
+                throw new RuntimeException("이미 존재하는 닉네임입니다.");
+            });
     }
 }

@@ -1,6 +1,5 @@
 package com.prgrms.be.domain.user.oauth2;
 
-
 // 각 소셜에서 받아오는 데이터 다름 -> 소셜별로 데이터 받는 데이터를 분기 처리
 
 import com.prgrms.be.domain.user.domain.entity.User;
@@ -30,11 +29,12 @@ public class OAuthDto {
     // SocialType에 맞는 메소드 호출 -> OAuthDto 객체 반환
     // nameAttributeKey : CustomOAuth2UserService에서 값 얻음
     // attributes: OAuth의 유저 정보들
-    public static OAuthDto of(SocialType socialType, String nameAttributeKey, Map<String, Object> attributes) {
-        if(socialType == SocialType.NAVER) {
+    public static OAuthDto of(SocialType socialType, String nameAttributeKey,
+        Map<String, Object> attributes) {
+        if (socialType == SocialType.NAVER) {
             return ofNaver(nameAttributeKey, attributes);
         }
-        if(socialType == SocialType.KAKAO) {
+        if (socialType == SocialType.KAKAO) {
             return ofKakao(nameAttributeKey, attributes);
         }
 
@@ -62,7 +62,7 @@ public class OAuthDto {
             .build();
     }
 
-    public User toUser(SocialType socialType) {
+    public User toUser(SocialType socialType, OAuth2UserInfo oAuth2UserInfo) {
         return User.builder()
             .socialType(socialType)
             .socialId(oAuth2UserInfo.getId())
@@ -71,7 +71,7 @@ public class OAuthDto {
             .image(oAuth2UserInfo.getImage())
             .role(Role.GUEST)
             .build();
-        }
+    }
 
     private static String generateRandomEmail() {
         return UUID.randomUUID() + "@socialUser.com";

@@ -49,7 +49,7 @@ public class NaverOAuth2UserInfo extends
     private Map<String, Object> getResponse() {
         Map<String, Object> response = (Map<String, Object>) attributes.get("response");
 
-        if(response == null) {
+        if (response == null) {
             return null;
         }
         return response;

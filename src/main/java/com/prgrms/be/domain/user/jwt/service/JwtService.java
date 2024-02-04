@@ -63,7 +63,8 @@ public class JwtService {
         setAccessTokenHeader(response, accessToken);
     }
 
-    public void sendAccessTokenAndRefreshToken(HttpServletResponse response, String accessToken, String refreshToken) {
+    public void sendAccessTokenAndRefreshToken(HttpServletResponse response, String accessToken,
+        String refreshToken) {
         response.setStatus(HttpServletResponse.SC_OK);
 
         setAccessTokenHeader(response, accessToken);
@@ -103,7 +104,6 @@ public class JwtService {
             );
     }
 
-    //TODO: 만료기간 확인 로직 넣기
     public boolean isTokenValid(String token) {
         try {
             JWT.require(Algorithm.HMAC512(secretKey)).build().verify(token);

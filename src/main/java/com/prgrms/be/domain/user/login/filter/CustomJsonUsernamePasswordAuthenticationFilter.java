@@ -1,7 +1,6 @@
 package com.prgrms.be.domain.user.login.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -25,7 +24,8 @@ public class CustomJsonUsernamePasswordAuthenticationFilter extends
     private static final String USERNAME_KEY = "email";
     private static final String PASSWORD_KEY = "password";
     private static final AntPathRequestMatcher DEFAULT_LOGIN_PATH_REQUEST_MATCHER =
-        new AntPathRequestMatcher(DEFAULT_LOGIN_REQUEST_URL, HTTP_METHOD); //"/login" + POST로 온 요청에 매칭됨
+        new AntPathRequestMatcher(DEFAULT_LOGIN_REQUEST_URL,
+            HTTP_METHOD); //"/login" + POST로 온 요청에 매칭됨
     private final ObjectMapper objectMapper;
 
     public CustomJsonUsernamePasswordAuthenticationFilter(ObjectMapper objectMapper) {
@@ -42,11 +42,12 @@ public class CustomJsonUsernamePasswordAuthenticationFilter extends
     public Authentication attemptAuthentication(HttpServletRequest request,
         HttpServletResponse response)
         throws AuthenticationException, IOException {
-        if(request.getContentType() == null || !request.getContentType().equals(CONTENT_TYPE)) {
+        if (request.getContentType() == null || !request.getContentType().equals(CONTENT_TYPE)) {
             throw new AuthenticationServiceException("Authentication Content-Type not supported");
         }
 
-        String messageBody = StreamUtils.copyToString(request.getInputStream(), StandardCharsets.UTF_8);
+        String messageBody = StreamUtils.copyToString(request.getInputStream(),
+            StandardCharsets.UTF_8);
 
         Map<String, String> usernamePasswordMap = objectMapper.readValue(messageBody, Map.class);
 

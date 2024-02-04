@@ -1,6 +1,5 @@
 package com.prgrms.be.domain.user.oauth2.userinfo;
 
-import com.prgrms.be.domain.user.oauth2.OAuthDto;
 import java.util.Map;
 
 public abstract class OAuth2UserInfo {

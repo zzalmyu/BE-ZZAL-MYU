@@ -7,6 +7,8 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -15,9 +17,6 @@ import org.springframework.security.core.authority.mapping.NullAuthoritiesMapper
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.filter.OncePerRequestFilter;
-
-import java.io.IOException;
-import java.util.UUID;
 
 @RequiredArgsConstructor
 public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
@@ -31,32 +30,35 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        if(request.getRequestURI().equals(NO_CHECK_URL)) {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
+        FilterChain filterChain) throws ServletException, IOException {
+        if (request.getRequestURI().equals(NO_CHECK_URL)) {
             filterChain.doFilter(request, response);
             return;
         }
 
         String refreshToken = jwtService.extractRefreshToken(request)
-                .filter(jwtService::isTokenValid)
-                .orElse(null);
+            .filter(jwtService::isTokenValid)
+            .orElse(null);
 
-        if(refreshToken != null) {
+        if (refreshToken != null) {
             checkRefreshTokenAndReissueAccessToken(response, refreshToken);
             return;
         }
 
-        if(refreshToken == null) {
+        if (refreshToken == null) {
             checkAccessTokenAndAuthentication(request, response, filterChain);
         }
     }
 
-    private void checkRefreshTokenAndReissueAccessToken(HttpServletResponse response, String refreshToken) {
+    private void checkRefreshTokenAndReissueAccessToken(HttpServletResponse response,
+        String refreshToken) {
         userJPARepository.findByRefreshToken(refreshToken)
-                .ifPresent(user -> {
-                    String reissuedRefreshToken = reissueRefreshToken(user);
-                    jwtService.sendAccessTokenAndRefreshToken(response, jwtService.createAccessToken(user.getEmail()), reissuedRefreshToken);
-                });
+            .ifPresent(user -> {
+                String reissuedRefreshToken = reissueRefreshToken(user);
+                jwtService.sendAccessTokenAndRefreshToken(response,
+                    jwtService.createAccessToken(user.getEmail()), reissuedRefreshToken);
+            });
 
     }
 
@@ -67,12 +69,13 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
         return reissuedRefreshToken;
     }
 
-    private void checkAccessTokenAndAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) {
+    private void checkAccessTokenAndAuthentication(HttpServletRequest request,
+        HttpServletResponse response, FilterChain filterChain) {
         jwtService.extractAccessToken(request)
-                .filter(jwtService::isTokenValid)
-                .ifPresent(accessToken -> jwtService.extractEmail(accessToken)
-                        .ifPresent(email -> userJPARepository.findByEmail(email)
-                                .ifPresent(this::saveAuthentication)));
+            .filter(jwtService::isTokenValid)
+            .ifPresent(accessToken -> jwtService.extractEmail(accessToken)
+                .ifPresent(email -> userJPARepository.findByEmail(email)
+                    .ifPresent(this::saveAuthentication)));
 
         try {
             filterChain.doFilter(request, response);
@@ -85,20 +88,20 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
         String password = getPassword(myUser);
 
         UserDetails userDetails = org.springframework.security.core.userdetails.User.builder()
-                .username(myUser.getEmail())
-                .password(password)
-                .roles(myUser.getRole().name())
-                .build();
+            .username(myUser.getEmail())
+            .password(password)
+            .roles(myUser.getRole().name())
+            .build();
 
         Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null,
-                authoritiesMapper.mapAuthorities(userDetails.getAuthorities()));
+            authoritiesMapper.mapAuthorities(userDetails.getAuthorities()));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 
     private String getPassword(User myUser) {
         String password = myUser.getPassword();
-        if(password == null) {
+        if (password == null) {
             password = UUID.randomUUID().toString();
         }
 

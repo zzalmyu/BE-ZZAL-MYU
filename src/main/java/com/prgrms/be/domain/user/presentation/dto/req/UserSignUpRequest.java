@@ -26,11 +26,11 @@ public class UserSignUpRequest {
 
     public User toUserEntity(PasswordEncoder passwordEncoder) {
         return User.builder()
-                .email(email)
-                .password(passwordEncoder.encode(password))
-                .nickname(nickname)
-                .image(image)
-                .role(Role.USER)
-                .build();
+            .email(email)
+            .password(passwordEncoder.encode(password))
+            .nickname(nickname)
+            .image(image)
+            .role(Role.USER)
+            .build();
     }
 }
