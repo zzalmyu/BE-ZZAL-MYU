@@ -1,13 +1,13 @@
-package com.prgrms.be;
+package com.prgrms.zzalmyu;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class BeApplication {
+public class ZzalMyuApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(BeApplication.class, args);
+        SpringApplication.run(ZzalMyuApplication.class, args);
     }
 
 }
