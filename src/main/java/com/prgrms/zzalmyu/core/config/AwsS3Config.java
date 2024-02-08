@@ -12,17 +12,12 @@ import org.springframework.context.annotation.Primary;
 
 @Configuration
 public class AwsS3Config {
-    private final String accessKey;
-    private final String secretKey;
-    private final String region;
-
-    public AwsS3Config(@Value("${cloud.aws.credentials.access-key}") String accessKey,
-                       @Value("${cloud.aws.credentials.secret-key}") String secretKey,
-                       @Value("${cloud.aws.region.static}") String region) {
-        this.accessKey = accessKey;
-        this.secretKey = secretKey;
-        this.region = region;
-    }
+    @Value("${cloud.aws.credentials.access-key}")
+    public String accessKey;
+    @Value("${cloud.aws.credentials.secret-key}")
+    public String secretKey;
+    @Value("${cloud.aws.region.static}")
+    public String region;
 
     @Bean
     @Primary
