@@ -11,9 +11,9 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class AwsS3Config {
 
-    private final String accessKey;
-    private final String secretKey;
-    private final String region;
+    private String accessKey;
+    private String secretKey;
+    private String region;
 
     public AwsS3Config(@Value("${aws.credentials.access}") String accessKey, @Value("${aws.credentials.secret}") String secretKey, @Value("${aws.region.static}") String region) {
         this.accessKey = accessKey;
