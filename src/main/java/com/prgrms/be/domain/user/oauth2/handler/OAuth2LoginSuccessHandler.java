@@ -1,6 +1,5 @@
 package com.prgrms.be.domain.user.oauth2.handler;
 
-import com.prgrms.be.domain.user.infrastructure.UserJPARepository;
 import com.prgrms.be.domain.user.jwt.service.JwtService;
 import com.prgrms.be.domain.user.oauth2.CustomOAuth2User;
 import jakarta.servlet.ServletException;
@@ -18,7 +17,6 @@ import org.springframework.stereotype.Component;
 public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
     private final JwtService jwtService;
-    private final UserJPARepository userJPARepository;
 
     private static final String BEARER = "Bearer ";
 
@@ -26,22 +24,16 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
         Authentication authentication) throws IOException, ServletException {
         CustomOAuth2User oAuth2User = (CustomOAuth2User) authentication.getPrincipal();
-        notFirstLogin(response, oAuth2User);
-    }
-
-    // 첫 로그인이 아닐 때 access, refresh 토큰 생성
-    // TODO: 소셜 로그인 시에도 무조건 토큰 생성하지 말고 JWT 인증 필터처럼 RefreshToken 유무에 따라 처리하기
-    private void notFirstLogin(HttpServletResponse response, CustomOAuth2User oAuth2User)
-        throws IOException {
         String email = oAuth2User.getEmail();
+        //accessToken, refreshToken 생성
         String accessToken = jwtService.createAccessToken(email);
         String refreshToken = jwtService.createRefreshToken();
 
-        response.addHeader(jwtService.getAccessHeader(), BEARER + accessToken);
-        response.addHeader(jwtService.getRefreshHeader(), BEARER + refreshToken);
+        //accessToken, refreshToken 발급하고 /home으로 리다이렉트하도록 응답 보내기
+        jwtService.sendAccessTokenAndRefreshToken(response, accessToken, refreshToken);
         response.sendRedirect("/home");
 
-        jwtService.sendAccessTokenAndRefreshToken(response, accessToken, refreshToken);
+        // redis의 리프레시 토큰 새로 발급한 리프레시 토큰으로 갱신
         jwtService.updateRefreshToken(email, refreshToken);
     }
 }

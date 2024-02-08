@@ -3,7 +3,6 @@ package com.prgrms.be.domain.user.jwt.service;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.prgrms.be.domain.user.application.RedisService;
-import com.prgrms.be.domain.user.domain.entity.User;
 import com.prgrms.be.domain.user.infrastructure.UserJPARepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -64,15 +63,15 @@ public class JwtService {
     public void sendAccessToken(HttpServletResponse response, String accessToken) {
         response.setStatus(HttpServletResponse.SC_OK);
 
-        setAccessTokenHeader(response, accessToken);
+        setAccessTokenHeader(response, BEARER + accessToken);
     }
 
     public void sendAccessTokenAndRefreshToken(HttpServletResponse response, String accessToken,
         String refreshToken) {
         response.setStatus(HttpServletResponse.SC_OK);
 
-        setAccessTokenHeader(response, accessToken);
-        setRefreshTokenHeader(response, refreshToken);
+        setAccessTokenHeader(response, BEARER + accessToken);
+        setRefreshTokenHeader(response, BEARER + refreshToken);
     }
 
     public Optional<String> extractRefreshToken(HttpServletRequest request) {
@@ -101,7 +100,8 @@ public class JwtService {
 
     //RefreshToken redis 저장
     public void updateRefreshToken(String email, String refreshToken) {
-        redisService.setValues(refreshToken, email, Duration.ofMillis(refreshTokenExpirationPeriod));
+        redisService.setValues(refreshToken, email,
+            Duration.ofMillis(refreshTokenExpirationPeriod));
     }
 
     public boolean isTokenValid(String token) {

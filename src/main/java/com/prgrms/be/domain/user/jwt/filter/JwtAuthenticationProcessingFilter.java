@@ -23,8 +23,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 @RequiredArgsConstructor
 public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 
-    private static final String NO_CHECK_URL = "/login";
-
     private final JwtService jwtService;
     private final RedisService redisService;
     private final UserJPARepository userJPARepository;
@@ -35,10 +33,6 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
         FilterChain filterChain) throws ServletException, IOException {
-        if (request.getRequestURI().equals(NO_CHECK_URL)) {
-            filterChain.doFilter(request, response);
-            return;
-        }
 
         String refreshToken = jwtService.extractRefreshToken(request)
             .filter(jwtService::isTokenValid)
@@ -55,7 +49,7 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
     private void checkRefreshTokenAndReissueAccessToken(HttpServletResponse response,
         String refreshToken) {
         String email = redisService.getValues(refreshToken);
-        if(!email.equals("false")) {
+        if (!email.equals("false")) {
             String reissuedRefreshToken = reissueRefreshToken(email);
             jwtService.sendAccessTokenAndRefreshToken(response,
                 jwtService.createAccessToken(email), reissuedRefreshToken);

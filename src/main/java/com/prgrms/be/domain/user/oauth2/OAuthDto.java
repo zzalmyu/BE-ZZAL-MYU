@@ -10,7 +10,6 @@ import com.prgrms.be.domain.user.oauth2.userinfo.KakaoOAuth2UserInfo;
 import com.prgrms.be.domain.user.oauth2.userinfo.NaverOAuth2UserInfo;
 import com.prgrms.be.domain.user.oauth2.userinfo.OAuth2UserInfo;
 import java.util.Map;
-import java.util.UUID;
 import lombok.Builder;
 import lombok.Getter;
 

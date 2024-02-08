@@ -27,9 +27,9 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
     private static final String KAKAO = "kakao";
 
     /*
-    DefaultOauthUserService 객체 생성 -> loadUser 통해 DefaultOAuth 객체 생성
-    DefaultOAuthUserSerivce의 loadUser() : 소셜 로그인 API의 사용자 정보 제공 URI로 요청 보내서 사용자 정보 얻음
-                                        -> DefaultOauth2User 객체 생성
+    CustomOauthUserService 객체 생성 -> loadUser 통해 DefaultOAuth 객체 생성
+    CustomOAuthUserSerivce의 loadUser() : 소셜 로그인 API의 사용자 정보 제공 URI로 요청 보내서 사용자 정보 얻음
+                                        -> CustomOauth2User 객체 생성
     OAuth2User : OAuth 서비스에서 가져온 유저 정보 담은 객체
      */
     @Override
@@ -46,7 +46,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
             .getProviderDetails().getUserInfoEndpoint().getUserNameAttributeName();
         Map<String, Object> attributes = oAuth2User.getAttributes(); // 소셜 로그인에서 API가 제공하는 유저 정보들의 Json 값
 
-        // SocialType에 따라 유저 정보 통해 OAuthAttributes 객체 생성
+        // SocialType에 따라 유저 정보 통해 OAuthDto 객체 생성
         OAuthDto oAuthDto = OAuthDto.of(socialType, userNameAttributeName, attributes);
         User user = getUser(oAuthDto, socialType);
 
@@ -58,6 +58,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
             oAuthDto.getNameAttributeKey(),
             user.getEmail()
         );
+        // CustomOAuth2User로 고고
     }
 
     /*
