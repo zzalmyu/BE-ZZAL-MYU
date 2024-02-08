@@ -29,13 +29,13 @@ jobs:
         run: chmod +x gradlew
 
       ## create application.yml
-      - name: make application.yml
+      - name: make application.properties
         run: |
           mkdir -p ./src/main/resources
-          touch ./src/main/resources/application.yml
+          touch ./src/main/resources/application.properties
         shell: bash
-      - name: deliver application.yml
-        run: echo "${{ secrets.APPLICATION }}" > ./src/main/resources/application.yml
+      - name: deliver application.properties
+        run: echo "${{ secrets.APPLICATION }}" > ./src/main/resources/application.properties
         shell: bash
         
 
