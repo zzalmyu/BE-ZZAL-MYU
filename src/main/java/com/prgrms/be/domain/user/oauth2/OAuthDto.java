@@ -68,7 +68,6 @@ public class OAuthDto {
             .socialId(oAuth2UserInfo.getId())
             .email(generateRandomEmail()) // JWT 토큰 발급하기 위한 용도뿐, 임시
             .nickname(oAuth2UserInfo.getNickname())
-            .image(oAuth2UserInfo.getImage())
             .role(Role.GUEST)
             .build();
     }

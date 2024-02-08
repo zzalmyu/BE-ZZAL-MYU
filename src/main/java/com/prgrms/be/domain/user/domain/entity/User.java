@@ -36,12 +36,8 @@ public class User {
     @Email
     private String email;
 
-    private String password;
-
     @Column(length = 10)
     private String nickname;
-
-    private String image;
 
     @Enumerated(EnumType.STRING)
     private Role role;

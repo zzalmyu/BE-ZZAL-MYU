@@ -46,9 +46,7 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
             return;
         }
 
-        if (refreshToken == null) {
-            checkAccessTokenAndAuthentication(request, response, filterChain);
-        }
+        checkAccessTokenAndAuthentication(request, response, filterChain);
     }
 
     private void checkRefreshTokenAndReissueAccessToken(HttpServletResponse response,
@@ -59,7 +57,6 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
                 jwtService.sendAccessTokenAndRefreshToken(response,
                     jwtService.createAccessToken(user.getEmail()), reissuedRefreshToken);
             });
-
     }
 
     private String reissueRefreshToken(User user) {
@@ -72,10 +69,8 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
     private void checkAccessTokenAndAuthentication(HttpServletRequest request,
         HttpServletResponse response, FilterChain filterChain) {
         jwtService.extractAccessToken(request)
-            .filter(jwtService::isTokenValid)
-            .ifPresent(accessToken -> jwtService.extractEmail(accessToken)
-                .ifPresent(email -> userJPARepository.findByEmail(email)
-                    .ifPresent(this::saveAuthentication)));
+            .filter(jwtService::isTokenValid).flatMap(jwtService::extractEmail)
+            .flatMap(userJPARepository::findByEmail).ifPresent(this::saveAuthentication);
 
         try {
             filterChain.doFilter(request, response);
@@ -85,7 +80,7 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
     }
 
     private void saveAuthentication(User myUser) {
-        String password = getPassword(myUser);
+        String password = getTemporaryPassword();
 
         UserDetails userDetails = org.springframework.security.core.userdetails.User.builder()
             .username(myUser.getEmail())
@@ -99,12 +94,7 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 
-    private String getPassword(User myUser) {
-        String password = myUser.getPassword();
-        if (password == null) {
-            password = UUID.randomUUID().toString();
-        }
-
-        return password;
+    private String getTemporaryPassword() {
+        return UUID.randomUUID().toString();
     }
 }
