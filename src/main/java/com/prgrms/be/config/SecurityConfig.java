@@ -1,6 +1,5 @@
 package com.prgrms.be.config;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.prgrms.be.domain.user.application.RedisService;
 import com.prgrms.be.domain.user.infrastructure.UserJPARepository;
 import com.prgrms.be.domain.user.jwt.filter.JwtAuthenticationProcessingFilter;
@@ -27,7 +26,6 @@ public class SecurityConfig {
     private final JwtService jwtService;
     private final RedisService redisService;
     private final UserJPARepository userJPARepository;
-    private final ObjectMapper objectMapper;
     private final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
     private final OAuth2LoginFailureHandler oAuth2LoginFailureHandler;
     private final CustomOAuth2UserService customOAuth2UserService;
@@ -44,7 +42,7 @@ public class SecurityConfig {
                 httpSecuritySessionManagementConfigurer.sessionCreationPolicy(
                     SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(authorize -> authorize
-                .requestMatchers("/api/v1/**").authenticated()
+                .requestMatchers("/api/v1/user/jwt-test").authenticated()
                 .requestMatchers("/**").permitAll())
             .oauth2Login(oauth2 -> oauth2
                 .userInfoEndpoint(userInfoEndPoint -> userInfoEndPoint
@@ -53,7 +51,7 @@ public class SecurityConfig {
                 .failureHandler(
                     oAuth2LoginFailureHandler)) // defaultSuccessUrl 설정 안해주면 사용자가 처음 접근했던 페이지로 리다이렉트됨
             .addFilterAfter(jwtAuthenticationProcessFilter(), LogoutFilter.class);
-        // 필터 순서: Logout filter -> jwtAuthenticationProcessFilter -> customJsonUsernamePasswordAuthenticationFilter
+        // 필터 순서: Logout filter -> jwtAuthenticationProcessFilter
         return http.build();
     }
 
