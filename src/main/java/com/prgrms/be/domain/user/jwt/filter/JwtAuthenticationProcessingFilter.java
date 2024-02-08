@@ -1,5 +1,6 @@
 package com.prgrms.be.domain.user.jwt.filter;
 
+import com.prgrms.be.domain.user.application.RedisService;
 import com.prgrms.be.domain.user.domain.entity.User;
 import com.prgrms.be.domain.user.infrastructure.UserJPARepository;
 import com.prgrms.be.domain.user.jwt.service.JwtService;
@@ -8,6 +9,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.Duration;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -24,6 +26,7 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
     private static final String NO_CHECK_URL = "/login";
 
     private final JwtService jwtService;
+    private final RedisService redisService;
     private final UserJPARepository userJPARepository;
 
     private GrantedAuthoritiesMapper authoritiesMapper = new NullAuthoritiesMapper();
@@ -51,18 +54,18 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 
     private void checkRefreshTokenAndReissueAccessToken(HttpServletResponse response,
         String refreshToken) {
-        userJPARepository.findByRefreshToken(refreshToken)
-            .ifPresent(user -> {
-                String reissuedRefreshToken = reissueRefreshToken(user);
-                jwtService.sendAccessTokenAndRefreshToken(response,
-                    jwtService.createAccessToken(user.getEmail()), reissuedRefreshToken);
-            });
+        String email = redisService.getValues(refreshToken);
+        if(!email.equals("false")) {
+            String reissuedRefreshToken = reissueRefreshToken(email);
+            jwtService.sendAccessTokenAndRefreshToken(response,
+                jwtService.createAccessToken(email), reissuedRefreshToken);
+        }
     }
 
-    private String reissueRefreshToken(User user) {
+    private String reissueRefreshToken(String email) {
         String reissuedRefreshToken = jwtService.createRefreshToken();
-        user.updateRefreshToken(reissuedRefreshToken);
-        userJPARepository.saveAndFlush(user);
+        redisService.setValues(reissuedRefreshToken, email, Duration.ofMillis(
+            jwtService.getRefreshTokenExpirationPeriod()));
         return reissuedRefreshToken;
     }
 

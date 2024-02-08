@@ -66,13 +66,9 @@ public class OAuthDto {
         return User.builder()
             .socialType(socialType)
             .socialId(oAuth2UserInfo.getId())
-            .email(generateRandomEmail()) // JWT 토큰 발급하기 위한 용도뿐, 임시
+            .email(oAuth2UserInfo.getEmail()) // JWT 토큰 발급하기 위한 용도뿐, 임시
             .nickname(oAuth2UserInfo.getNickname())
-            .role(Role.GUEST)
+            .role(Role.USER)
             .build();
-    }
-
-    private static String generateRandomEmail() {
-        return UUID.randomUUID() + "@socialUser.com";
     }
 }

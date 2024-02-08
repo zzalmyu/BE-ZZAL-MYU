@@ -2,10 +2,12 @@ package com.prgrms.be.domain.user.jwt.service;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.prgrms.be.domain.user.application.RedisService;
 import com.prgrms.be.domain.user.domain.entity.User;
 import com.prgrms.be.domain.user.infrastructure.UserJPARepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.time.Duration;
 import java.util.Date;
 import java.util.Optional;
 import lombok.Getter;
@@ -39,6 +41,7 @@ public class JwtService {
     private static final String BEARER = "Bearer ";
 
     private final UserJPARepository userJPARepository;
+    private final RedisService redisService;
 
     public String createAccessToken(String email) {
         Date now = new Date();
@@ -96,12 +99,9 @@ public class JwtService {
         }
     }
 
-    //RefreshToken db 저장
+    //RefreshToken redis 저장
     public void updateRefreshToken(String email, String refreshToken) {
-        User user = userJPARepository.findByEmail(email)
-            .orElseThrow(() -> new RuntimeException("일치하는 회원이 없습니다."));
-        user.updateRefreshToken(refreshToken);
-        userJPARepository.saveAndFlush(user);
+        redisService.setValues(refreshToken, email, Duration.ofMillis(refreshTokenExpirationPeriod));
     }
 
     public boolean isTokenValid(String token) {

@@ -75,9 +75,9 @@ public class KakaoOAuth2UserInfo extends
     }
 
     @Override
-    public String getImage() {
+    public String getEmail() {
         Map<String, Object> profile = getProfile();
-        return (String) profile.get("thumbnail_image_url");
+        return (String) profile.get("email");
     }
 
     private Map<String, Object> getProfile() {

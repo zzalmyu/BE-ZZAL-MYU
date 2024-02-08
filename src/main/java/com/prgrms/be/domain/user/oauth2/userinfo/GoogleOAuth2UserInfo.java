@@ -34,7 +34,7 @@ public class GoogleOAuth2UserInfo extends
     }
 
     @Override
-    public String getImage() {
-        return (String) attributes.get("picture");
+    public String getEmail() {
+        return (String) attributes.get("email");
     }
 }

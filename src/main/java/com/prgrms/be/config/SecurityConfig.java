@@ -1,6 +1,7 @@
 package com.prgrms.be.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.prgrms.be.domain.user.application.RedisService;
 import com.prgrms.be.domain.user.infrastructure.UserJPARepository;
 import com.prgrms.be.domain.user.jwt.filter.JwtAuthenticationProcessingFilter;
 import com.prgrms.be.domain.user.jwt.service.JwtService;
@@ -24,6 +25,7 @@ import org.springframework.security.web.authentication.logout.LogoutFilter;
 public class SecurityConfig {
 
     private final JwtService jwtService;
+    private final RedisService redisService;
     private final UserJPARepository userJPARepository;
     private final ObjectMapper objectMapper;
     private final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
@@ -57,6 +59,6 @@ public class SecurityConfig {
 
     @Bean
     public JwtAuthenticationProcessingFilter jwtAuthenticationProcessFilter() {
-        return new JwtAuthenticationProcessingFilter(jwtService, userJPARepository);
+        return new JwtAuthenticationProcessingFilter(jwtService, redisService, userJPARepository);
     }
 }
