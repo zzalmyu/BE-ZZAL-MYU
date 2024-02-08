@@ -2,6 +2,7 @@ package com.prgrms.be.domain.user.jwt.service;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.prgrms.be.domain.user.domain.entity.User;
 import com.prgrms.be.domain.user.infrastructure.UserJPARepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -97,11 +98,10 @@ public class JwtService {
 
     //RefreshToken db 저장
     public void updateRefreshToken(String email, String refreshToken) {
-        userJPARepository.findByEmail(email)
-            .ifPresentOrElse(
-                user -> user.updateRefreshToken(refreshToken),
-                () -> new RuntimeException("일치하는 회원이 없습니다.")
-            );
+        User user = userJPARepository.findByEmail(email)
+            .orElseThrow(() -> new RuntimeException("일치하는 회원이 없습니다."));
+        user.updateRefreshToken(refreshToken);
+        userJPARepository.saveAndFlush(user);
     }
 
     public boolean isTokenValid(String token) {
