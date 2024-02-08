@@ -2,7 +2,10 @@ package com.prgrms.zzalmyu.domain.user.jwt.service;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.prgrms.zzalmyu.core.properties.ErrorCode;
 import com.prgrms.zzalmyu.domain.user.application.RedisService;
+import com.prgrms.zzalmyu.domain.user.exception.UserException;
 import com.prgrms.zzalmyu.domain.user.infrastructure.UserJPARepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -60,12 +63,6 @@ public class JwtService {
             .sign(Algorithm.HMAC512(secretKey));
     }
 
-    public void sendAccessToken(HttpServletResponse response, String accessToken) {
-        response.setStatus(HttpServletResponse.SC_OK);
-
-        setAccessTokenHeader(response, BEARER + accessToken);
-    }
-
     public void sendAccessTokenAndRefreshToken(HttpServletResponse response, String accessToken,
         String refreshToken) {
         response.setStatus(HttpServletResponse.SC_OK);
@@ -93,8 +90,8 @@ public class JwtService {
                 .verify(accessToken) //검증
                 .getClaim(EMAIL_CLAIM) //추출
                 .asString());
-        } catch (Exception e) { //JWTVerificationException, ClaimNotFoundException
-            return Optional.empty();
+        } catch (JWTVerificationException e) {
+            throw new UserException(ErrorCode.SECURITY_UNAUTHORIZED);
         }
     }
 
@@ -108,8 +105,8 @@ public class JwtService {
         try {
             JWT.require(Algorithm.HMAC512(secretKey)).build().verify(token);
             return true;
-        } catch (Exception e) { //JWTVerificationException
-            return false;
+        } catch (JWTVerificationException e) { //JWTVerificationException
+            throw new UserException(ErrorCode.SECURITY_UNAUTHORIZED);
         }
     }
 

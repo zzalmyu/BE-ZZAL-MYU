@@ -1,5 +1,7 @@
 package com.prgrms.zzalmyu.domain.user.oauth2.handler;
 
+import com.prgrms.zzalmyu.core.properties.ErrorCode;
+import com.prgrms.zzalmyu.domain.user.exception.UserException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -14,7 +16,6 @@ public class OAuth2LoginFailureHandler implements AuthenticationFailureHandler {
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
         AuthenticationException exception) throws IOException, ServletException {
-        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-        response.getWriter().write("소셜 로그인 실패");
+        throw new UserException(ErrorCode.SOCIAL_LOGIN_FAIL);
     }
 }

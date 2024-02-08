@@ -1,5 +1,8 @@
 package com.prgrms.zzalmyu.exception;
 
+import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.auth0.jwt.exceptions.TokenExpiredException;
+import com.prgrms.zzalmyu.core.properties.ErrorCode;
 import com.prgrms.zzalmyu.exception.dto.ErrorResponse;
 import com.prgrms.zzalmyu.exception.dto.ValidationErrorResponse;
 import com.prgrms.zzalmyu.exception.exceptionClass.CustomException;
@@ -47,34 +50,34 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(errors);
     }
 
-//    @ExceptionHandler(value = {TokenExpiredException.class})
-//    protected ResponseEntity<ErrorResponse> handleTokenExpiredException(
-//        TokenExpiredException e, HttpServletRequest request
-//    ) {
-//        return ErrorResponse.toResponseEntity(ErrorCode.SECURITY_TOKEN_EXPIRED,
-//            e.getMessage());
-//    }
-//
-//    @ExceptionHandler(value = {AuthenticationException.class, JWTVerificationException.class})
-//    protected ResponseEntity<ErrorResponse> handleAuthenticationException(
-//        AuthenticationException e, HttpServletRequest request
-//    ) {
-//        return ErrorResponse.toResponseEntity(ErrorCode.SECURITY_UNAUTHORIZED,
-//            e.getMessage());
-//    }
-//
-//    @ExceptionHandler(value = {AccessDeniedException.class})
-//    protected ResponseEntity<ErrorResponse> handleAccessDeniedException(
-//        AccessDeniedException e, HttpServletRequest request
-//    ) {
-//        return ErrorResponse.toResponseEntity(ErrorCode.SECURITY_ACCESS_DENIED,
-//            e.getMessage());
-//    }
-//
-//    @ExceptionHandler(value = Exception.class)
-//    protected ResponseEntity<ErrorResponse> handleException(
-//        Exception e, HttpServletRequest request
-//    ) {
-//        return ErrorResponse.toResponseEntity(ErrorCode.SERVER_ERROR, e.getMessage());
-//    }
+    @ExceptionHandler(value = {TokenExpiredException.class})
+    protected ResponseEntity<ErrorResponse> handleTokenExpiredException(
+        TokenExpiredException e, HttpServletRequest request
+    ) {
+        return ErrorResponse.toResponseEntity(ErrorCode.SECURITY_INVALID_TOKEN,
+            e.getMessage());
+    }
+
+    @ExceptionHandler(value = {AuthenticationException.class, JWTVerificationException.class})
+    protected ResponseEntity<ErrorResponse> handleAuthenticationException(
+        AuthenticationException e, HttpServletRequest request
+    ) {
+        return ErrorResponse.toResponseEntity(ErrorCode.SECURITY_UNAUTHORIZED,
+            e.getMessage());
+    }
+
+    @ExceptionHandler(value = {AccessDeniedException.class})
+    protected ResponseEntity<ErrorResponse> handleAccessDeniedException(
+        AccessDeniedException e, HttpServletRequest request
+    ) {
+        return ErrorResponse.toResponseEntity(ErrorCode.SECURITY_ACCESS_DENIED,
+            e.getMessage());
+    }
+
+    @ExceptionHandler(value = Exception.class)
+    protected ResponseEntity<ErrorResponse> handleException(
+        Exception e, HttpServletRequest request
+    ) {
+        return ErrorResponse.toResponseEntity(ErrorCode.SERVER_ERROR, e.getMessage());
+    }
 }

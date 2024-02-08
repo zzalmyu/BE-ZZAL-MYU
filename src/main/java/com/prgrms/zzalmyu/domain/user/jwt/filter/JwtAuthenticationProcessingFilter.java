@@ -1,7 +1,9 @@
 package com.prgrms.zzalmyu.domain.user.jwt.filter;
 
+import com.prgrms.zzalmyu.core.properties.ErrorCode;
 import com.prgrms.zzalmyu.domain.user.application.RedisService;
 import com.prgrms.zzalmyu.domain.user.domain.entity.User;
+import com.prgrms.zzalmyu.domain.user.exception.UserException;
 import com.prgrms.zzalmyu.domain.user.infrastructure.UserJPARepository;
 import com.prgrms.zzalmyu.domain.user.jwt.service.JwtService;
 import jakarta.servlet.FilterChain;
@@ -36,7 +38,7 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 
         String refreshToken = jwtService.extractRefreshToken(request)
             .filter(jwtService::isTokenValid)
-            .orElse(null);
+            .orElse(null); // 리프레시 토큰 만료 기간이 끝나 유효성 검사에서 걸려서 null이 되었을 경우
 
         if (refreshToken != null) {
             checkRefreshTokenAndReissueAccessToken(response, refreshToken);
@@ -48,18 +50,25 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 
     private void checkRefreshTokenAndReissueAccessToken(HttpServletResponse response,
         String refreshToken) {
+        String email = findRefreshTokenAndExtractEmail(refreshToken);
+        String reissuedRefreshToken = reissueRefreshToken(email);
+        jwtService.sendAccessTokenAndRefreshToken(response, jwtService.createAccessToken(email),
+            reissuedRefreshToken);
+    }
+
+    private String findRefreshTokenAndExtractEmail(String refreshToken) {
         String email = redisService.getValues(refreshToken);
-        if (!email.equals("false")) {
-            String reissuedRefreshToken = reissueRefreshToken(email);
-            jwtService.sendAccessTokenAndRefreshToken(response,
-                jwtService.createAccessToken(email), reissuedRefreshToken);
+
+        if (email.equals("false")) {
+            throw new UserException(ErrorCode.SECURITY_INVALID_TOKEN);
         }
+        return email;
     }
 
     private String reissueRefreshToken(String email) {
         String reissuedRefreshToken = jwtService.createRefreshToken();
-        redisService.setValues(reissuedRefreshToken, email, Duration.ofMillis(
-            jwtService.getRefreshTokenExpirationPeriod()));
+        redisService.setValues(reissuedRefreshToken, email,
+            Duration.ofMillis(jwtService.getRefreshTokenExpirationPeriod()));
         return reissuedRefreshToken;
     }
 
@@ -72,7 +81,7 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
         try {
             filterChain.doFilter(request, response);
         } catch (IOException | ServletException e) {
-            throw new RuntimeException(e);
+            throw new UserException(ErrorCode.SERVER_ERROR);
         }
     }
 
