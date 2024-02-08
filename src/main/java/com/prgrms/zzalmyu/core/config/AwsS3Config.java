@@ -7,20 +7,21 @@ import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
+
 
 @Configuration
-@PropertySource("classpath:application.yml")
 public class AwsS3Config {
+    private final String accessKey;
+    private final String secretKey;
+    private final String region;
 
-    @Value("${aws.credentials.access}")
-    private String accessKey;
-
-    @Value("${aws.credentials.secret}")
-    private String secretKey;
-
-    @Value("${aws.region.static}")
-    private String region;
+    public AwsS3Config(@Value("${aws.credentials.access}") String accessKey,
+                       @Value("${aws.credentials.secret}") String secretKey,
+                       @Value("${aws.region.static}") String region) {
+        this.accessKey = accessKey;
+        this.secretKey = secretKey;
+        this.region = region;
+    }
 
     @Bean
     public BasicAWSCredentials basicAWSCredentials() {
