@@ -7,6 +7,7 @@ import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 
 
 @Configuration
@@ -15,15 +16,16 @@ public class AwsS3Config {
     private final String secretKey;
     private final String region;
 
-    public AwsS3Config(@Value("${aws.credentials.access}") String accessKey,
-                       @Value("${aws.credentials.secret}") String secretKey,
-                       @Value("${aws.region.static}") String region) {
+    public AwsS3Config(@Value("${cloud.aws.credentials.access-key}") String accessKey,
+                       @Value("${cloud.aws.credentials.secret-key}") String secretKey,
+                       @Value("${cloud.aws.region.static}") String region) {
         this.accessKey = accessKey;
         this.secretKey = secretKey;
         this.region = region;
     }
 
     @Bean
+    @Primary
     public BasicAWSCredentials basicAWSCredentials() {
         return new BasicAWSCredentials(accessKey, secretKey);
     }

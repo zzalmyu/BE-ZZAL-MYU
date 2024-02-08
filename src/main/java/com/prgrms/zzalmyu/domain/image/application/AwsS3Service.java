@@ -30,7 +30,7 @@ public class AwsS3Service {
     private final ImageChatCountRepository imageChatCountRepository;
     private final ImageRepository imageRepository;
 
-    @Value("${aws.s3.bucket}")
+    @Value("${s3.bucket}")
     private String bucket;
 
     public AwsS3ResponseDto upload(MultipartFile multipartFile, String dirName) throws IOException {
