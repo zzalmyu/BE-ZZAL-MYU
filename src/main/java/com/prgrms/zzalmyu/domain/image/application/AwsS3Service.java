@@ -70,7 +70,7 @@ public class AwsS3Service {
         return getS3(fileName);
     }
 
-    private String getS3(String fileName) {
+    public String getS3(String fileName) {
         return amazonS3.getUrl(bucket, fileName).toString();
     }
 
