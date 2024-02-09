@@ -12,14 +12,12 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.Duration;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
 import org.springframework.security.core.authority.mapping.NullAuthoritiesMapper;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 @RequiredArgsConstructor
@@ -86,21 +84,9 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
     }
 
     private void saveAuthentication(User myUser) {
-        String password = getTemporaryPassword();
-
-        UserDetails userDetails = org.springframework.security.core.userdetails.User.builder()
-            .username(myUser.getEmail())
-            .password(password)
-            .roles(myUser.getRole().name())
-            .build();
-
-        Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null,
-            authoritiesMapper.mapAuthorities(userDetails.getAuthorities()));
+        Authentication authentication = new UsernamePasswordAuthenticationToken(myUser, null,
+            authoritiesMapper.mapAuthorities(myUser.getAuthorities()));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
-    }
-
-    private String getTemporaryPassword() {
-        return UUID.randomUUID().toString();
     }
 }

@@ -12,9 +12,9 @@ public class UserController {
 
     private final UserService userService;
 
-    //테스트용 컨트롤러
+//    테스트용 컨트롤러
 //    @GetMapping("/jwt-test")
-//    public String jwtTest() {
+//    public String jwtTest(@AuthenticationPrincipal User user) {
 //        return "jwtTest 요청 성공";
 //    }
 }
