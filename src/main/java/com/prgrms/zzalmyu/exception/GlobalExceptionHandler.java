@@ -58,21 +58,21 @@ public class GlobalExceptionHandler {
             e.getMessage());
     }
 
-    @ExceptionHandler(value = {AuthenticationException.class, JWTVerificationException.class})
-    protected ResponseEntity<ErrorResponse> handleAuthenticationException(
-        AuthenticationException e, HttpServletRequest request
-    ) {
-        return ErrorResponse.toResponseEntity(ErrorCode.SECURITY_UNAUTHORIZED,
-            e.getMessage());
-    }
-
-    @ExceptionHandler(value = {AccessDeniedException.class})
-    protected ResponseEntity<ErrorResponse> handleAccessDeniedException(
-        AccessDeniedException e, HttpServletRequest request
-    ) {
-        return ErrorResponse.toResponseEntity(ErrorCode.SECURITY_ACCESS_DENIED,
-            e.getMessage());
-    }
+//    @ExceptionHandler(value = {AuthenticationException.class, JWTVerificationException.class})
+//    protected ResponseEntity<ErrorResponse> handleAuthenticationException(
+//        AuthenticationException e, HttpServletRequest request
+//    ) {
+//        return ErrorResponse.toResponseEntity(ErrorCode.SECURITY_UNAUTHORIZED,
+//            e.getMessage());
+//    }
+//
+//    @ExceptionHandler(value = {AccessDeniedException.class})
+//    protected ResponseEntity<ErrorResponse> handleAccessDeniedException(
+//        AccessDeniedException e, HttpServletRequest request
+//    ) {
+//        return ErrorResponse.toResponseEntity(ErrorCode.SECURITY_ACCESS_DENIED,
+//            e.getMessage());
+//    }
 
     @ExceptionHandler(value = Exception.class)
     protected ResponseEntity<ErrorResponse> handleException(
