@@ -67,10 +67,10 @@ public class AwsS3Service {
 
     private String putS3(File uploadFile, String fileName) {
         amazonS3.putObject(new PutObjectRequest(bucket, fileName, uploadFile));
-        return getS3(bucket, fileName);
+        return getS3(fileName);
     }
 
-    private String getS3(String bucket, String fileName) {
+    private String getS3(String fileName) {
         return amazonS3.getUrl(bucket, fileName).toString();
     }
 
