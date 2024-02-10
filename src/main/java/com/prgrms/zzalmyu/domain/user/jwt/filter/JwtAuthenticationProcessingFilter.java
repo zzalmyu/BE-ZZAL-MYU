@@ -21,7 +21,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 @RequiredArgsConstructor
-@Slf4j
 public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
@@ -40,7 +39,6 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
             return;
         }
-        log.info("필터 통과");
         checkLogout(request); //로그아웃한 사용자면 인증 처리 안함
 
         String refreshToken = jwtService.extractRefreshToken(request)
@@ -92,7 +90,8 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
         HttpServletResponse response, FilterChain filterChain) {
         jwtService.extractAccessToken(request)
             .filter(jwtService::isTokenValid).flatMap(jwtService::extractEmail)
-            .flatMap(userJPARepository::findByEmail).ifPresent(this::saveAuthentication);
+            .flatMap(userJPARepository::findByEmail)
+            .ifPresent(this::saveAuthentication);
 
         try {
             filterChain.doFilter(request, response);

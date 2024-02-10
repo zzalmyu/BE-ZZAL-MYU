@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,6 +27,12 @@ public class UserController {
         String refreshToken = jwtService.extractRefreshToken(request).get();
         userService.logout(accessToken, refreshToken);
         return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping
+    public ResponseEntity<Void> withdraw(@AuthenticationPrincipal User user) {
+        userService.withdraw(user.getId());
+        return ResponseEntity.noContent().build();
     }
 
     //    테스트용 컨트롤러
