@@ -18,11 +18,11 @@ public class ImageLike {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @Column(name = "image_id", nullable = false)
+    @JoinColumn(name = "image_id", nullable = false)
     private Image imageId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @Column(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id", nullable = false)
     private User userId;
 
     @Builder

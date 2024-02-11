@@ -18,11 +18,11 @@ public class ImageTag {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @Column(name = "image_id", nullable = false)
+    @JoinColumn(name = "image_id", nullable = false)
     private Image imageId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @Column(name = "tag_id", nullable = false)
+    @JoinColumn(name = "tag_id", nullable = false)
     private Tag tagId;
 
     @Builder
