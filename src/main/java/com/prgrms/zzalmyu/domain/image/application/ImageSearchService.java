@@ -9,12 +9,14 @@ public interface ImageSearchService {
 
     /**
      * 좋아요한 짤 태그 필터링
+     *
      * @param tagIdList
      */
     List<AwsS3ResponseDto> searchLikeImages(User user, List<Long> tagIdList);
 
     /**
      * 업로드한 짤 태그 필터링
+     *
      * @param tagIdList
      */
     List<AwsS3ResponseDto> searchUploadImages(User user, List<Long> tagIdList);

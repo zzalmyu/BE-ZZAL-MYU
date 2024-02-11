@@ -1,8 +1,7 @@
 package com.prgrms.zzalmyu.exception.dto;
 
-import java.time.LocalDateTime;
-
 import com.prgrms.zzalmyu.core.properties.ErrorCode;
+import java.time.LocalDateTime;
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +18,7 @@ public class ErrorResponse {
     private final String runtimeValue;
 
     public static ResponseEntity<ErrorResponse> toResponseEntity(
-            ErrorCode errorCode, String runtimeValue
+        ErrorCode errorCode, String runtimeValue
     ) {
         return ResponseEntity
             .status(errorCode.getHttpStatus())

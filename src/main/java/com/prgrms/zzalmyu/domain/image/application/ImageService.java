@@ -23,23 +23,18 @@ public interface ImageService {
     void getUploadImages();
 
     /**
-     * 짤 업로드
-     * 인자 : imageUrl, List<Tag>
+     * 짤 업로드 인자 : imageUrl, List<Tag>
      */
     void uploadImage();
 
 
     /**
-     * 업로드한 사진 삭제
-     * 인자 : 사진 id (단건)
-     * 로직: 해당 사진이 해당 유저가 업로드한 사진인지 체크
+     * 업로드한 사진 삭제 인자 : 사진 id (단건) 로직: 해당 사진이 해당 유저가 업로드한 사진인지 체크
      */
     void deleteUploadImages();
 
     /**
-     * 신고가 3번 누적된 사진 삭제
-     * hard delete 사용
-     * 관리자 권한 여부 체크
+     * 신고가 3번 누적된 사진 삭제 hard delete 사용 관리자 권한 여부 체크
      */
     void deleteReportImage();
 }
