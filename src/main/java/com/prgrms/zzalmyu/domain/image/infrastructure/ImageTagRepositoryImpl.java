@@ -18,18 +18,18 @@ public class ImageTagRepositoryImpl implements ImageTagRepositoryCustom {
     @Override
     public List<Image> findLikeImagesByUserIdAndTagIdList(Long userId, List<Long> tagIdList) {
         return queryFactory.selectFrom(image)
-                .join(imageTag).on(imageTag.imageId.eq(image.id))
-                .join(imageLike).on(imageLike.userId.eq(userId))
-                .where(imageTag.tagId.in(tagIdList))
+                .join(imageTag).on(imageTag.image.eq(image))
+                .join(imageLike).on(imageLike.user.id.eq(userId))
+                .where(imageTag.tag.id.in(tagIdList))
                 .fetch();
     }
 
     @Override
     public List<Image> findUploadImagesByUserIdAndTagIdList(Long userId, List<Long> tagIdList) {
         return queryFactory.selectFrom(image)
-                .join(imageTag).on(imageTag.imageId.eq(image.id))
+                .join(imageTag).on(imageTag.image.eq(image))
                 .where(image.userId.eq(userId),
-                        imageTag.tagId.in(tagIdList))
+                        imageTag.tag.id.in(tagIdList))
                 .fetch();
     }
 }
