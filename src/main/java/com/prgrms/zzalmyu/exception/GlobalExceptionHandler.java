@@ -1,5 +1,8 @@
 package com.prgrms.zzalmyu.exception;
 
+import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.auth0.jwt.exceptions.TokenExpiredException;
+import com.prgrms.zzalmyu.core.properties.ErrorCode;
 import com.prgrms.zzalmyu.exception.dto.ErrorResponse;
 import com.prgrms.zzalmyu.exception.dto.ValidationErrorResponse;
 import com.prgrms.zzalmyu.exception.exceptionClass.CustomException;
@@ -33,7 +36,7 @@ public class GlobalExceptionHandler {
         MethodArgumentNotValidException.class
     })
     protected ResponseEntity<List<ValidationErrorResponse>> validationException(BindException e,
-                                                                                HttpServletRequest request) {
+        HttpServletRequest request) {
         BindingResult bindingResult = e.getBindingResult();
         List<ValidationErrorResponse> errors = new ArrayList<>();
         for (FieldError fieldError : bindingResult.getFieldErrors()) {
@@ -47,14 +50,14 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(errors);
     }
 
-//    @ExceptionHandler(value = {TokenExpiredException.class})
-//    protected ResponseEntity<ErrorResponse> handleTokenExpiredException(
-//        TokenExpiredException e, HttpServletRequest request
-//    ) {
-//        return ErrorResponse.toResponseEntity(ErrorCode.SECURITY_TOKEN_EXPIRED,
-//            e.getMessage());
-//    }
-//
+    @ExceptionHandler(value = {TokenExpiredException.class})
+    protected ResponseEntity<ErrorResponse> handleTokenExpiredException(
+        TokenExpiredException e, HttpServletRequest request
+    ) {
+        return ErrorResponse.toResponseEntity(ErrorCode.SECURITY_INVALID_TOKEN,
+            e.getMessage());
+    }
+
 //    @ExceptionHandler(value = {AuthenticationException.class, JWTVerificationException.class})
 //    protected ResponseEntity<ErrorResponse> handleAuthenticationException(
 //        AuthenticationException e, HttpServletRequest request
@@ -70,11 +73,11 @@ public class GlobalExceptionHandler {
 //        return ErrorResponse.toResponseEntity(ErrorCode.SECURITY_ACCESS_DENIED,
 //            e.getMessage());
 //    }
-//
-//    @ExceptionHandler(value = Exception.class)
-//    protected ResponseEntity<ErrorResponse> handleException(
-//        Exception e, HttpServletRequest request
-//    ) {
-//        return ErrorResponse.toResponseEntity(ErrorCode.SERVER_ERROR, e.getMessage());
-//    }
+
+    @ExceptionHandler(value = Exception.class)
+    protected ResponseEntity<ErrorResponse> handleException(
+        Exception e, HttpServletRequest request
+    ) {
+        return ErrorResponse.toResponseEntity(ErrorCode.SERVER_ERROR, e.getMessage());
+    }
 }
