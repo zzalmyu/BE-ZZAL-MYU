@@ -1,11 +1,7 @@
 package com.prgrms.zzalmyu.domain.image.domain.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.prgrms.zzalmyu.domain.user.domain.entity.User;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -21,14 +17,16 @@ public class ImageLike {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ManyToOne(fetch = FetchType.LAZY)
     @Column(name = "image_id", nullable = false)
-    private Long imageId;
+    private Image imageId;
 
+    @ManyToOne(fetch = FetchType.LAZY)
     @Column(name = "user_id", nullable = false)
-    private Long userId;
+    private User userId;
 
     @Builder
-    private ImageLike(Long imageId, Long userId) {
+    private ImageLike(Image imageId, User userId) {
         this.imageId = imageId;
         this.userId = userId;
     }
