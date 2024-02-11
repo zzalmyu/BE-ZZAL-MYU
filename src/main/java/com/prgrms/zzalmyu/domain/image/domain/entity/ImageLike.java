@@ -19,15 +19,15 @@ public class ImageLike {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "image_id", nullable = false)
-    private Image imageId;
+    private Image image;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
-    private User userId;
+    private User user;
 
     @Builder
-    private ImageLike(Image imageId, User userId) {
-        this.imageId = imageId;
-        this.userId = userId;
+    private ImageLike(Image image, User user) {
+        this.image = image;
+        this.user = user;
     }
 }

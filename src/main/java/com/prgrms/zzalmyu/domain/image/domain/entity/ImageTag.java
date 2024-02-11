@@ -19,15 +19,15 @@ public class ImageTag {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "image_id", nullable = false)
-    private Image imageId;
+    private Image image;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "tag_id", nullable = false)
-    private Tag tagId;
+    private Tag tag;
 
     @Builder
-    private ImageTag(Image imageId, Tag tagId) {
-        this.imageId = imageId;
-        this.tagId = tagId;
+    private ImageTag(Image image, Tag tag) {
+        this.image = image;
+        this.tag = tag;
     }
 }
