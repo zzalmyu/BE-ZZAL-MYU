@@ -61,7 +61,7 @@ public class SecurityConfig {
     public JwtAuthenticationProcessingFilter jwtAuthenticationProcessFilter() {
         return new JwtAuthenticationProcessingFilter(jwtService, redisService, userJPARepository);
     }
-
+  
     @Bean
     public ExceptionHandlerFilter exceptionHandlerFilter() {
         return new ExceptionHandlerFilter();

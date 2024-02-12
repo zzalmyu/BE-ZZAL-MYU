@@ -12,7 +12,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
@@ -62,7 +61,7 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
             }
         });
     }
-
+  
     private void checkRefreshTokenAndReissueAccessToken(HttpServletResponse response,
         String refreshToken) {
         String email = findRefreshTokenAndExtractEmail(refreshToken);

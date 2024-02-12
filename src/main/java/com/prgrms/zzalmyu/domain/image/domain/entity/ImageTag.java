@@ -1,5 +1,6 @@
 package com.prgrms.zzalmyu.domain.image.domain.entity;
 
+import com.prgrms.zzalmyu.domain.tag.domain.entity.Tag;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -16,15 +17,17 @@ public class ImageTag {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "image_id", nullable = false)
-    private Long imageId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "image_id", nullable = false)
+    private Image image;
 
-    @Column(name = "tag_id", nullable = false)
-    private Long tagId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "tag_id", nullable = false)
+    private Tag tag;
 
     @Builder
-    private ImageTag(Long imageId, Long tagId) {
-        this.imageId = imageId;
-        this.tagId = tagId;
+    private ImageTag(Image image, Tag tag) {
+        this.image = image;
+        this.tag = tag;
     }
 }
