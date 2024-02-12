@@ -27,7 +27,7 @@ public class AwsS3Controller {
 
     @DeleteMapping("/resource")
     public ResponseEntity remove(@RequestBody AwsS3RequestDto awsS3RequestDto, @AuthenticationPrincipal User user) {
-        awsS3Service.remove(awsS3RequestDto);
+        awsS3Service.remove(user, awsS3RequestDto);
         return ResponseEntity.ok(HttpStatus.OK);
     }
 }

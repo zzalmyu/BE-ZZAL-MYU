@@ -14,6 +14,7 @@ import com.prgrms.zzalmyu.domain.image.presentation.dto.res.AwsS3ResponseDto;
 import com.prgrms.zzalmyu.domain.user.domain.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -108,10 +109,13 @@ public class AwsS3Service {
     }
 
 
-    public void remove(AwsS3RequestDto awsS3RequestDto) {
+    public void remove(User user, AwsS3RequestDto awsS3RequestDto) {
         Image image = imageRepository.findById(awsS3RequestDto.getImageId()).orElseThrow(() -> new NoSuchElementException("해당하는 이미지가 존재하지 않습니다."));
         if (!amazonS3.doesObjectExist(bucket, image.getKey())) {
             throw new AmazonS3Exception("Object " + image.getKey() + " does not exist!");
+        }
+        if (!image.getUserId().equals(user.getId())) {
+            throw new AccessDeniedException("본인이 등록한 이미지만 삭제할 수 있습니다.");
         }
         amazonS3.deleteObject(bucket, image.getKey());
         imageRepository.delete(image);
