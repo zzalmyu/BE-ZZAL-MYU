@@ -27,8 +27,8 @@ public class TagServiceImpl implements TagService{
     }
 
     @Override
-    public void getTopTagsFromUploadImages(User user) {
-
+    public List<TagResponseDto> getTopTagsFromUploadImages(User user) {
+        return tagRepository.getTopTagsFromUploadImages(user.getId(), RANK_NUM);
     }
 
     @Override

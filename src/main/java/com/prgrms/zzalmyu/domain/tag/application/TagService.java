@@ -24,7 +24,7 @@ public interface TagService {
     /**
      * 업로드한 사진 들 중 공통된 상위 5개 태그 조회
      */
-    void getTopTagsFromUploadImages(User user);
+    List<TagResponseDto> getTopTagsFromUploadImages(User user);
 
 
     /**
