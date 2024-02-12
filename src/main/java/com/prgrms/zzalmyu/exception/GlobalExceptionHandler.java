@@ -9,8 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -34,7 +32,7 @@ public class GlobalExceptionHandler {
         MethodArgumentNotValidException.class
     })
     protected ResponseEntity<List<ValidationErrorResponse>> validationException(BindException e,
-                                                                                HttpServletRequest request) {
+        HttpServletRequest request) {
         BindingResult bindingResult = e.getBindingResult();
         List<ValidationErrorResponse> errors = new ArrayList<>();
         for (FieldError fieldError : bindingResult.getFieldErrors()) {

@@ -28,9 +28,9 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 
-    //    테스트용 컨트롤러
-    @GetMapping("/jwt-test")
-    public String jwtTest(@AuthenticationPrincipal User user) {
-        return "jwtTest 요청 성공";
-    }
+//    테스트용 컨트롤러
+//    @GetMapping("/jwt-test")
+//    public String jwtTest(@AuthenticationPrincipal User user) {
+//        return "jwtTest 요청 성공";
+//    }
 }
