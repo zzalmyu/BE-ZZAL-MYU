@@ -15,6 +15,7 @@ public enum ErrorCode {
 
     // 400
     IMAGE_NOT_FOUND_ERROR(BAD_REQUEST, "이미지가 존재하지 않습니다."),
+    TAG_ALREADY_EXIST_ERROR(BAD_REQUEST, "해당하는 태그가 이미 존재합니다."),
 
     // 401
     SECURITY_UNAUTHORIZED(UNAUTHORIZED, "인증 정보가 유효하지 않습니다"),

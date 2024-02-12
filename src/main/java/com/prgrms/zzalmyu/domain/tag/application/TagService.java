@@ -30,5 +30,5 @@ public interface TagService {
     /**
      * 태그 생성
      */
-    void createTag(User user, String tagName);
+    TagResponseDto createTag(User user, String tagName);
 }

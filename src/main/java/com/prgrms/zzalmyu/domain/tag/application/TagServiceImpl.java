@@ -1,5 +1,8 @@
 package com.prgrms.zzalmyu.domain.tag.application;
 
+import com.prgrms.zzalmyu.core.properties.ErrorCode;
+import com.prgrms.zzalmyu.domain.tag.domain.entity.Tag;
+import com.prgrms.zzalmyu.domain.tag.exception.TagException;
 import com.prgrms.zzalmyu.domain.tag.infrastructure.TagRepository;
 import com.prgrms.zzalmyu.domain.tag.presentation.dto.TagResponseDto;
 import com.prgrms.zzalmyu.domain.user.domain.entity.User;
@@ -29,7 +32,12 @@ public class TagServiceImpl implements TagService{
     }
 
     @Override
-    public void createTag(User user, String tagName) {
-
+    public TagResponseDto createTag(User user, String tagName) {
+        if (tagRepository.existsByName(tagName)) {
+            throw new TagException(ErrorCode.TAG_ALREADY_EXIST_ERROR);
+        }
+        Tag newTag = Tag.from(tagName);
+        tagRepository.save(newTag);
+        return new TagResponseDto(newTag);
     }
 }

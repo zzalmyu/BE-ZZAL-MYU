@@ -22,8 +22,7 @@ public class TagRepositoryCustomImpl implements TagRepositoryCustom {
                 .select(Projections.constructor(
                         TagResponseDto.class,
                         tag.id,
-                        tag.name,
-                        tagUser.count.sum()))
+                        tag.name))
                 .from(tag)
                 .join(tagUser).on(tagUser.tagId.eq(tag.id))
                 .groupBy(tag.id, tag.name)
@@ -37,8 +36,7 @@ public class TagRepositoryCustomImpl implements TagRepositoryCustom {
         return queryFactory.select(Projections.constructor(
                         TagResponseDto.class,
                         tag.id,
-                        tag.name,
-                        tagUser.count.sum()))
+                        tag.name))
                 .from(tag)
                 .join(tagUser).on(tagUser.tagId.eq(tag.id))
                 .join(imageLike).on(imageLike.user.id.eq(tagUser.userId))
