@@ -72,7 +72,7 @@ public class AwsS3Service {
 
     private String putS3(File uploadFile, String fileName) {
         // 이미 s3에 존재하는 파일 이름이라면 업로드 못하게 방지
-        if (getS3(bucket, fileName) != null) {
+        if (getS3(fileName) != null) {
             throw new AlreadyExistsException("이미 존재하는 파일 이름입니다.");
         }
         amazonS3.putObject(new PutObjectRequest(bucket, fileName, uploadFile));
