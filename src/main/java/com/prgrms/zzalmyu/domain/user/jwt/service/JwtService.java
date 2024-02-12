@@ -118,7 +118,6 @@ public class JwtService {
     }
 
     public void logoutAccessToken(String accessToken) {
-        log.info("accessToken 저장");
         redisService.setValues(accessToken, "logout",
             Duration.ofMillis(accessTokenExpirationPeriod));
     }
