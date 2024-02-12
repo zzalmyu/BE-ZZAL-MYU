@@ -1,6 +1,6 @@
 package com.prgrms.zzalmyu.domain.user.application;
 
-import com.prgrms.zzalmyu.domain.user.infrastructure.UserJPARepository;
+import com.prgrms.zzalmyu.domain.user.infrastructure.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -10,5 +10,5 @@ import org.springframework.stereotype.Service;
 @Transactional
 public class UserService {
 
-    private final UserJPARepository userJPARepository;
+    private final UserRepository userRepository;
 }

@@ -6,7 +6,7 @@ import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.prgrms.zzalmyu.core.properties.ErrorCode;
 import com.prgrms.zzalmyu.domain.user.application.RedisService;
 import com.prgrms.zzalmyu.domain.user.exception.UserException;
-import com.prgrms.zzalmyu.domain.user.infrastructure.UserJPARepository;
+import com.prgrms.zzalmyu.domain.user.infrastructure.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.time.Duration;
@@ -42,7 +42,7 @@ public class JwtService {
     private static final String EMAIL_CLAIM = "email";
     private static final String BEARER = "Bearer ";
 
-    private final UserJPARepository userJPARepository;
+    private final UserRepository userRepository;
     private final RedisService redisService;
 
     public String createAccessToken(String email) {

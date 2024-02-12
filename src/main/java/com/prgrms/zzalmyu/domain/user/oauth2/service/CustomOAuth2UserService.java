@@ -2,14 +2,13 @@ package com.prgrms.zzalmyu.domain.user.oauth2.service;
 
 import com.prgrms.zzalmyu.domain.user.domain.entity.User;
 import com.prgrms.zzalmyu.domain.user.domain.enums.SocialType;
-import com.prgrms.zzalmyu.domain.user.infrastructure.UserJPARepository;
+import com.prgrms.zzalmyu.domain.user.infrastructure.UserRepository;
 import com.prgrms.zzalmyu.domain.user.oauth2.CustomOAuth2User;
 import com.prgrms.zzalmyu.domain.user.oauth2.OAuthDto;
 import com.prgrms.zzalmyu.domain.user.oauth2.userinfo.OAuth2UserInfo;
 import java.util.Collections;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
@@ -22,7 +21,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
 
-    private final UserJPARepository userJPARepository;
+    private final UserRepository userRepository;
 
     /*
     CustomOauthUserService 객체 생성 -> loadUser 통해 DefaultOAuth 객체 생성
@@ -64,7 +63,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
      */
     private User getUser(OAuthDto oAuthDto, SocialType socialType) {
         OAuth2UserInfo oAuth2UserInfo = oAuthDto.getOAuth2UserInfo();
-        User findUser = userJPARepository.findBySocialTypeAndSocialId(socialType, oAuth2UserInfo.getId())
+        User findUser = userRepository.findBySocialTypeAndSocialId(socialType, oAuth2UserInfo.getId())
             .orElseGet(() -> saveUser(oAuthDto, socialType, oAuth2UserInfo));
 
         return findUser;
@@ -72,7 +71,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 
     private User saveUser(OAuthDto oAuthDto, SocialType socialType, OAuth2UserInfo oAuth2UserInfo) {
         User createdUser = oAuthDto.toUser(socialType, oAuth2UserInfo);
-        return userJPARepository.save(createdUser);
+        return userRepository.save(createdUser);
     }
 
     private SocialType getSocialType(OAuth2UserRequest userRequest) {

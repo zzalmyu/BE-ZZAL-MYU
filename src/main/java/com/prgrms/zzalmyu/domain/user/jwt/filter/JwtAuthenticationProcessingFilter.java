@@ -4,7 +4,7 @@ import com.prgrms.zzalmyu.core.properties.ErrorCode;
 import com.prgrms.zzalmyu.domain.user.application.RedisService;
 import com.prgrms.zzalmyu.domain.user.domain.entity.User;
 import com.prgrms.zzalmyu.domain.user.exception.UserException;
-import com.prgrms.zzalmyu.domain.user.infrastructure.UserJPARepository;
+import com.prgrms.zzalmyu.domain.user.infrastructure.UserRepository;
 import com.prgrms.zzalmyu.domain.user.jwt.service.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -25,7 +25,7 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
     private final RedisService redisService;
-    private final UserJPARepository userJPARepository;
+    private final UserRepository userRepository;
 
     private GrantedAuthoritiesMapper authoritiesMapper = new NullAuthoritiesMapper();
 
@@ -74,7 +74,7 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
         HttpServletResponse response, FilterChain filterChain) {
         jwtService.extractAccessToken(request)
             .filter(jwtService::isTokenValid).flatMap(jwtService::extractEmail)
-            .flatMap(userJPARepository::findByEmail).ifPresent(this::saveAuthentication);
+            .flatMap(userRepository::findByEmail).ifPresent(this::saveAuthentication);
 
         try {
             filterChain.doFilter(request, response);
