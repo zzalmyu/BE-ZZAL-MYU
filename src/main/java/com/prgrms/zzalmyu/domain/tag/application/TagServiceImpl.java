@@ -4,7 +4,7 @@ import com.prgrms.zzalmyu.core.properties.ErrorCode;
 import com.prgrms.zzalmyu.domain.tag.domain.entity.Tag;
 import com.prgrms.zzalmyu.domain.tag.exception.TagException;
 import com.prgrms.zzalmyu.domain.tag.infrastructure.TagRepository;
-import com.prgrms.zzalmyu.domain.tag.presentation.dto.TagResponseDto;
+import com.prgrms.zzalmyu.domain.tag.presentation.dto.res.TagResponseDto;
 import com.prgrms.zzalmyu.domain.user.domain.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

@@ -1,6 +1,6 @@
 package com.prgrms.zzalmyu.domain.tag.infrastructure;
 
-import com.prgrms.zzalmyu.domain.tag.presentation.dto.TagResponseDto;
+import com.prgrms.zzalmyu.domain.tag.presentation.dto.res.TagResponseDto;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;

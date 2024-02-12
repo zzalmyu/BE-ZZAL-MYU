@@ -1,4 +1,4 @@
-package com.prgrms.zzalmyu.domain.tag.presentation.dto;
+package com.prgrms.zzalmyu.domain.tag.presentation.dto.res;
 
 import com.prgrms.zzalmyu.domain.tag.domain.entity.Tag;
 import lombok.Builder;

@@ -1,6 +1,6 @@
 package com.prgrms.zzalmyu.domain.tag.application;
 
-import com.prgrms.zzalmyu.domain.tag.presentation.dto.TagResponseDto;
+import com.prgrms.zzalmyu.domain.tag.presentation.dto.res.TagResponseDto;
 import com.prgrms.zzalmyu.domain.user.domain.entity.User;
 
 import java.util.List;
