@@ -27,6 +27,8 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
     private final RedisService redisService;
     private final UserRepository userRepository;
 
+    private static String NOT_EXIST = "false";
+
     private GrantedAuthoritiesMapper authoritiesMapper = new NullAuthoritiesMapper();
 
 
@@ -57,7 +59,7 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
     private String findRefreshTokenAndExtractEmail(String refreshToken) {
         String email = redisService.getValues(refreshToken);
 
-        if (email.equals("false")) {
+        if (email.equals(NOT_EXIST)) {
             throw new UserException(ErrorCode.SECURITY_INVALID_TOKEN);
         }
         return email;
