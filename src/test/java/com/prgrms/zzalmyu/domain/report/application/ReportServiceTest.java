@@ -7,12 +7,11 @@ import com.prgrms.zzalmyu.domain.chat.infrastructure.ImageChatCountRepository;
 import com.prgrms.zzalmyu.domain.image.domain.entity.Image;
 import com.prgrms.zzalmyu.domain.image.infrastructure.ImageRepository;
 import com.prgrms.zzalmyu.domain.report.domain.entity.Report;
-import com.prgrms.zzalmyu.domain.report.infrastructure.ReportJPARepository;
+import com.prgrms.zzalmyu.domain.report.infrastructure.ReportRepository;
 import com.prgrms.zzalmyu.domain.user.domain.entity.User;
 import com.prgrms.zzalmyu.domain.user.domain.enums.Role;
 import com.prgrms.zzalmyu.domain.user.infrastructure.UserJPARepository;
 import java.util.List;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -29,7 +28,7 @@ class ReportServiceTest {
     ReportService reportService;
 
     @Autowired
-    ReportJPARepository reportJPARepository;
+    ReportRepository reportRepository;
 
     @Autowired
     UserJPARepository userJPARepository;
@@ -66,7 +65,7 @@ class ReportServiceTest {
 
     @AfterEach
     public void afterEach() {
-        reportJPARepository.deleteAll();
+        reportRepository.deleteAll();
     }
 
     @Test
@@ -80,7 +79,7 @@ class ReportServiceTest {
         image = imageRepository.save(image);
         reportService.reportImage(user2.getId(), image.getId());
 
-        List<Report> reports = reportJPARepository.findAll();
+        List<Report> reports = reportRepository.findAll();
         Report report = reports.get(0);
 
         assertThat(report.getReportUserId()).isEqualTo(user2.getId());
