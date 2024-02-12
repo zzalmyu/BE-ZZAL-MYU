@@ -39,7 +39,6 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
             return;
         }
-        log.info("필터 통과");
         checkLogout(request); //로그아웃한 사용자면 인증 처리 안함
 
         String refreshToken = jwtService.extractRefreshToken(request)
