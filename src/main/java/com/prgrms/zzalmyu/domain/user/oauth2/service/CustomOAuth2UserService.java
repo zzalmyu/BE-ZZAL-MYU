@@ -64,12 +64,10 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
     /*
     회원이 존재한다면 그대로 반환, 없다면 회원 저장
      */
-    // TODO: 소셜 로그인 새로할 때 중복 저장되는 오류 수정
     private User getUser(OAuthDto oAuthDto, SocialType socialType) {
         OAuth2UserInfo oAuth2UserInfo = oAuthDto.getOAuth2UserInfo();
-        User findUser = userJPARepository.findBySocialTypeAndSocialId(socialType,
-            oAuth2UserInfo.getId()).orElse(saveUser(oAuthDto, socialType, oAuth2UserInfo));
-
+        User findUser = userJPARepository.findBySocialTypeAndSocialId(socialType, oAuth2UserInfo.getId())
+            .orElseGet(() -> saveUser(oAuthDto, socialType, oAuth2UserInfo));
         return findUser;
     }
 
