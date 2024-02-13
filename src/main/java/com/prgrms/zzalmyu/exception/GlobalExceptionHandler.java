@@ -1,7 +1,5 @@
 package com.prgrms.zzalmyu.exception;
 
-import com.auth0.jwt.exceptions.JWTVerificationException;
-import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.prgrms.zzalmyu.core.properties.ErrorCode;
 import com.prgrms.zzalmyu.exception.dto.ErrorResponse;
 import com.prgrms.zzalmyu.exception.dto.ValidationErrorResponse;
@@ -11,8 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-//import org.springframework.security.access.AccessDeniedException;
-//import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -49,30 +45,6 @@ public class GlobalExceptionHandler {
         }
         return ResponseEntity.badRequest().body(errors);
     }
-
-    @ExceptionHandler(value = {TokenExpiredException.class})
-    protected ResponseEntity<ErrorResponse> handleTokenExpiredException(
-        TokenExpiredException e, HttpServletRequest request
-    ) {
-        return ErrorResponse.toResponseEntity(ErrorCode.SECURITY_INVALID_TOKEN,
-            e.getMessage());
-    }
-
-//    @ExceptionHandler(value = {AuthenticationException.class, JWTVerificationException.class})
-//    protected ResponseEntity<ErrorResponse> handleAuthenticationException(
-//        AuthenticationException e, HttpServletRequest request
-//    ) {
-//        return ErrorResponse.toResponseEntity(ErrorCode.SECURITY_UNAUTHORIZED,
-//            e.getMessage());
-//    }
-//
-//    @ExceptionHandler(value = {AccessDeniedException.class})
-//    protected ResponseEntity<ErrorResponse> handleAccessDeniedException(
-//        AccessDeniedException e, HttpServletRequest request
-//    ) {
-//        return ErrorResponse.toResponseEntity(ErrorCode.SECURITY_ACCESS_DENIED,
-//            e.getMessage());
-//    }
 
     @ExceptionHandler(value = Exception.class)
     protected ResponseEntity<ErrorResponse> handleException(

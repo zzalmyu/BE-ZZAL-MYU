@@ -1,5 +1,6 @@
 package com.prgrms.zzalmyu.domain.image.presentation.dto.res;
 
+import com.prgrms.zzalmyu.domain.image.domain.entity.Image;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,8 +13,12 @@ public class AwsS3ResponseDto {
     private String path;
 
     @Builder
-    public AwsS3ResponseDto(Long imageId, String path) {
+    private AwsS3ResponseDto(Long imageId, String path) {
         this.imageId = imageId;
         this.path = path;
+    }
+
+    public AwsS3ResponseDto(Image image) {
+        this(image.getId(), image.getPath());
     }
 }
