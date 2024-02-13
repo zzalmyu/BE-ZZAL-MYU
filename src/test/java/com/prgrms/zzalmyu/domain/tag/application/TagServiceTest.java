@@ -110,13 +110,18 @@ class TagServiceTest {
 
     @Test
     void getTopTagsFromLikeImages() {
+
     }
 
     @Test
     void getTopTagsFromUploadImages() {
+
     }
 
     @Test
     void createTag() {
+        String requestTagName = "요청태그이름";
+        TagResponseDto responseDto = tagService.createTag(user1, requestTagName);
+        assertThat(responseDto.getTagName()).isEqualTo(requestTagName);
     }
 }
