@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final UserRepository userJPARepository;
     private final JwtService jwtService;
 
     public void logout(String accessToken, String refreshToken) {
@@ -33,8 +32,8 @@ public class UserService {
         user.delete();
     }
 
-    private User findUserById(Long id) {
-        User user = userJPARepository.findById(id)
+    public User findUserById(Long id) {
+        User user = userRepository.findById(id)
             .orElseThrow(() -> new UserException(ErrorCode.USER_NOT_FOUND));
         return user;
     }
