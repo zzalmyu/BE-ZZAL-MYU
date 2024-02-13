@@ -17,7 +17,7 @@ public class TagServiceImpl implements TagService{
     private final TagRepository tagRepository;
     private static final int RANK_NUM = 5;
     @Override
-    public List<TagResponseDto> getTopTags(User user) {
+    public List<TagResponseDto> getTopTagsFromUserUsed(User user) {
         return tagRepository.getTopTagsFromUserUsed(RANK_NUM);
     }
 
