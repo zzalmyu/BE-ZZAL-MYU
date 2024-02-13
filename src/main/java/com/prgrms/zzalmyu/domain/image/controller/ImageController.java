@@ -23,7 +23,7 @@ public class ImageController {
         return result;
     }
 
-    @PostMapping("/user/my-upload")
+    @PostMapping("/user/my/upload")
     List<AwsS3ResponseDto> searchUploadImages(@AuthenticationPrincipal User user, List<Long> tagIdList) {
         List<AwsS3ResponseDto> result = imageSearchService.searchUploadImages(user, tagIdList);
         return result;
