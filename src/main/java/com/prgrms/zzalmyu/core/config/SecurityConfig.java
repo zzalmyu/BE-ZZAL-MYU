@@ -1,6 +1,6 @@
 package com.prgrms.zzalmyu.core.config;
 
-import com.prgrms.zzalmyu.domain.user.application.RedisService;
+import com.prgrms.zzalmyu.common.redis.RedisService;
 import com.prgrms.zzalmyu.domain.user.infrastructure.UserRepository;
 import com.prgrms.zzalmyu.domain.user.jwt.filter.ExceptionHandlerFilter;
 import com.prgrms.zzalmyu.domain.user.jwt.filter.JwtAuthenticationProcessingFilter;
