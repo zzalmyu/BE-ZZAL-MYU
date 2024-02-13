@@ -29,23 +29,41 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 
     private static String NOT_EXIST = "false";
 
+    private static String NO_CHECK_URL = "/api/v1/user/logout";
+
     private GrantedAuthoritiesMapper authoritiesMapper = new NullAuthoritiesMapper();
 
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
         FilterChain filterChain) throws ServletException, IOException {
-
-        String refreshToken = jwtService.extractRefreshToken(request)
-            .filter(jwtService::isTokenValid)
-            .orElse(null); // 리프레시 토큰 만료 기간이 끝나 유효성 검사에서 걸려서 null이 되었을 경우
-
-        if (refreshToken != null) {
-            checkRefreshTokenAndReissueAccessToken(response, refreshToken);
+        if (request.getRequestURI().equals(NO_CHECK_URL)) {
+            filterChain.doFilter(request, response);
             return;
         }
+        checkLogout(request); //로그아웃한 사용자면 인증 처리 안함
 
-        checkAccessTokenAndAuthentication(request, response, filterChain);
+        jwtService.extractRefreshToken(request)
+            .ifPresentOrElse(
+                refreshToken -> {
+                    if(jwtService.isTokenValid(refreshToken)) {
+                        checkRefreshTokenAndReissueAccessToken(response, refreshToken);
+                    } else {
+                        throw new UserException(ErrorCode.SECURITY_INVALID_TOKEN);
+                    }
+                },
+                () -> checkAccessTokenAndAuthentication(request, response, filterChain)
+            );
+    }
+
+    private void checkLogout(HttpServletRequest request) {
+        jwtService.extractAccessToken(request).ifPresent(accessToken -> {
+            String value = redisService.getValues(accessToken);
+
+            if (value.equals("logout")) {
+                throw new UserException(ErrorCode.SECURITY_UNAUTHORIZED);
+            }
+        });
     }
 
     private void checkRefreshTokenAndReissueAccessToken(HttpServletResponse response,
@@ -67,8 +85,7 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 
     private String reissueRefreshToken(String email) {
         String reissuedRefreshToken = jwtService.createRefreshToken();
-        redisService.setValues(reissuedRefreshToken, email,
-            Duration.ofMillis(jwtService.getRefreshTokenExpirationPeriod()));
+        jwtService.updateRefreshToken(reissuedRefreshToken, email);
         return reissuedRefreshToken;
     }
 
