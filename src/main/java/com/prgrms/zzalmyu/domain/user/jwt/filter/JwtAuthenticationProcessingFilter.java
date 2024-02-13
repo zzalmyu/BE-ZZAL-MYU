@@ -40,16 +40,17 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
         }
         checkLogout(request); //로그아웃한 사용자면 인증 처리 안함
 
-        String refreshToken = jwtService.extractRefreshToken(request)
-            .filter(jwtService::isTokenValid)
-            .orElse(null); // TODO: 리프레시 토큰 만료 기간이 끝나 유효성 검사에서 걸려서 null이 되었을 경우
-
-        if (refreshToken != null) {
-            checkRefreshTokenAndReissueAccessToken(response, refreshToken);
-            return;
-        }
-
-        checkAccessTokenAndAuthentication(request, response, filterChain);
+        jwtService.extractRefreshToken(request)
+            .ifPresentOrElse(
+                refreshToken -> {
+                    if(jwtService.isTokenValid(refreshToken)) {
+                        checkRefreshTokenAndReissueAccessToken(response, refreshToken);
+                    } else {
+                        throw new UserException(ErrorCode.SECURITY_INVALID_TOKEN);
+                    }
+                },
+                () -> checkAccessTokenAndAuthentication(request, response, filterChain)
+            );
     }
 
     private void checkLogout(HttpServletRequest request) {
