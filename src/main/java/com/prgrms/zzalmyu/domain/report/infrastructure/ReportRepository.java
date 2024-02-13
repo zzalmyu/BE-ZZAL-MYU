@@ -8,6 +8,5 @@ import org.springframework.data.jpa.repository.Query;
 
 public interface ReportRepository extends JpaRepository<Report, Long> {
 
-    @Query("select r from Report r where r.imageId = :imageId")
     List<Report> findByImageId(Long imageId);
 }
