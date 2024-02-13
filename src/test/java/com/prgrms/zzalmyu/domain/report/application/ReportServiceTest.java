@@ -73,7 +73,7 @@ class ReportServiceTest {
     public void reportImage() {
         Image image = Image.builder()
             .imageChatCount(imageChatCount)
-            .url("https://i.namu.wiki/i/UQar4WhQAWFiJUmHBAbNlCSoqK-noyPt6tbI0DK6pDFbks3bhZdJehgSW3S50RMQgSzuzEx7ArHcg_ztlDYXwQ.webp")
+            .path("https://i.namu.wiki/i/UQar4WhQAWFiJUmHBAbNlCSoqK-noyPt6tbI0DK6pDFbks3bhZdJehgSW3S50RMQgSzuzEx7ArHcg_ztlDYXwQ.webp")
             .userId(saved1.getId())
             .build();
         image = imageRepository.save(image);
