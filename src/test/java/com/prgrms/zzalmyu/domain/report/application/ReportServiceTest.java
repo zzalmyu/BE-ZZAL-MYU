@@ -10,7 +10,7 @@ import com.prgrms.zzalmyu.domain.report.domain.entity.Report;
 import com.prgrms.zzalmyu.domain.report.infrastructure.ReportRepository;
 import com.prgrms.zzalmyu.domain.user.domain.entity.User;
 import com.prgrms.zzalmyu.domain.user.domain.enums.Role;
-import com.prgrms.zzalmyu.domain.user.infrastructure.UserJPARepository;
+import com.prgrms.zzalmyu.domain.user.infrastructure.UserRepository;
 import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,7 +31,7 @@ class ReportServiceTest {
     ReportRepository reportRepository;
 
     @Autowired
-    UserJPARepository userJPARepository;
+    UserRepository userRepository;
 
     @Autowired
     ImageRepository imageRepository;
@@ -59,8 +59,8 @@ class ReportServiceTest {
     public void beforeEach() {
         imageChatCountRepository.save(imageChatCount);
 
-        saved1 = userJPARepository.save(user1);
-        saved2 = userJPARepository.save(user2);
+        saved1 = userRepository.save(user1);
+        saved2 = userRepository.save(user2);
     }
 
     @AfterEach
