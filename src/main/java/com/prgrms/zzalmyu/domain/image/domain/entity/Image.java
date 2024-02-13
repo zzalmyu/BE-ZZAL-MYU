@@ -27,8 +27,11 @@ public class Image {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "key", nullable = false)
+    private String key;
+
     @Column(name = "url", nullable = false)
-    private String url;
+    private String path;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "chat_count_id", nullable = false)
@@ -42,8 +45,9 @@ public class Image {
     private LocalDateTime createdAt;
 
     @Builder
-    private Image(String url, ImageChatCount imageChatCount, Long userId) {
-        this.url = url;
+    private Image(String key, String path, ImageChatCount imageChatCount, Long userId) {
+        this.key = key;
+        this.path = path;
         this.imageChatCount = imageChatCount;
         this.userId = userId;
     }
