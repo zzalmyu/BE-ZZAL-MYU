@@ -61,7 +61,7 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
             }
         });
     }
-  
+
     private void checkRefreshTokenAndReissueAccessToken(HttpServletResponse response,
         String refreshToken) {
         String email = findRefreshTokenAndExtractEmail(refreshToken);
