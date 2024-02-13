@@ -6,7 +6,7 @@ import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.prgrms.zzalmyu.core.properties.ErrorCode;
 import com.prgrms.zzalmyu.domain.user.application.RedisService;
 import com.prgrms.zzalmyu.domain.user.exception.UserException;
-import com.prgrms.zzalmyu.domain.user.infrastructure.UserJPARepository;
+import com.prgrms.zzalmyu.domain.user.infrastructure.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.time.Duration;
@@ -42,7 +42,7 @@ public class JwtService {
     private static final String EMAIL_CLAIM = "email";
     private static final String BEARER = "Bearer ";
 
-    private final UserJPARepository userJPARepository;
+    private final UserRepository userRepository;
     private final RedisService redisService;
 
     public String createAccessToken(String email) {
@@ -96,7 +96,7 @@ public class JwtService {
     }
 
     //RefreshToken redis 저장
-    public void updateRefreshToken(String email, String refreshToken) {
+    public void updateRefreshToken(String refreshToken, String email) {
         redisService.setValues(refreshToken, email,
             Duration.ofMillis(refreshTokenExpirationPeriod));
     }
@@ -105,11 +105,23 @@ public class JwtService {
         try {
             JWT.require(Algorithm.HMAC512(secretKey)).build().verify(token);
             return true;
-        } catch (JWTVerificationException e) { //JWTVerificationException
+        } catch (JWTVerificationException e) {
             throw new UserException(ErrorCode.SECURITY_UNAUTHORIZED);
         }
     }
 
+    public void deleteRefreshToken(String refreshToken) {
+        if (refreshToken == null) {
+            throw new UserException(ErrorCode.SECURITY_UNAUTHORIZED);
+        }
+        redisService.delete(refreshToken);
+    }
+
+    public void logoutAccessToken(String accessToken) {
+        redisService.setValues(accessToken, "logout",
+            Duration.ofMillis(accessTokenExpirationPeriod));
+    }
+  
     private void setAccessTokenHeader(HttpServletResponse response, String accessToken) {
         response.setHeader(accessHeader, accessToken);
     }

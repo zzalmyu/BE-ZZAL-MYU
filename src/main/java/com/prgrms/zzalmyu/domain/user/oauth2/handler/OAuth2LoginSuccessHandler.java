@@ -34,6 +34,6 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
         response.sendRedirect("/home");
 
         // redis의 리프레시 토큰 새로 발급한 리프레시 토큰으로 갱신
-        jwtService.updateRefreshToken(email, refreshToken);
+        jwtService.updateRefreshToken(refreshToken, email);
     }
 }

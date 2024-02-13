@@ -1,7 +1,8 @@
 package com.prgrms.zzalmyu.core.config;
 
 import com.prgrms.zzalmyu.domain.user.application.RedisService;
-import com.prgrms.zzalmyu.domain.user.infrastructure.UserJPARepository;
+import com.prgrms.zzalmyu.domain.user.infrastructure.UserRepository;
+import com.prgrms.zzalmyu.domain.user.jwt.filter.ExceptionHandlerFilter;
 import com.prgrms.zzalmyu.domain.user.jwt.filter.JwtAuthenticationProcessingFilter;
 import com.prgrms.zzalmyu.domain.user.jwt.service.JwtService;
 import com.prgrms.zzalmyu.domain.user.oauth2.handler.OAuth2LoginFailureHandler;
@@ -25,7 +26,7 @@ public class SecurityConfig {
 
     private final JwtService jwtService;
     private final RedisService redisService;
-    private final UserJPARepository userJPARepository;
+    private final UserRepository userRepository;
     private final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
     private final OAuth2LoginFailureHandler oAuth2LoginFailureHandler;
     private final CustomOAuth2UserService customOAuth2UserService;
@@ -42,6 +43,7 @@ public class SecurityConfig {
                 httpSecuritySessionManagementConfigurer.sessionCreationPolicy(
                     SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(authorize -> authorize
+                .requestMatchers("/h2-console/*").permitAll()
                 .requestMatchers("/api/v1/user/jwt-test").authenticated()
                 .requestMatchers("/**").permitAll())
             .oauth2Login(oauth2 -> oauth2
@@ -50,13 +52,19 @@ public class SecurityConfig {
                 .successHandler(oAuth2LoginSuccessHandler)
                 .failureHandler(
                     oAuth2LoginFailureHandler)) // defaultSuccessUrl 설정 안해주면 사용자가 처음 접근했던 페이지로 리다이렉트됨
-            .addFilterAfter(jwtAuthenticationProcessFilter(), LogoutFilter.class);
+            .addFilterAfter(jwtAuthenticationProcessFilter(), LogoutFilter.class)
+            .addFilterBefore(exceptionHandlerFilter(), JwtAuthenticationProcessingFilter.class);
         // 필터 순서: Logout filter -> jwtAuthenticationProcessFilter
         return http.build();
     }
 
     @Bean
     public JwtAuthenticationProcessingFilter jwtAuthenticationProcessFilter() {
-        return new JwtAuthenticationProcessingFilter(jwtService, redisService, userJPARepository);
+        return new JwtAuthenticationProcessingFilter(jwtService, redisService, userRepository);
+    }
+
+  @Bean
+    public ExceptionHandlerFilter exceptionHandlerFilter() {
+        return new ExceptionHandlerFilter();
     }
 }
