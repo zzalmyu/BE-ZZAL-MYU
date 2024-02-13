@@ -11,7 +11,6 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.time.Duration;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -90,7 +89,8 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
         HttpServletResponse response, FilterChain filterChain) {
         jwtService.extractAccessToken(request)
             .filter(jwtService::isTokenValid).flatMap(jwtService::extractEmail)
-            .flatMap(userJPARepository::findByEmail).ifPresent(this::saveAuthentication);
+            .flatMap(userJPARepository::findByEmail)
+            .ifPresent(this::saveAuthentication);
 
         try {
             filterChain.doFilter(request, response);

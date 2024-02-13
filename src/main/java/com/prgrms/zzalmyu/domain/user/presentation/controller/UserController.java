@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,9 +29,15 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 
-//    테스트용 컨트롤러
-//    @GetMapping("/jwt-test")
-//    public String jwtTest(@AuthenticationPrincipal User user) {
-//        return "jwtTest 요청 성공";
-//    }
+    @DeleteMapping
+    public ResponseEntity<Void> withdraw(@AuthenticationPrincipal User user) {
+        userService.withdraw(user.getId());
+        return ResponseEntity.noContent().build();
+    }
+
+    //    테스트용 컨트롤러
+    @GetMapping("/jwt-test")
+    public String jwtTest(@AuthenticationPrincipal User user) {
+        return "jwtTest 요청 성공";
+    }
 }
