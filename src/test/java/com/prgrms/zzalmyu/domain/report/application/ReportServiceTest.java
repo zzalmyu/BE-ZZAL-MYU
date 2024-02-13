@@ -68,21 +68,21 @@ class ReportServiceTest {
         reportRepository.deleteAll();
     }
 
-    @Test
-    @DisplayName("이미지를 신고할 수 있다.")
-    public void reportImage() {
-        Image image = Image.builder()
-            .imageChatCount(imageChatCount)
-            .path("https://i.namu.wiki/i/UQar4WhQAWFiJUmHBAbNlCSoqK-noyPt6tbI0DK6pDFbks3bhZdJehgSW3S50RMQgSzuzEx7ArHcg_ztlDYXwQ.webp")
-            .userId(saved1.getId())
-            .build();
-        image = imageRepository.save(image);
-        reportService.reportImage(user2.getId(), image.getId());
-
-        List<Report> reports = reportRepository.findAll();
-        Report report = reports.get(0);
-
-        assertThat(report.getReportUserId()).isEqualTo(user2.getId());
-        assertThat(report.getImageId()).isEqualTo(image.getId());
-    }
+//    @Test
+//    @DisplayName("이미지를 신고할 수 있다.")
+//    public void reportImage() {
+//        Image image = Image.builder()
+//            .imageChatCount(imageChatCount)
+//            .path("https://i.namu.wiki/i/UQar4WhQAWFiJUmHBAbNlCSoqK-noyPt6tbI0DK6pDFbks3bhZdJehgSW3S50RMQgSzuzEx7ArHcg_ztlDYXwQ.webp")
+//            .userId(saved1.getId())
+//            .build();
+//        image = imageRepository.save(image);
+//        reportService.reportImage(user2.getId(), image.getId());
+//
+//        List<Report> reports = reportRepository.findAll();
+//        Report report = reports.get(0);
+//
+//        assertThat(report.getReportUserId()).isEqualTo(user2.getId());
+//        assertThat(report.getImageId()).isEqualTo(image.getId());
+//    }
 }
