@@ -53,7 +53,8 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
             // Collections.singleton() : 단일 항목으로 갖는 컬렉션 생성
             attributes,
             oAuthDto.getNameAttributeKey(),
-            user.getEmail()
+            user.getEmail(),
+            user.getRole()
         );
         // CustomOAuth2User로 고고
     }

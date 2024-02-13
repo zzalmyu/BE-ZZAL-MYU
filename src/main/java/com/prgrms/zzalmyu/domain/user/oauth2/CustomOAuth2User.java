@@ -1,5 +1,6 @@
 package com.prgrms.zzalmyu.domain.user.oauth2;
 
+import com.prgrms.zzalmyu.domain.user.domain.enums.Role;
 import java.util.Collection;
 import java.util.Map;
 import lombok.Getter;
@@ -17,6 +18,8 @@ public class CustomOAuth2User extends DefaultOAuth2User {
 
     private String email;
 
+    private Role role;
+
     /**
      * Constructs a {@code DefaultOAuth2User} using the provided parameters.
      *
@@ -28,8 +31,9 @@ public class CustomOAuth2User extends DefaultOAuth2User {
     public CustomOAuth2User(
         Collection<? extends GrantedAuthority> authorities,
         Map<String, Object> attributes, String nameAttributeKey
-        , String email) {
+        , String email, Role role) {
         super(authorities, attributes, nameAttributeKey);
         this.email = email;
+        this.role = role;
     }
 }
