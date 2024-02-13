@@ -1,7 +1,7 @@
 package com.prgrms.zzalmyu.core.config;
 
 import com.prgrms.zzalmyu.domain.user.application.RedisService;
-import com.prgrms.zzalmyu.domain.user.infrastructure.UserJPARepository;
+import com.prgrms.zzalmyu.domain.user.infrastructure.UserRepository;
 import com.prgrms.zzalmyu.domain.user.jwt.filter.ExceptionHandlerFilter;
 import com.prgrms.zzalmyu.domain.user.jwt.filter.JwtAuthenticationProcessingFilter;
 import com.prgrms.zzalmyu.domain.user.jwt.service.JwtService;
@@ -26,7 +26,7 @@ public class SecurityConfig {
 
     private final JwtService jwtService;
     private final RedisService redisService;
-    private final UserJPARepository userJPARepository;
+    private final UserRepository userRepository;
     private final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
     private final OAuth2LoginFailureHandler oAuth2LoginFailureHandler;
     private final CustomOAuth2UserService customOAuth2UserService;
@@ -60,7 +60,7 @@ public class SecurityConfig {
 
     @Bean
     public JwtAuthenticationProcessingFilter jwtAuthenticationProcessFilter() {
-        return new JwtAuthenticationProcessingFilter(jwtService, redisService, userJPARepository);
+        return new JwtAuthenticationProcessingFilter(jwtService, redisService, userRepository);
     }
 
   @Bean
