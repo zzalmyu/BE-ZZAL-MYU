@@ -43,6 +43,7 @@ public class SecurityConfig {
                 httpSecuritySessionManagementConfigurer.sessionCreationPolicy(
                     SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(authorize -> authorize
+                .requestMatchers("/h2-console/*").permitAll()
                 .requestMatchers("/api/v1/user/jwt-test").authenticated()
                 .requestMatchers("/**").permitAll())
             .oauth2Login(oauth2 -> oauth2

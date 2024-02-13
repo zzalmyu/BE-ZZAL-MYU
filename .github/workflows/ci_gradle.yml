@@ -1,4 +1,4 @@
-name: Java CI with Gradle in smRt store
+name: Java CI with Gradle in zzalmyu
 
 on:
   workflow_dispatch:
@@ -28,7 +28,7 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      ## create application.yml
+      ## create application.properties
       - name: make application.properties
         run: |
           mkdir -p ./src/main/resources
@@ -39,14 +39,14 @@ jobs:
         shell: bash
         
 
-      ## create test application.yml
-      - name: make test application.yml
+      ## create test application.properties
+      - name: make test application.properties
         run: |
           mkdir -p ./src/test/resources
-          touch ./src/test/resources/application.yml
+          touch ./src/test/resources/application.properties
         shell: bash
-      - name: deliver test application.yml
-        run: echo "${{ secrets.APPLICATION_TEST }}" > ./src/test/resources/application.yml
+      - name: deliver test application.properties
+        run: echo "${{ secrets.APPLICATION_TEST }}" > ./src/test/resources/application.properties
         shell: bash
 
       #      ## create test ddl.sql
