@@ -29,13 +29,7 @@ public class ImageSearchServiceImpl implements ImageSearchService {
 
     private List<AwsS3ResponseDto> convertListToResponseDtoList(List<Image> imageList) {
         return imageList.stream()
-                .map(image -> {
-                    String path = awsS3Service.getS3(image.getUrl());
-                    return AwsS3ResponseDto.builder()
-                            .imageId(image.getId())
-                            .path(path)
-                            .build();
-                })
+                .map(AwsS3ResponseDto::new)
                 .toList();
     }
 }
