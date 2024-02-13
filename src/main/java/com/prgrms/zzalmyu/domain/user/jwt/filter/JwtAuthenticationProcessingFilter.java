@@ -11,7 +11,6 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.time.Duration;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -27,12 +26,19 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
     private final RedisService redisService;
     private final UserJPARepository userJPARepository;
 
+    private static String NO_CHECK_URL = "/api/v1/user/logout";
+
     private GrantedAuthoritiesMapper authoritiesMapper = new NullAuthoritiesMapper();
 
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
         FilterChain filterChain) throws ServletException, IOException {
+        if (request.getRequestURI().equals(NO_CHECK_URL)) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+        checkLogout(request); //로그아웃한 사용자면 인증 처리 안함
 
         jwtService.extractRefreshToken(request)
             .ifPresentOrElse(
@@ -45,6 +51,16 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
                 },
                 () -> checkAccessTokenAndAuthentication(request, response, filterChain)
             );
+    }
+
+    private void checkLogout(HttpServletRequest request) {
+        jwtService.extractAccessToken(request).ifPresent(accessToken -> {
+            String value = redisService.getValues(accessToken);
+
+            if (value.equals("logout")) {
+                throw new UserException(ErrorCode.SECURITY_UNAUTHORIZED);
+            }
+        });
     }
 
     private void checkRefreshTokenAndReissueAccessToken(HttpServletResponse response,
@@ -66,8 +82,7 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 
     private String reissueRefreshToken(String email) {
         String reissuedRefreshToken = jwtService.createRefreshToken();
-        redisService.setValues(reissuedRefreshToken, email,
-            Duration.ofMillis(jwtService.getRefreshTokenExpirationPeriod()));
+        jwtService.updateRefreshToken(reissuedRefreshToken, email);
         return reissuedRefreshToken;
     }
 
@@ -75,7 +90,8 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
         HttpServletResponse response, FilterChain filterChain) {
         jwtService.extractAccessToken(request)
             .filter(jwtService::isTokenValid).flatMap(jwtService::extractEmail)
-            .flatMap(userJPARepository::findByEmail).ifPresent(this::saveAuthentication);
+            .flatMap(userJPARepository::findByEmail)
+            .ifPresent(this::saveAuthentication);
 
         try {
             filterChain.doFilter(request, response);
