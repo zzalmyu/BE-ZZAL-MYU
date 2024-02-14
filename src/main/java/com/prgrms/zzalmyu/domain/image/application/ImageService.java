@@ -31,10 +31,4 @@ public interface ImageService {
      * 업로드한 짤 조회
      */
     List<AwsS3ResponseDto> getUploadImages(User user);
-
-    /**
-     * 짤 업로드 인자 : imageUrl, List<Tag>
-     */
-    AwsS3ResponseDto uploadImage(User user, MultipartFile multipartFile) throws IOException;
-
 }
