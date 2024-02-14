@@ -3,6 +3,7 @@ package com.prgrms.zzalmyu.domain.report.application;
 import com.prgrms.zzalmyu.domain.report.domain.entity.Report;
 import com.prgrms.zzalmyu.domain.report.infrastructure.ReportRepository;
 import com.prgrms.zzalmyu.domain.report.presentation.dto.response.ReportDetailResponse;
+import com.prgrms.zzalmyu.domain.report.presentation.dto.response.ReportResponse;
 import com.prgrms.zzalmyu.domain.user.application.UserService;
 import com.prgrms.zzalmyu.domain.user.domain.entity.User;
 import java.util.ArrayList;
@@ -39,5 +40,9 @@ public class ReportService {
             .collect(Collectors.toList());
 
         return responses;
+    }
+
+    public List<ReportResponse> getReports() {
+        
     }
 }

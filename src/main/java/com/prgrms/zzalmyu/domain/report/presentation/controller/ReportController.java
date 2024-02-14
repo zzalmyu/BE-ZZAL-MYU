@@ -1,6 +1,7 @@
 package com.prgrms.zzalmyu.domain.report.presentation.controller;
 
 import com.prgrms.zzalmyu.domain.report.application.ReportService;
+import com.prgrms.zzalmyu.domain.report.presentation.dto.response.ReportResponse;
 import com.prgrms.zzalmyu.domain.report.presentation.dto.response.ReportDetailResponse;
 import com.prgrms.zzalmyu.domain.user.domain.entity.User;
 import java.util.List;
@@ -30,5 +31,11 @@ public class ReportController {
     public ResponseEntity<List<ReportDetailResponse>> getReportedImage(@PathVariable Long imageId) {
         List<ReportDetailResponse> responses = reportService.getReportDetail(imageId);
         return ResponseEntity.ok(responses);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<ReportResponse>> getReports() {
+        List<ReportResponse> response = reportService.getReports();
+        return response;
     }
 }
