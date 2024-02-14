@@ -12,9 +12,12 @@ public class LoginSuccessResponse {
 
     private Role role;
 
-    public static LoginSuccessResponse of(String email, Role role) {
+    private String nickname;
+
+    public static LoginSuccessResponse of(String email, String nickname, Role role) {
         return LoginSuccessResponse.builder()
             .email(email)
+                .nickname(nickname)
             .role(role)
             .build();
     }

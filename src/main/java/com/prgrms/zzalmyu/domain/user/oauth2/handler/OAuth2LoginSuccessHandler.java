@@ -31,7 +31,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
         String refreshToken = jwtService.createRefreshToken();
 
         //accessToken, refreshToken을 헤더에 넣고, 응답 dto 구성
-        LoginSuccessResponse loginSuccessResponse = LoginSuccessResponse.of(email,
+        LoginSuccessResponse loginSuccessResponse = LoginSuccessResponse.of(email, oAuth2User.getNickname(),
             oAuth2User.getRole());
         jwtService.sendAccessTokenAndRefreshToken(response, accessToken, refreshToken);
 
