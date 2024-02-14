@@ -35,7 +35,7 @@ public class ImageRemoveService {
         if (!image.getUserId().equals(user.getId())) {
             throw new ImageException(ErrorCode.IMAGE_ONLY_UPLOAD_USER_DELETE);
         }
-        deleteImage(user, image);
+        deleteImage(image);
 
     }
 
@@ -43,16 +43,16 @@ public class ImageRemoveService {
      * 신고가 3번 누적된 사진 삭제 hard delete 사용 관리자 권한 여부 체크
      */
     @Secured("ROLE_ADMIN")
-    public void deleteReportImage(User user,Long imageId) {
+    public void deleteReportImage(Long imageId) {
         Image image = getImage(imageId);
-        deleteImage(user,image);
+        deleteImage(image);
     }
 
     private Image getImage(Long imageId) {
         return imageRepository.findById(imageId).orElseThrow(() -> new ImageException(ErrorCode.IMAGE_NOT_FOUND_ERROR));
     }
 
-    private void deleteImage(User user, Image image) {
+    private void deleteImage(Image image) {
         awsS3Service.remove(image); //aws에서 이미지 삭제
         imageRepository.delete(image); // 이미지 삭제
         imageLikeRepository.deleteImageLikeByImageId(image.getId());// 이미지 좋아요 삭제
