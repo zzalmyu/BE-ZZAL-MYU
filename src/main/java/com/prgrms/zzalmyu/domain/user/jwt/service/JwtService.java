@@ -3,8 +3,8 @@ package com.prgrms.zzalmyu.domain.user.jwt.service;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.prgrms.zzalmyu.common.redis.RedisService;
 import com.prgrms.zzalmyu.core.properties.ErrorCode;
-import com.prgrms.zzalmyu.domain.user.application.RedisService;
 import com.prgrms.zzalmyu.domain.user.exception.UserException;
 import com.prgrms.zzalmyu.domain.user.infrastructure.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
@@ -121,7 +121,7 @@ public class JwtService {
         redisService.setValues(accessToken, "logout",
             Duration.ofMillis(accessTokenExpirationPeriod));
     }
-  
+
     private void setAccessTokenHeader(HttpServletResponse response, String accessToken) {
         response.setHeader(accessHeader, accessToken);
     }
