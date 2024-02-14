@@ -1,4 +1,4 @@
-package com.prgrms.zzalmyu.domain.user.application;
+package com.prgrms.zzalmyu.common.redis;
 
 import java.time.Duration;
 import lombok.RequiredArgsConstructor;

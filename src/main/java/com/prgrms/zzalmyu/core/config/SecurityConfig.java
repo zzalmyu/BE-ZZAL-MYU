@@ -1,6 +1,6 @@
 package com.prgrms.zzalmyu.core.config;
 
-import com.prgrms.zzalmyu.domain.user.application.RedisService;
+import com.prgrms.zzalmyu.common.redis.RedisService;
 import com.prgrms.zzalmyu.domain.user.infrastructure.UserRepository;
 import com.prgrms.zzalmyu.domain.user.jwt.filter.ExceptionHandlerFilter;
 import com.prgrms.zzalmyu.domain.user.jwt.filter.JwtAuthenticationProcessingFilter;
@@ -11,6 +11,7 @@ import com.prgrms.zzalmyu.domain.user.oauth2.service.CustomOAuth2UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -44,6 +45,7 @@ public class SecurityConfig {
                     SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(authorize -> authorize
                 .requestMatchers("/h2-console/*").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/v1/report/{imageId}").hasRole("ADMIN")
                 .requestMatchers("/api/v1/user/jwt-test").authenticated()
                 .requestMatchers("/**").permitAll())
             .oauth2Login(oauth2 -> oauth2

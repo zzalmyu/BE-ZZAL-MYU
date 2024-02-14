@@ -1,9 +1,9 @@
 package com.prgrms.zzalmyu.domain.user.application;
 
-import com.prgrms.zzalmyu.domain.user.infrastructure.UserRepository;
 import com.prgrms.zzalmyu.core.properties.ErrorCode;
 import com.prgrms.zzalmyu.domain.user.domain.entity.User;
 import com.prgrms.zzalmyu.domain.user.exception.UserException;
+import com.prgrms.zzalmyu.domain.user.infrastructure.UserRepository;
 import com.prgrms.zzalmyu.domain.user.jwt.service.JwtService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final UserRepository userJPARepository;
     private final JwtService jwtService;
 
     public void logout(String accessToken, String refreshToken) {
@@ -33,8 +32,8 @@ public class UserService {
         user.delete();
     }
 
-    private User findUserById(Long id) {
-        User user = userJPARepository.findById(id)
+    public User findUserById(Long id) {
+        User user = userRepository.findById(id)
             .orElseThrow(() -> new UserException(ErrorCode.USER_NOT_FOUND));
         return user;
     }

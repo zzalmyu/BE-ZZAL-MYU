@@ -1,7 +1,7 @@
 package com.prgrms.zzalmyu.domain.user.jwt.filter;
 
+import com.prgrms.zzalmyu.common.redis.RedisService;
 import com.prgrms.zzalmyu.core.properties.ErrorCode;
-import com.prgrms.zzalmyu.domain.user.application.RedisService;
 import com.prgrms.zzalmyu.domain.user.domain.entity.User;
 import com.prgrms.zzalmyu.domain.user.exception.UserException;
 import com.prgrms.zzalmyu.domain.user.infrastructure.UserRepository;
@@ -11,7 +11,6 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.time.Duration;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -46,7 +45,7 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
         jwtService.extractRefreshToken(request)
             .ifPresentOrElse(
                 refreshToken -> {
-                    if(jwtService.isTokenValid(refreshToken)) {
+                    if (jwtService.isTokenValid(refreshToken)) {
                         checkRefreshTokenAndReissueAccessToken(response, refreshToken);
                     } else {
                         throw new UserException(ErrorCode.SECURITY_INVALID_TOKEN);
