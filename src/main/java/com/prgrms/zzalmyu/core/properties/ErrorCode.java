@@ -16,6 +16,8 @@ public enum ErrorCode {
 
     // 400
     IMAGE_NOT_FOUND_ERROR(BAD_REQUEST, "이미지가 존재하지 않습니다."),
+    IMAGE_ONLY_UPLOAD_USER_DELETE(BAD_REQUEST,"업로드한 사용자만 삭제 가능할 수 있습니다."),
+    ADMIN_ONLY_REPORT_DELETE(BAD_REQUEST,"관리자만이 신고 이미지를 처리할 수 있습니다."),
 
     // 401
     SECURITY_UNAUTHORIZED(UNAUTHORIZED, "인증 정보가 유효하지 않습니다"),
