@@ -12,6 +12,7 @@ import com.prgrms.zzalmyu.domain.user.domain.entity.User;
 import com.prgrms.zzalmyu.domain.user.domain.enums.Role;
 import com.prgrms.zzalmyu.domain.user.exception.UserException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,12 +44,9 @@ public class ImageRemoveService {
     /**
      * 신고가 3번 누적된 사진 삭제 hard delete 사용 관리자 권한 여부 체크
      */
-    public void deleteReportImage(User user,AwsS3RequestDto awsS3RequestDto) {
-
-        Image image = getImage(awsS3RequestDto.getImageId());
-        if (!user.getRole().equals(Role.ADMIN)) {
-            throw new UserException(ErrorCode.ADMIN_ONLY_REPORT_DELETE);
-        }
+    @Secured("ROLE_ADMIN")
+    public void deleteReportImage(User user,Long imageId) {
+        Image image = getImage(imageId);
         deleteImage(user,image);
     }
 
