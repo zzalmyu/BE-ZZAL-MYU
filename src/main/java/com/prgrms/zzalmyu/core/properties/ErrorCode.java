@@ -22,6 +22,8 @@ public enum ErrorCode {
     USER_NOT_FOUND(BAD_REQUEST, "user을 찾을 수 없습니다."),
     IMAGE_DELETION_NOT_ALLOWED(BAD_REQUEST, "신고가 3번 이상 누적되어야 이미지를 삭제할 수 있습니다."),
     TAG_NOT_FOUND_ERROR(BAD_REQUEST, "해당 태그가 존재하지 않습니다,"),
+    TAG_ALREADY_EXIST_ERROR(BAD_REQUEST, "해당하는 태그가 이미 존재합니다."),
+
 
     // 401
     SECURITY_UNAUTHORIZED(UNAUTHORIZED, "인증 정보가 유효하지 않습니다"),
