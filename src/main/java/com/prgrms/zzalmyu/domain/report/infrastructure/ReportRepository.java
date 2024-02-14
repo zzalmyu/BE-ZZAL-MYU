@@ -9,4 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 public interface ReportRepository extends JpaRepository<Report, Long> {
 
     List<Report> findByImageId(Long imageId);
+
+    @Query("select count(r) from Report r where r.imageId = :imageId")
+    Long countByImageId(Long imageId);
 }
