@@ -1,5 +1,7 @@
 package com.prgrms.zzalmyu.domain.report.application;
 
+import com.prgrms.zzalmyu.core.properties.ErrorCode;
+import com.prgrms.zzalmyu.domain.image.application.ImageRemoveService;
 import com.prgrms.zzalmyu.domain.report.domain.entity.Report;
 import com.prgrms.zzalmyu.domain.report.infrastructure.ReportRepository;
 import com.prgrms.zzalmyu.domain.report.presentation.dto.response.ReportDetailResponse;
@@ -8,6 +10,8 @@ import com.prgrms.zzalmyu.domain.user.domain.entity.User;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import com.prgrms.zzalmyu.domain.user.exception.UserException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +23,7 @@ public class ReportService {
 
     private final ReportRepository reportRepository;
     private final UserService userService;
+    private final ImageRemoveService imageRemoveService;
 
     public void reportImage(Long userId, Long imageId) {
         Report report = Report.builder()
@@ -39,5 +44,14 @@ public class ReportService {
             .collect(Collectors.toList());
 
         return responses;
+    }
+
+    public void deleteReportedImage(Long imageId) {
+        Long reportCount = reportRepository.countByImageId(imageId);
+        if(reportCount >= 3) {
+            imageRemoveService.deleteReportImage(imageId);
+        } else {
+            throw new UserException(ErrorCode. IMAGE_DELETION_NOT_ALLOWED);
+        }
     }
 }

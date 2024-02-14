@@ -26,6 +26,7 @@ public enum ErrorCode {
 
     // 403
     SECURITY_ACCESS_DENIED(FORBIDDEN, "접근 권한이 없습니다."),
+    IMAGE_DELETION_NOT_ALLOWED(FORBIDDEN, "신고가 3번 이상 누적되어야 이미지를 삭제할 수 있습니다."),
 
     // 404
     USER_NOT_FOUND(NOT_FOUND, "user을 찾을 수 없습니다."),
