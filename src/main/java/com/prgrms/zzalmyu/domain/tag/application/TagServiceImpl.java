@@ -17,7 +17,7 @@ public class TagServiceImpl implements TagService{
     private final TagRepository tagRepository;
     private static final int RANK_NUM = 5;
     @Override
-    public List<TagResponseDto> getTopTagsFromUserUsed(User user) {
+    public List<TagResponseDto> getTopTagsFromUsersUsed() {
         return tagRepository.getTopTagsFromUserUsed(RANK_NUM);
     }
 
@@ -32,7 +32,7 @@ public class TagServiceImpl implements TagService{
     }
 
     @Override
-    public TagResponseDto createTag(User user, String tagName) {
+    public TagResponseDto createTag(String tagName) {
         if (tagRepository.existsByName(tagName)) {
             throw new TagException(ErrorCode.TAG_ALREADY_EXIST_ERROR);
         }

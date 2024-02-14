@@ -28,12 +28,12 @@ public class TagController {
     }
 
     @GetMapping("/tag/popular")
-    public List<TagResponseDto> getTopTagsFromUserUsed(@AuthenticationPrincipal User user) {
-        return tagService.getTopTagsFromUserUsed(user);
+    public List<TagResponseDto> getTopTagsFromUsersUsed() {
+        return tagService.getTopTagsFromUsersUsed();
     }
 
     @PostMapping("/user/upload/tag")
-    public TagResponseDto createTag(@AuthenticationPrincipal User user, @RequestBody String tagName) {
-        return tagService.createTag(user, tagName);
+    public TagResponseDto createTag(@RequestBody String tagName) {
+        return tagService.createTag(tagName);
     }
 }

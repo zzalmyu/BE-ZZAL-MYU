@@ -101,7 +101,7 @@ class TagServiceTest {
         }
         // 사용 sum은 순서대로 8, 9, 10, 11, 12, 13, 14
         // When
-        List<TagResponseDto> responseDtoList = tagService.getTopTagsFromUserUsed(user1);
+        List<TagResponseDto> responseDtoList = tagService.getTopTagsFromUsersUsed();
         //Then
         assertThat(responseDtoList).hasSizeLessThanOrEqualTo(5);
         assertThat(responseDtoList.stream().map(TagResponseDto::getTagId).toList())
@@ -121,7 +121,7 @@ class TagServiceTest {
     @Test
     void createTag() {
         String requestTagName = "요청태그이름";
-        TagResponseDto responseDto = tagService.createTag(user1, requestTagName);
+        TagResponseDto responseDto = tagService.createTag(requestTagName);
         assertThat(responseDto.getTagName()).isEqualTo(requestTagName);
     }
 }

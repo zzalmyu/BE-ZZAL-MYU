@@ -12,7 +12,7 @@ public interface TagService {
      *
      * @return
      */
-    List<TagResponseDto> getTopTagsFromUserUsed(User user);
+    List<TagResponseDto> getTopTagsFromUsersUsed();
 
     /**
      * 좋아요한 사진 들 중 공통된 상위 5개 태그 조회
@@ -30,5 +30,5 @@ public interface TagService {
     /**
      * 태그 생성
      */
-    TagResponseDto createTag(User user, String tagName);
+    TagResponseDto createTag(String tagName);
 }
