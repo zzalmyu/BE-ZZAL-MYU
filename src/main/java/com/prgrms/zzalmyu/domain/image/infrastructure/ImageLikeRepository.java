@@ -7,5 +7,5 @@ import java.util.Optional;
 
 public interface ImageLikeRepository extends JpaRepository<ImageLike, Long> {
     Optional<ImageLike> findByUserIdAndImageId(Long userId, Long imageId);
-    void deleteImageLikeByUserIdAndImageId(Long userId,Long imageId);
+    void deleteImageLikeByImageId(Long imageId);
 }
