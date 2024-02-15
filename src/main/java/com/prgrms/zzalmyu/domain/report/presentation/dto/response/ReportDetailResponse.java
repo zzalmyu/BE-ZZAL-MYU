@@ -3,8 +3,10 @@ package com.prgrms.zzalmyu.domain.report.presentation.dto.response;
 import com.prgrms.zzalmyu.domain.report.domain.entity.Report;
 import com.prgrms.zzalmyu.domain.tag.presentation.dto.res.TagResponseDto;
 import com.prgrms.zzalmyu.domain.user.domain.entity.User;
+
 import java.time.LocalDateTime;
 import java.util.List;
+
 import lombok.Builder;
 import lombok.Getter;
 

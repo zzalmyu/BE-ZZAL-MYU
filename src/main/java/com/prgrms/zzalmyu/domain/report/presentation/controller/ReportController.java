@@ -4,7 +4,9 @@ import com.prgrms.zzalmyu.domain.report.application.ReportService;
 import com.prgrms.zzalmyu.domain.report.presentation.dto.response.ReportDetailResponse;
 import com.prgrms.zzalmyu.domain.report.presentation.dto.response.ReportResponse;
 import com.prgrms.zzalmyu.domain.user.domain.entity.User;
+
 import java.util.List;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
