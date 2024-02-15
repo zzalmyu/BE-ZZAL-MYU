@@ -48,7 +48,7 @@ public class ReportService {
 
         List<ReportDetailResponse> responses = reports.stream()
                 .map(report -> {
-                    User reportUser = userService.findUserById(report.getId());
+                    User reportUser = userService.findUserById(report.getReportUserId());
                     List<TagResponseDto> tags = getTags(report.getImageId());
                     return ReportDetailResponse.of(report, reportUser, tags);
                 })
