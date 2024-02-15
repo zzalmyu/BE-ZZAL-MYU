@@ -11,6 +11,7 @@ import com.prgrms.zzalmyu.domain.report.domain.entity.Report;
 import com.prgrms.zzalmyu.domain.report.exception.ReportException;
 import com.prgrms.zzalmyu.domain.report.infrastructure.ReportRepository;
 import com.prgrms.zzalmyu.domain.report.presentation.dto.response.ReportDetailResponse;
+import com.prgrms.zzalmyu.domain.report.presentation.dto.response.ReportResponse;
 import com.prgrms.zzalmyu.domain.user.domain.entity.User;
 import com.prgrms.zzalmyu.domain.user.domain.enums.Role;
 import com.prgrms.zzalmyu.domain.user.infrastructure.UserRepository;
@@ -141,5 +142,31 @@ class ReportServiceTest {
 
         assertThatThrownBy(() -> reportService.deleteReportedImage(image.getId()))
             .isInstanceOf(ReportException.class);
+    }
+
+    @Test
+    @DisplayName("3번 이상 신고된 내역 리스트를 조회할 수 있다.")
+    public void getReportsMoreThanThree() {
+        reportService.reportImage(shogun.getId(), image.getId());
+        reportService.reportImage(miko.getId(), image.getId());
+        reportService.reportImage(nahida.getId(), image.getId());
+
+        List<ReportResponse> reports = reportService.getReports();
+
+        assertThat(reports.size()).isEqualTo(1);
+        assertThat(reports.get(0).getReportCount()).isEqualTo(3);
+        assertThat(reports.get(0).getReportThirdAt()).isEqualTo(reportRepository.findById(3L).get().getCreatedAt());
+        assertThat(reports.get(0).getTags().size()).isEqualTo(0);
+    }
+
+    @Test
+    @DisplayName("3번 미만 신고된 내역은 리스트에 포함되지 않는다.")
+    public void getReportsBelowThree() {
+        reportService.reportImage(shogun.getId(), image.getId());
+        reportService.reportImage(miko.getId(), image.getId());
+
+        List<ReportResponse> reports = reportService.getReports();
+
+        assertThat(reports.size()).isEqualTo(0);
     }
 }
