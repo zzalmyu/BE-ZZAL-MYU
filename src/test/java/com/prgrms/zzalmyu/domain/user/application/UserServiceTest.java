@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import com.prgrms.zzalmyu.domain.user.domain.entity.User;
 import com.prgrms.zzalmyu.domain.user.domain.enums.Role;
 import com.prgrms.zzalmyu.domain.user.domain.enums.SocialType;
+import com.prgrms.zzalmyu.domain.user.exception.UserException;
 import com.prgrms.zzalmyu.domain.user.infrastructure.UserRepository;
 import java.util.Optional;
 import org.aspectj.lang.annotation.After;
@@ -64,5 +65,12 @@ class UserServiceTest {
         User user = userService.findUserById(saved.getId());
 
         assertThat(user.getId()).isEqualTo(saved.getId());
+    }
+
+    @Test
+    @DisplayName("사용자를 id로 찾을 수 없다.")
+    public void findUserByIdFailed() {
+        assertThatThrownBy(() -> userService.findUserById(10L))
+            .isInstanceOf(UserException.class);
     }
 }
