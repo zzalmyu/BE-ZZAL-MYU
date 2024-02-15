@@ -84,7 +84,7 @@ jobs:
             --log-opt awslogs-region=ap-northeast-2 \
             --log-opt awslogs-group=web \
             --log-opt awslogs-stream=log \
-            --name smrt_store \
+            --name zzalmyu \
             -p 8080:8080 \
             -e TZ=Asia/Seoul \
             ${{ secrets.DOCKER_ID }}/zzalmyu
