@@ -59,9 +59,11 @@ jobs:
 
       #도커 빌드 & 이미지 push
       - name: Docker build & Push
+        env:
+          DOCKER_ID: ${{ secrets.DOCKER_ID }}
         run: |
-          docker build -t suzz/zzalmyu --pull --no-cache --platform linux/amd64 .
-          docker push ${{ secrets.DOCKER_ID }}/zzalmyu
+          docker build -t $DOCKER_ID/zzalmyu --pull --no-cache --platform linux/amd64 .
+          docker push $DOCKER_ID/zzalmyu
 
       #docker 파일을 ec2 서버에 배포
       - name: Deploy to Prod
