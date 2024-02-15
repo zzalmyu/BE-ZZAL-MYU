@@ -11,7 +11,7 @@ import java.util.List;
 @Builder
 public class ReportResponse {
 
-    private LocalDateTime reportThirdAt;
+    private LocalDateTime lastReportAt;
 
     private int reportCount;
 
@@ -19,7 +19,7 @@ public class ReportResponse {
 
     public static ReportResponse of(LocalDateTime thirdReportDate, int reportCount, List<TagResponseDto> tags) {
         return ReportResponse.builder()
-                .reportThirdAt(thirdReportDate)
+                .lastReportAt(thirdReportDate)
                 .reportCount(reportCount)
                 .tags(tags)
                 .build();
