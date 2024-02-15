@@ -3,6 +3,7 @@ package com.prgrms.zzalmyu.domain.user.presentation.controller;
 import com.prgrms.zzalmyu.domain.user.application.UserService;
 import com.prgrms.zzalmyu.domain.user.domain.entity.User;
 import com.prgrms.zzalmyu.domain.user.jwt.service.JwtService;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +22,7 @@ public class UserController {
     private final UserService userService;
     private final JwtService jwtService;
 
+    @ApiResponse(description = "로그아웃")
     @PatchMapping("/logout")
     public ResponseEntity<Void> logout(HttpServletRequest request) {
         String accessToken = jwtService.extractAccessToken(request).get();
@@ -29,6 +31,7 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 
+    @ApiResponse(description = "유저 탈퇴")
     @DeleteMapping
     public ResponseEntity<Void> withdraw(@AuthenticationPrincipal User user) {
         userService.withdraw(user.getId());
@@ -36,6 +39,7 @@ public class UserController {
     }
 
     //    테스트용 컨트롤러
+    @ApiResponse(description = "테스트용 (무시해주세요)")
     @GetMapping("/jwt-test")
     public String jwtTest(@AuthenticationPrincipal User user) {
         return "jwtTest 요청 성공";

@@ -8,6 +8,7 @@ import com.prgrms.zzalmyu.domain.image.presentation.dto.res.AwsS3RequestDto;
 import com.prgrms.zzalmyu.domain.image.presentation.dto.res.AwsS3ResponseDto;
 import com.prgrms.zzalmyu.domain.image.presentation.dto.res.ImageDetailResponse;
 import com.prgrms.zzalmyu.domain.user.domain.entity.User;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,39 +29,50 @@ public class ImageController {
     private final ImageRemoveService imageRemoveService;
     private final ImageSearchService imageSearchService;
 
-    @GetMapping("/{id}")
-    public ImageDetailResponse getImage(@AuthenticationPrincipal User user, @PathVariable Long id) {
-        return imageService.getImageDetail(id, user);
+    @ApiResponse(description = "짤 상세보기 페이지에 반환 될 값")
+    @GetMapping("/{imageId}")
+    public ImageDetailResponse getImage(@AuthenticationPrincipal User user, @PathVariable Long imageId) {
+        return imageService.getImageDetail(imageId, user);
     }
-
+    @ApiResponse(description = "좋아요 누른 짤 리스트 반환")
     @GetMapping("/like")
     public List<AwsS3ResponseDto> getImageLikes(@AuthenticationPrincipal User user) {
         return imageService.getLikeImages(user);
     }
-
+    @ApiResponse(description = "업로드한 짤 리스트 반환")
     @GetMapping("/upload")
     public List<AwsS3ResponseDto> getImageUploads(@AuthenticationPrincipal User user) {
         return imageService.getUploadImages(user);
     }
 
-    @PostMapping("/user/like")
+    @ApiResponse(description = "짤 좋아요 버튼 클릭")
+    @PostMapping("/{imageId}/like")
+    public void likeImage(@AuthenticationPrincipal User user,@PathVariable Long imageId){
+        imageService.likeImage(imageId,user);
+    }
+
+    @ApiResponse(description = "좋아요 누른 짤 페이지에서 태그 검색")
+    @PostMapping("/me/like")
     List<AwsS3ResponseDto> searchLikeImages(@AuthenticationPrincipal User user, List<Long> tagIdList) {
         return imageSearchService.searchLikeImages(user, tagIdList);
     }
 
-    @PostMapping("/user/my-upload")
+    @ApiResponse(description = "업로드한 짤 페이지에서 태그 검색")
+    @PostMapping("/me/upload")
     List<AwsS3ResponseDto> searchUploadImages(@AuthenticationPrincipal User user, List<Long> tagIdList) {
         return imageSearchService.searchUploadImages(user, tagIdList);
     }
 
-    @PostMapping("/resource")
+    @ApiResponse(description = "짤 업로드")
+    @PostMapping
     public AwsS3ResponseDto upload(@RequestPart("file") MultipartFile multipartFile,
                                    @AuthenticationPrincipal User user,
                                    @RequestBody List<Long> tagIdList) throws IOException {
         return imageUploadService.uploadImage(user, multipartFile, tagIdList);
     }
 
-    @DeleteMapping("/resource")
+    @ApiResponse(description = "(유저 본인이)업로드한 짤 삭제 ")
+    @DeleteMapping
     public ResponseEntity remove(@RequestBody AwsS3RequestDto awsS3RequestDto, @AuthenticationPrincipal User user) {
         imageRemoveService.deleteUploadImages(user, awsS3RequestDto);
         return ResponseEntity.ok(HttpStatus.OK);
