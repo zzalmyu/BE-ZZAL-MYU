@@ -4,10 +4,8 @@ import com.amazonaws.services.cloudformation.model.AlreadyExistsException;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.AmazonS3Exception;
 import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.prgrms.zzalmyu.domain.chat.infrastructure.ImageChatCountRepository;
 import com.prgrms.zzalmyu.domain.image.domain.entity.AwsS3;
 import com.prgrms.zzalmyu.domain.image.domain.entity.Image;
-import com.prgrms.zzalmyu.domain.image.infrastructure.ImageRepository;
 import com.prgrms.zzalmyu.domain.user.domain.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -41,12 +39,10 @@ public class AwsS3Service {
         String key = makeFileName(user, file);
         String path = putS3(file, key);
         removeFile(file);
-
-              AwsS3 awsS3 = AwsS3.builder()
+        return AwsS3.builder()
                 .key(key)
                 .path(path)
                 .build();
-        return awsS3;
     }
 
     private String makeFileName(User user, File file) {

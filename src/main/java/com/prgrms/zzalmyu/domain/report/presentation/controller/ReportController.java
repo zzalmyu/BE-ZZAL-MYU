@@ -1,18 +1,14 @@
 package com.prgrms.zzalmyu.domain.report.presentation.controller;
 
 import com.prgrms.zzalmyu.domain.report.application.ReportService;
-import com.prgrms.zzalmyu.domain.report.presentation.dto.response.ReportResponse;
 import com.prgrms.zzalmyu.domain.report.presentation.dto.response.ReportDetailResponse;
+import com.prgrms.zzalmyu.domain.report.presentation.dto.response.ReportResponse;
 import com.prgrms.zzalmyu.domain.user.domain.entity.User;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -33,9 +29,15 @@ public class ReportController {
         return ResponseEntity.ok(responses);
     }
 
+    @DeleteMapping("/{imageId}")
+    public ResponseEntity<Void> deleteReportedImage(@PathVariable Long imageId) {
+        reportService.deleteReportedImage(imageId);
+        return ResponseEntity.noContent().build();
+    }
+
     @GetMapping
     public ResponseEntity<List<ReportResponse>> getReports() {
-        List<ReportResponse> response = reportService.getReports();
-        return response;
+        List<ReportResponse> responses = reportService.getReports();
+        return ResponseEntity.ok(responses);
     }
 }
