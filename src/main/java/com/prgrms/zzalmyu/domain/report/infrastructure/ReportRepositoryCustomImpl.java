@@ -17,6 +17,7 @@ public class ReportRepositoryCustomImpl implements ReportRepositoryCustom {
         return queryFactory
                 .select(report.createdAt)
                 .from(report)
+                .where(report.imageId.eq(imageId))
                 .orderBy(report.createdAt.desc())
                 .fetchFirst();
     }
