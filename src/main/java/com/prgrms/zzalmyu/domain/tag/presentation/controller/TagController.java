@@ -2,6 +2,7 @@ package com.prgrms.zzalmyu.domain.tag.presentation.controller;
 
 
 import com.prgrms.zzalmyu.domain.tag.application.TagService;
+import com.prgrms.zzalmyu.domain.tag.presentation.dto.req.TagCreateRequestDto;
 import com.prgrms.zzalmyu.domain.tag.presentation.dto.res.TagResponseDto;
 import com.prgrms.zzalmyu.domain.user.domain.entity.User;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -38,7 +39,7 @@ public class TagController {
 
     @ApiResponse(description = "태그 생성")
     @PostMapping
-    public TagResponseDto createTag(@RequestBody String tagName) {
-        return tagService.createTag(tagName);
+    public TagResponseDto createTag(@RequestBody TagCreateRequestDto dto) {
+        return tagService.createTag(dto.getName());
     }
 }
