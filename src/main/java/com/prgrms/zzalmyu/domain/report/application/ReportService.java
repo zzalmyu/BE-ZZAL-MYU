@@ -2,10 +2,13 @@ package com.prgrms.zzalmyu.domain.report.application;
 
 import com.prgrms.zzalmyu.core.properties.ErrorCode;
 import com.prgrms.zzalmyu.domain.image.application.ImageRemoveService;
+import com.prgrms.zzalmyu.domain.image.infrastructure.ImageRepository;
 import com.prgrms.zzalmyu.domain.report.domain.entity.Report;
 import com.prgrms.zzalmyu.domain.report.exception.ReportException;
 import com.prgrms.zzalmyu.domain.report.infrastructure.ReportRepository;
 import com.prgrms.zzalmyu.domain.report.presentation.dto.response.ReportDetailResponse;
+import com.prgrms.zzalmyu.domain.tag.domain.entity.Tag;
+import com.prgrms.zzalmyu.domain.tag.presentation.dto.res.TagResponseDto;
 import com.prgrms.zzalmyu.domain.report.presentation.dto.response.ReportResponse;
 import com.prgrms.zzalmyu.domain.user.application.UserService;
 import com.prgrms.zzalmyu.domain.user.domain.entity.User;
@@ -26,6 +29,7 @@ public class ReportService {
     private final ReportRepository reportRepository;
     private final UserService userService;
     private final ImageRemoveService imageRemoveService;
+    private final ImageRepository imageRepository;
 
     public void reportImage(Long userId, Long imageId) {
         Report report = Report.builder()
@@ -45,7 +49,8 @@ public class ReportService {
         List<ReportDetailResponse> responses = reports.stream()
             .map(report -> {
                 User reportUser = userService.findUserById(report.getId());
-                return ReportDetailResponse.of(report, reportUser);
+                List<TagResponseDto> tags = getTags(report.getImageId());
+                return ReportDetailResponse.of(report, reportUser, tags);
             })
             .collect(Collectors.toList());
 
@@ -61,14 +66,25 @@ public class ReportService {
         }
     }
 
+    private List<TagResponseDto> getTags(Long imageId) {
+        List<Tag> tags = imageRepository.findTagsByImageId(imageId);
+        return tags.stream()
+                .map(tag -> new TagResponseDto(tag.getId(), tag.getName()))
+                .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
     public List<ReportResponse> getReports() {
         List<Long> reportedImageIds = reportRepository.getImageIdReportedOverThree();
-        List<ReportResponse> responses = new ArrayList<>();
-        for(Long imageId : reportedImageIds) {
-            LocalDateTime thirdReportDate = reportRepository.getThirdReportAt(imageId);
-            int reportCount = reportRepository.countByImageId(imageId);
+        List<ReportResponse> responses = reportedImageIds.stream()
+                .map(imageId -> {
+                    LocalDateTime thirdReportDate = reportRepository.getThirdReportAt(imageId);
+                    int reportCount = reportRepository.countByImageId(imageId);
+                    List<TagResponseDto> tags = getTags(imageId);
+                    return ReportResponse.of(thirdReportDate, reportCount, tags);
+                })
+                .collect(Collectors.toList());
 
-
-        }
+        return responses;
     }
 }

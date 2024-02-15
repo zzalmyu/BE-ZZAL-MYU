@@ -1,6 +1,7 @@
 package com.prgrms.zzalmyu.domain.report.presentation.dto.response;
 
 import com.prgrms.zzalmyu.domain.report.domain.entity.Report;
+import com.prgrms.zzalmyu.domain.tag.presentation.dto.res.TagResponseDto;
 import com.prgrms.zzalmyu.domain.user.domain.entity.User;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -15,7 +16,9 @@ public class ReportDetailResponse {
 
     private String reportUserEmail;
 
-    public static ReportDetailResponse of(Report report, User user) {
-        return new ReportDetailResponse(report.getCreatedAt(), user.getEmail());
+    private List<TagResponseDto> tags;
+
+    public static ReportDetailResponse of(Report report, User user, List<TagResponseDto> tags) {
+        return new ReportDetailResponse(report.getCreatedAt(), user.getEmail(), tags);
     }
 }

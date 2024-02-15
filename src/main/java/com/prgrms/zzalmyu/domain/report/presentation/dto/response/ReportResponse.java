@@ -16,4 +16,12 @@ public class ReportResponse {
     private int reportCount;
 
     private List<TagResponseDto> tags;
+
+    public static ReportResponse of(LocalDateTime thirdReportDate, int reportCount, List<TagResponseDto> tags) {
+        return ReportResponse.builder()
+                .reportThirdAt(thirdReportDate)
+                .reportCount(reportCount)
+                .tags(tags)
+                .build();
+    }
 }
