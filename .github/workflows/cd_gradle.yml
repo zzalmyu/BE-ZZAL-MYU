@@ -60,7 +60,7 @@ jobs:
       #도커 빌드 & 이미지 push
       - name: Docker build & Push
         run: |
-          docker build -f Dockerfile -t ${{ secrets.DOCKER_ID }}/zzalmyu .
+          docker build -f Dockerfile -t ${{ secrets.DOCKER_ID }}/zzalmyu:latest .
           docker push ${{ secrets.DOCKER_ID }}/zzalmyu
 
       #docker 파일을 ec2 서버에 배포
