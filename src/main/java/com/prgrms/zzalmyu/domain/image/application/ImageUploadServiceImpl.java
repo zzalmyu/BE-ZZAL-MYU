@@ -45,7 +45,7 @@ public class ImageUploadServiceImpl implements ImageUploadService {
 
     private Image saveImage(User user, AwsS3 awsS3) {
         Image image = Image.builder()
-                .key(awsS3.getKey())
+                .imageKey(awsS3.getKey())
                 .path(awsS3.getPath())
                 .imageChatCount(imageChatCountRepository.save(new ImageChatCount()))
                 .userId(user.getId())

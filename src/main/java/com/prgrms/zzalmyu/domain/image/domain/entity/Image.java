@@ -27,8 +27,8 @@ public class Image {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "key", nullable = false)
-    private String key;
+    @Column(name = "image_key", nullable = false)
+    private String imageKey;
 
     @Column(name = "url", nullable = false)
     private String path;
@@ -45,8 +45,8 @@ public class Image {
     private LocalDateTime createdAt;
 
     @Builder
-    private Image(String key, String path, ImageChatCount imageChatCount, Long userId) {
-        this.key = key;
+    private Image(String imageKey, String path, ImageChatCount imageChatCount, Long userId) {
+        this.imageKey = imageKey;
         this.path = path;
         this.imageChatCount = imageChatCount;
         this.userId = userId;

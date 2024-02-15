@@ -88,9 +88,9 @@ public class AwsS3Service {
     }
 
     public void remove(Image image) {
-        if (!amazonS3.doesObjectExist(bucket, image.getKey())) {
-            throw new AmazonS3Exception("Object " + image.getKey() + " does not exist!");
+        if (!amazonS3.doesObjectExist(bucket, image.getImageKey())) {
+            throw new AmazonS3Exception("Object " + image.getImageKey() + " does not exist!");
         }
-        amazonS3.deleteObject(bucket, image.getKey());
+        amazonS3.deleteObject(bucket, image.getImageKey());
     }
 }
