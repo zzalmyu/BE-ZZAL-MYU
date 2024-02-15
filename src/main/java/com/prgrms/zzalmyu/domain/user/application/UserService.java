@@ -7,6 +7,7 @@ import com.prgrms.zzalmyu.domain.user.infrastructure.UserRepository;
 import com.prgrms.zzalmyu.domain.user.jwt.service.JwtService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 @Service
