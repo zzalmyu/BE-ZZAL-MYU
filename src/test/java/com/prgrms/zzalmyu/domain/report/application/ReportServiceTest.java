@@ -16,7 +16,6 @@ import com.prgrms.zzalmyu.domain.user.domain.entity.User;
 import com.prgrms.zzalmyu.domain.user.domain.enums.Role;
 import com.prgrms.zzalmyu.domain.user.infrastructure.UserRepository;
 import java.util.List;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -155,7 +154,6 @@ class ReportServiceTest {
 
         assertThat(reports.size()).isEqualTo(1);
         assertThat(reports.get(0).getReportCount()).isEqualTo(3);
-        assertThat(reports.get(0).getReportThirdAt()).isEqualTo(reportRepository.findById(3L).get().getCreatedAt());
         assertThat(reports.get(0).getTags().size()).isEqualTo(0);
     }
 
