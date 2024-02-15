@@ -15,7 +15,7 @@ public interface ReportRepository extends JpaRepository<Report, Long>, ReportRep
     @Query("select count(r) from Report r where r.imageId = :imageId")
     int countByImageId(Long imageId);
 
-    LocalDateTime getThirdReportAt(Long imageId);
+    LocalDateTime getLastReportAt(Long imageId);
 
     @Query("SELECT r.imageId FROM Report r GROUP BY r.imageId HAVING COUNT(*) >= 3")
     List<Long> getImageIdReportedOverThree();

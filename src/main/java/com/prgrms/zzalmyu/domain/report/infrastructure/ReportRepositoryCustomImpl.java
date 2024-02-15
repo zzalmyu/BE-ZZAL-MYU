@@ -13,7 +13,7 @@ public class ReportRepositoryCustomImpl implements ReportRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public LocalDateTime getThirdReportAt(Long imageId) {
+    public LocalDateTime getLastReportAt(Long imageId) {
         return queryFactory
                 .select(report.createdAt)
                 .from(report)

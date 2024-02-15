@@ -4,5 +4,5 @@ import java.time.LocalDateTime;
 
 public interface ReportRepositoryCustom {
 
-    LocalDateTime getThirdReportAt(Long imageId);
+    LocalDateTime getLastReportAt(Long imageId);
 }

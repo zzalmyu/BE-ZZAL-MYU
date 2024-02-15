@@ -14,7 +14,6 @@ import com.prgrms.zzalmyu.domain.user.application.UserService;
 import com.prgrms.zzalmyu.domain.user.domain.entity.User;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -78,10 +77,10 @@ public class ReportService {
         List<Long> reportedImageIds = reportRepository.getImageIdReportedOverThree();
         List<ReportResponse> responses = reportedImageIds.stream()
                 .map(imageId -> {
-                    LocalDateTime thirdReportDate = reportRepository.getThirdReportAt(imageId);
+                    LocalDateTime lastReportDate = reportRepository.getLastReportAt(imageId);
                     int reportCount = reportRepository.countByImageId(imageId);
                     List<TagResponseDto> tags = getTags(imageId);
-                    return ReportResponse.of(thirdReportDate, reportCount, tags);
+                    return ReportResponse.of(lastReportDate, reportCount, tags);
                 })
                 .collect(Collectors.toList());
 
