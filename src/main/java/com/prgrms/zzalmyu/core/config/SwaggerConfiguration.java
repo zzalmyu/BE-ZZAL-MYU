@@ -23,7 +23,7 @@ public class SwaggerConfiguration {
         return GroupedOpenApi.builder()
                 .group("api")
                 .addOpenApiCustomizer(customizer -> customizer.info(
-                                new Info().title("smRt Store API").description("smRt Store API Documentation")
+                                new Info().title("ZZAL-MYU API").description("ZZAL-MYU API Documentation")
                                         .version("alpha 1.0"))
                         .security(List.of(new SecurityRequirement().addList("Authentication"))))
                 .pathsToMatch("/**")
