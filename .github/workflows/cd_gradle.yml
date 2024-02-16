@@ -19,7 +19,7 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-       ## gradle 캐싱
+      ## gradle 캐싱
       - name: Gradle Caching
         uses: actions/cache@v3
         with:
@@ -61,7 +61,7 @@ jobs:
           docker build -f Dockerfile -t ${{ secrets.DOCKER_ID }}/zzalmyu .
           docker push ${{ secrets.DOCKER_ID }}/zzalmyu
 
-      #docker 파일을 ec2 서버에 배포
+    # Docker 파일을 EC2 서버에 배포
       - name: Deploy to Prod
         uses: appleboy/ssh-action@master
         id: deploy-prod
@@ -72,13 +72,16 @@ jobs:
           port: 22
           script: |
             if [ ! -z "$(docker ps -q)" ]; then
-            docker stop $(docker ps -q)
+              docker stop $(docker ps -q)
             fi
+
             if [ ! -z "$(docker ps -aq)" ]; then
-            docker rm $(docker ps -aq)
+              docker rm $(docker ps -aq)
             fi
+
             docker login -u ${{ secrets.DOCKER_ID }} -p ${{ secrets.DOCKER_PASSWORD }}
             docker pull ${{ secrets.DOCKER_ID }}/zzalmyu
+
             docker run -d \
               --log-driver=awslogs \
               --log-opt awslogs-region=ap-northeast-2 \
@@ -88,11 +91,14 @@ jobs:
               -p 8080:8080 \
               -e TZ=Asia/Seoul \
               ${{ secrets.DOCKER_ID }}/zzalmyu
-            
+
             docker pull redis
+
             docker run -d \
               --name zzal-redis \
               -p 6379:6379 \
               redis
-            
+
             docker system prune -f
+
+            
