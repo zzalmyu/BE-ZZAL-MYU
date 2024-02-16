@@ -80,14 +80,14 @@ jobs:
             docker login -u ${{ secrets.DOCKER_ID }} -p ${{ secrets.DOCKER_PASSWORD }}
             docker pull ${{ secrets.DOCKER_ID }}/zzalmyu
             docker run -d \
-            --log-driver=awslogs \
-            --log-opt awslogs-region=ap-northeast-2 \
-            --log-opt awslogs-group=web \
-            --log-opt awslogs-stream=log \
-            --name zzalmyu \
-            -p 8080:8080 \
-            -e TZ=Asia/Seoul \
-            ${{ secrets.DOCKER_ID }}/zzalmyu
+              --log-driver=awslogs \
+              --log-opt awslogs-region=ap-northeast-2 \
+              --log-opt awslogs-group=web \
+              --log-opt awslogs-stream=log \
+              --name zzalmyu \
+              -p 8080:8080 \
+              -e TZ=Asia/Seoul \
+              ${{ secrets.DOCKER_ID }}/zzalmyu
             
             docker pull redis
             docker run -d \
