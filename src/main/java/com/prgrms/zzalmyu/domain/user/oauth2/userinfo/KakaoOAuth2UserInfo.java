@@ -76,8 +76,8 @@ public class KakaoOAuth2UserInfo extends
 
     @Override
     public String getEmail() {
-        Map<String, Object> profile = getProfile();
-        return (String) profile.get("email");
+        Map<String, Object> account = (Map<String, Object>) attributes.get("kakao_account");
+        return (String) account.get("email");
     }
 
     private Map<String, Object> getProfile() {

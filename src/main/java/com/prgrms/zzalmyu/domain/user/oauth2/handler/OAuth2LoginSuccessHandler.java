@@ -40,6 +40,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
         //응답 보내기
         response.setStatus(HttpStatus.OK.value());
+        response.setCharacterEncoding("UTF-8");
         response.getWriter().print(new ObjectMapper().writeValueAsString(loginSuccessResponse));
         response.getWriter().flush();
     }
