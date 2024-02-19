@@ -3,6 +3,7 @@ package com.prgrms.zzalmyu.domain.image.application;
 import com.prgrms.zzalmyu.domain.chat.domain.entity.ImageChatCount;
 import com.prgrms.zzalmyu.domain.image.domain.entity.Image;
 import com.prgrms.zzalmyu.domain.image.domain.entity.ImageLike;
+import com.prgrms.zzalmyu.domain.image.exception.ImageException;
 import com.prgrms.zzalmyu.domain.image.infrastructure.ImageLikeRepository;
 import com.prgrms.zzalmyu.domain.image.infrastructure.ImageRepository;
 import com.prgrms.zzalmyu.domain.image.presentation.dto.res.AwsS3ResponseDto;
@@ -48,6 +49,16 @@ public class ImageServiceTest {
         tag = Tag.from(tagName);
         user = User.builder().email("won05121@naver.com").nickname("kim").role(Role.USER).build();
 
+    }
+    @Test
+    @DisplayName("존재하지 않는 짤을 상세보기하면 예외가 발생한다.")
+    void getImageDetailFail(){
+        //given
+        when(imageRepository.findById(any())).thenReturn(Optional.ofNullable(null));
+
+        //when&&then
+        Assertions.assertThatThrownBy(()->imageService.getImageDetail(1L,user))
+                .isInstanceOf(ImageException.class);
     }
 
     @Test
