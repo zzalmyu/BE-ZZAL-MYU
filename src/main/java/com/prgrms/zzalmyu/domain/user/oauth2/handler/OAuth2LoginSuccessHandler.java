@@ -37,7 +37,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
         jwtService.updateRefreshToken(refreshToken, email);
 
         //응답 보내기
-        response.sendRedirect(UriComponentsBuilder.fromUriString("http://localhost:3000/login/callback")
+        response.sendRedirect(UriComponentsBuilder.fromUriString("http://www.zzalmyu.site/oauth/callback")
                 .queryParam("accessToken", accessToken)
                 .queryParam("refreshToken", refreshToken)
                 .build()
