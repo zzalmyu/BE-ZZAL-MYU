@@ -22,6 +22,10 @@ public interface ImageService {
      */
     void likeImage(Long imageId, User user);
 
+    /**
+     * 로그인 한 유저는 짤의 좋아요를 취소할 수 있다.
+     */
+    void cancelLikeImage(Long imageId, User user);
 
     /**
      * 좋아요한 짤 조회

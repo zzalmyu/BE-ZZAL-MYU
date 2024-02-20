@@ -54,11 +54,22 @@ public class ImageServiceImpl implements ImageService {
     @Override
     public void likeImage(Long imageId, User user) {
         Image image = getImage(imageId);
+        if (isLikeImage(imageId, user.getId())) {
+            throw new ImageException(ErrorCode.IMAGE_ALREADY_LIKE);
+        }
         imageLikeRepository.save(ImageLike.builder()
                 .image(image)
                 .user(user)
                 .build()
         );
+    }
+
+    @Override
+    public void cancelLikeImage(Long imageId, User user) {
+        Image image = getImage(imageId);
+        ImageLike imageLike = imageLikeRepository.findByUserIdAndImageId(user.getId(), imageId)
+                .orElseThrow(() -> new ImageException(ErrorCode.IMAGE_ALREADY_LIKE_CANCLE));
+        imageLikeRepository.delete(imageLike);
     }
 
     private Image getImage(Long imageId) {
