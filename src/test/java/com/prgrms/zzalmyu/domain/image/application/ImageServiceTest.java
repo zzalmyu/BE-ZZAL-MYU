@@ -19,6 +19,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.List;
@@ -85,12 +87,13 @@ public class ImageServiceTest {
     @DisplayName("좋아요한 짤 리스트를 불러오는데 성공한다.")
     void getLikeImagesSuccess() {
         //given
+        Pageable pageable = PageRequest.of(0, 10);
         ReflectionTestUtils.setField(image,"id",1L);
         List<Image>images =List.of(image);
-        when(imageRepository.findImageLikesByUserId(any())).thenReturn(images);
+        when(imageRepository.findImageLikesByUserId(any(),any())).thenReturn(images);
 
         //when
-        List<AwsS3ResponseDto> likeImages = imageService.getLikeImages(user);
+        List<AwsS3ResponseDto> likeImages = imageService.getLikeImages(user,pageable);
 
         //then
         Assertions.assertThat(likeImages.get(0).getImageId()).isEqualTo(1L);
@@ -100,12 +103,13 @@ public class ImageServiceTest {
     @DisplayName("업로드한 짤 리스트를 불러오는데 성공한다.")
     void getUploadImagesSuccess() {
         //given
+        Pageable pageable = PageRequest.of(0, 10);
         ReflectionTestUtils.setField(image,"id",1L);
         List<Image>images =List.of(image);
-        when(imageRepository.findByUserId(any())).thenReturn(images);
+        when(imageRepository.findByUserId(any(),any())).thenReturn(images);
 
         //when
-        List<AwsS3ResponseDto> likeImages = imageService.getUploadImages(user);
+        List<AwsS3ResponseDto> likeImages = imageService.getUploadImages(user,pageable);
 
         //then
         Assertions.assertThat(likeImages.get(0).getImageId()).isEqualTo(1L);

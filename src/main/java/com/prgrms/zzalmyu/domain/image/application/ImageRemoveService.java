@@ -29,9 +29,9 @@ public class ImageRemoveService {
     /**
      * 업로드한 사진 삭제 인자 : 사진 id (단건) 로직: 해당 사진이 해당 유저가 업로드한 사진인지 체크
      */
-    public void deleteUploadImages(User user, AwsS3RequestDto awsS3RequestDto) {
+    public void deleteUploadImages(User user, Long imageId) {
 
-        Image image = getImage(awsS3RequestDto.getImageId());
+        Image image = getImage(imageId);
         if (!image.getUserId().equals(user.getId())) {
             throw new ImageException(ErrorCode.IMAGE_ONLY_UPLOAD_USER_DELETE);
         }

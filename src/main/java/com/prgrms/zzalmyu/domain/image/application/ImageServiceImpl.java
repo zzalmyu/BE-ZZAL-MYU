@@ -11,6 +11,7 @@ import com.prgrms.zzalmyu.domain.image.presentation.dto.res.ImageDetailResponse;
 import com.prgrms.zzalmyu.domain.tag.domain.entity.Tag;
 import com.prgrms.zzalmyu.domain.user.domain.entity.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,8 +35,8 @@ public class ImageServiceImpl implements ImageService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<AwsS3ResponseDto> getLikeImages(User user) {
-        return imageRepository.findImageLikesByUserId(user.getId())
+    public List<AwsS3ResponseDto> getLikeImages(User user, Pageable pageable) {
+        return imageRepository.findImageLikesByUserId(user.getId(),pageable)
                 .stream()
                 .map(image -> new AwsS3ResponseDto(image))
                 .toList();
@@ -43,8 +44,8 @@ public class ImageServiceImpl implements ImageService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<AwsS3ResponseDto> getUploadImages(User user) {
-        return imageRepository.findByUserId(user.getId())
+    public List<AwsS3ResponseDto> getUploadImages(User user,Pageable pageable) {
+        return imageRepository.findByUserId(user.getId(),pageable)
                 .stream()
                 .map(image -> new AwsS3ResponseDto(image))
                 .toList();
@@ -53,11 +54,22 @@ public class ImageServiceImpl implements ImageService {
     @Override
     public void likeImage(Long imageId, User user) {
         Image image = getImage(imageId);
+        if (isLikeImage(imageId, user.getId())) {
+            throw new ImageException(ErrorCode.IMAGE_ALREADY_LIKE);
+        }
         imageLikeRepository.save(ImageLike.builder()
                 .image(image)
                 .user(user)
                 .build()
         );
+    }
+
+    @Override
+    public void cancelLikeImage(Long imageId, User user) {
+        Image image = getImage(imageId);
+        ImageLike imageLike = imageLikeRepository.findByUserIdAndImageId(user.getId(), imageId)
+                .orElseThrow(() -> new ImageException(ErrorCode.IMAGE_ALREADY_LIKE_CANCLE));
+        imageLikeRepository.delete(imageLike);
     }
 
     private Image getImage(Long imageId) {

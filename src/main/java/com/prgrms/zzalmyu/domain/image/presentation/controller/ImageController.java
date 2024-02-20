@@ -11,6 +11,8 @@ import com.prgrms.zzalmyu.domain.image.presentation.dto.res.ImageDetailResponse;
 import com.prgrms.zzalmyu.domain.user.domain.entity.User;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -35,21 +37,29 @@ public class ImageController {
     public ImageDetailResponse getImage(@AuthenticationPrincipal User user, @PathVariable Long imageId) {
         return imageService.getImageDetail(imageId, user);
     }
+
     @ApiResponse(description = "좋아요 누른 짤 리스트 반환")
     @GetMapping("/like")
-    public List<AwsS3ResponseDto> getImageLikes(@AuthenticationPrincipal User user) {
-        return imageService.getLikeImages(user);
-    }
-    @ApiResponse(description = "업로드한 짤 리스트 반환")
-    @GetMapping("/upload")
-    public List<AwsS3ResponseDto> getImageUploads(@AuthenticationPrincipal User user) {
-        return imageService.getUploadImages(user);
+    public List<AwsS3ResponseDto> getImageLikes(@AuthenticationPrincipal User user, @PageableDefault(page = 0,size = 10) Pageable pageable) {
+        return imageService.getLikeImages(user, pageable);
     }
 
-    @ApiResponse(description = "짤 좋아요 버튼 클릭")
+    @ApiResponse(description = "업로드한 짤 리스트 반환")
+    @GetMapping("/upload")
+    public List<AwsS3ResponseDto> getImageUploads(@AuthenticationPrincipal User user, @PageableDefault(page = 0,size = 10) Pageable pageable) {
+        return imageService.getUploadImages(user, pageable);
+    }
+
+    @ApiResponse(description = "짤 좋아요 클릭")
     @PostMapping("/{imageId}/like")
-    public void likeImage(@AuthenticationPrincipal User user,@PathVariable Long imageId){
-        imageService.likeImage(imageId,user);
+    public void likeImage(@AuthenticationPrincipal User user, @PathVariable Long imageId) {
+        imageService.likeImage(imageId, user);
+    }
+
+    @ApiResponse(description = "짤 좋아요 취소 클릭")
+    @PostMapping("/{imageId}/like/cancel")
+    public void cancelLikeImage(@AuthenticationPrincipal User user, @PathVariable Long imageId) {
+        imageService.cancelLikeImage(imageId, user);
     }
 
     @ApiResponse(description = "좋아요 누른 짤 페이지에서 태그 검색")
@@ -73,9 +83,9 @@ public class ImageController {
     }
 
     @ApiResponse(description = "(유저 본인이)업로드한 짤 삭제 ")
-    @DeleteMapping
-    public ResponseEntity remove(@RequestBody AwsS3RequestDto awsS3RequestDto, @AuthenticationPrincipal User user) {
-        imageRemoveService.deleteUploadImages(user, awsS3RequestDto);
-        return ResponseEntity.ok(HttpStatus.OK);
+    @DeleteMapping("/{imageId}")
+    public ResponseEntity remove(@AuthenticationPrincipal User user,@PathVariable Long imageId) {
+        imageRemoveService.deleteUploadImages(user, imageId);
+        return ResponseEntity.noContent().build();
     }
 }

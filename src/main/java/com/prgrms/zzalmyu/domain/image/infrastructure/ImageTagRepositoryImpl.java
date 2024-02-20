@@ -19,7 +19,8 @@ public class ImageTagRepositoryImpl implements ImageTagRepositoryCustom {
     public List<Image> findLikeImagesByUserIdAndTagIdList(Long userId, List<Long> tagIdList) {
         return queryFactory.selectFrom(image)
                 .join(imageTag).on(imageTag.image.eq(image))
-                .join(imageLike).on(imageLike.user.id.eq(userId))
+                .join(imageLike).on(imageLike.image.eq(image))
+                .where(imageLike.user.id.eq(userId))
                 .where(imageTag.tag.id.in(tagIdList))
                 .fetch();
     }

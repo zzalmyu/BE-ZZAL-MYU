@@ -57,11 +57,10 @@ public class ImageRemoveServiceTest {
     @DisplayName("짤을 업로드한 사용자가 직접 짤을 삭제하는데 성공한다. ")
     public void deleteUploadImagesSuccess() {
         //given
-        AwsS3RequestDto dto = AwsS3RequestDto.builder().imageId(image.getId()).path(path).build();
         when(imageRepository.findById(1L)).thenReturn(Optional.of(image));
         ReflectionTestUtils.setField(image,"userId",user.getId());
         //when
-        imageRemoveService.deleteUploadImages(user, dto);
+        imageRemoveService.deleteUploadImages(user, 1L);
 
         //then
         verify(awsS3Service).remove(any());
@@ -77,13 +76,12 @@ public class ImageRemoveServiceTest {
     @DisplayName("짤을 업로드하지 않은 사용자가 직접 짤을 삭제하면 예외가 발생한다. ")
     public void deleteUploadImagesFail() {
         //given
-        AwsS3RequestDto dto = AwsS3RequestDto.builder().imageId(image.getId()).path(path).build();
         when(imageRepository.findById(1L)).thenReturn(Optional.of(image));
         ReflectionTestUtils.setField(image,"userId",12345L);
 
         //when&&then
         Assertions.assertThatThrownBy(() ->
-                        imageRemoveService.deleteUploadImages(user, dto))
+                        imageRemoveService.deleteUploadImages(user, 1L))
                 .isInstanceOf(ImageException.class);
 
     }
