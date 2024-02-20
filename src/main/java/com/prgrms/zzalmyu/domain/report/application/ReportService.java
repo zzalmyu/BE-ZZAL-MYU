@@ -46,15 +46,13 @@ public class ReportService {
             throw new ReportException(ErrorCode.REPORT_NOT_FOUND);
         }
 
-        List<ReportDetailResponse> responses = reports.stream()
+        return reports.stream()
                 .map(report -> {
                     User reportUser = userService.findUserById(report.getReportUserId());
                     List<TagResponseDto> tags = getTags(report.getImageId());
                     return ReportDetailResponse.of(report, reportUser, tags);
                 })
-                .collect(Collectors.toList());
-
-        return responses;
+                .toList();
     }
 
     public void deleteReportedImage(Long imageId) {
@@ -70,21 +68,19 @@ public class ReportService {
         List<Tag> tags = imageRepository.findTagsByImageId(imageId);
         return tags.stream()
                 .map(tag -> new TagResponseDto(tag.getId(), tag.getName()))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Transactional(readOnly = true)
     public List<ReportResponse> getReports() {
         List<Long> reportedImageIds = reportRepository.getImageIdReportedOverThree();
-        List<ReportResponse> responses = reportedImageIds.stream()
+        return reportedImageIds.stream()
                 .map(imageId -> {
                     LocalDateTime lastReportDate = reportRepository.getLastReportAt(imageId);
                     int reportCount = reportRepository.countByImageId(imageId);
                     List<TagResponseDto> tags = getTags(imageId);
-                    return ReportResponse.of(lastReportDate, reportCount, tags);
+                    return ReportResponse.of(imageId, lastReportDate, reportCount, tags);
                 })
-                .collect(Collectors.toList());
-
-        return responses;
+                .toList();
     }
 }
