@@ -2,8 +2,10 @@ package com.prgrms.zzalmyu.core.config;
 
 import com.prgrms.zzalmyu.common.redis.RedisService;
 import com.prgrms.zzalmyu.domain.user.infrastructure.UserRepository;
+import com.prgrms.zzalmyu.domain.user.jwt.entrypoint.CustomAuthenticationEntryPoint;
 import com.prgrms.zzalmyu.domain.user.jwt.filter.ExceptionHandlerFilter;
 import com.prgrms.zzalmyu.domain.user.jwt.filter.JwtAuthenticationProcessingFilter;
+import com.prgrms.zzalmyu.domain.user.jwt.handler.CustomAccessDeniedHandler;
 import com.prgrms.zzalmyu.domain.user.jwt.service.JwtService;
 import com.prgrms.zzalmyu.domain.user.oauth2.handler.OAuth2LoginFailureHandler;
 import com.prgrms.zzalmyu.domain.user.oauth2.handler.OAuth2LoginSuccessHandler;
@@ -48,6 +50,9 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/api/v1/report/{imageId}").hasRole("ADMIN")
                 .requestMatchers("/api/v1/user/jwt-test").authenticated()
                 .requestMatchers("/**").permitAll())
+            .exceptionHandling(customizer -> customizer
+                .authenticationEntryPoint(customAuthenticationEntryPoint())
+                .accessDeniedHandler(customAccessDeniedHandler()))
             .oauth2Login(oauth2 -> oauth2
                 .userInfoEndpoint(userInfoEndPoint -> userInfoEndPoint
                     .userService(customOAuth2UserService))
@@ -65,8 +70,18 @@ public class SecurityConfig {
         return new JwtAuthenticationProcessingFilter(jwtService, redisService, userRepository);
     }
 
-  @Bean
+    @Bean
     public ExceptionHandlerFilter exceptionHandlerFilter() {
         return new ExceptionHandlerFilter();
+    }
+
+    @Bean
+    public CustomAuthenticationEntryPoint customAuthenticationEntryPoint() {
+        return new CustomAuthenticationEntryPoint();
+    }
+
+    @Bean
+    public CustomAccessDeniedHandler customAccessDeniedHandler() {
+        return new CustomAccessDeniedHandler();
     }
 }
