@@ -66,10 +66,10 @@ public class ImageController {
 
     @ApiResponse(description = "짤 업로드")
     @PostMapping
-    public AwsS3ResponseDto upload(@RequestPart("file") MultipartFile multipartFile,
-                                   @AuthenticationPrincipal User user,
-                                   @RequestBody TagListRequestDto dto) throws IOException {
-        return imageUploadService.uploadImage(user, multipartFile, dto.getTagIdList());
+    public AwsS3ResponseDto upload(@RequestPart(name = "file") MultipartFile file,
+                                   @RequestPart(name = "dto") TagListRequestDto tagListRequestDto,
+                                   @AuthenticationPrincipal User user) throws IOException {
+        return imageUploadService.uploadImage(user, file, tagListRequestDto.getTagIdList());
     }
 
     @ApiResponse(description = "(유저 본인이)업로드한 짤 삭제 ")
