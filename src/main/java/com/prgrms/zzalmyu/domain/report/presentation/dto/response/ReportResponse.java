@@ -10,6 +10,7 @@ import java.util.List;
 @Getter
 @Builder
 public class ReportResponse {
+    private Long imageId;
 
     private LocalDateTime lastReportAt;
 
@@ -17,8 +18,9 @@ public class ReportResponse {
 
     private List<TagResponseDto> tags;
 
-    public static ReportResponse of(LocalDateTime thirdReportDate, int reportCount, List<TagResponseDto> tags) {
+    public static ReportResponse of(Long imageId, LocalDateTime thirdReportDate, int reportCount, List<TagResponseDto> tags) {
         return ReportResponse.builder()
+                .imageId(imageId)
                 .lastReportAt(thirdReportDate)
                 .reportCount(reportCount)
                 .tags(tags)
