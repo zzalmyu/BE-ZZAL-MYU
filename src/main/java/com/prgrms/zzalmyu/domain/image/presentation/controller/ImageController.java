@@ -77,9 +77,9 @@ public class ImageController {
     }
 
     @ApiResponse(description = "(유저 본인이)업로드한 짤 삭제 ")
-    @DeleteMapping
-    public ResponseEntity remove(@RequestBody AwsS3RequestDto awsS3RequestDto, @AuthenticationPrincipal User user) {
-        imageRemoveService.deleteUploadImages(user, awsS3RequestDto);
-        return ResponseEntity.ok(HttpStatus.OK);
+    @DeleteMapping("/{imageId}")
+    public ResponseEntity remove(@AuthenticationPrincipal User user,@PathVariable Long imageId) {
+        imageRemoveService.deleteUploadImages(user, imageId);
+        return ResponseEntity.noContent().build();
     }
 }
