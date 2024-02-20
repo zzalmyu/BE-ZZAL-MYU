@@ -11,6 +11,7 @@ import com.prgrms.zzalmyu.domain.image.presentation.dto.res.ImageDetailResponse;
 import com.prgrms.zzalmyu.domain.tag.domain.entity.Tag;
 import com.prgrms.zzalmyu.domain.user.domain.entity.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,8 +35,8 @@ public class ImageServiceImpl implements ImageService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<AwsS3ResponseDto> getLikeImages(User user) {
-        return imageRepository.findImageLikesByUserId(user.getId())
+    public List<AwsS3ResponseDto> getLikeImages(User user, Pageable pageable) {
+        return imageRepository.findImageLikesByUserId(user.getId(),pageable)
                 .stream()
                 .map(image -> new AwsS3ResponseDto(image))
                 .toList();
@@ -43,8 +44,8 @@ public class ImageServiceImpl implements ImageService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<AwsS3ResponseDto> getUploadImages(User user) {
-        return imageRepository.findByUserId(user.getId())
+    public List<AwsS3ResponseDto> getUploadImages(User user,Pageable pageable) {
+        return imageRepository.findByUserId(user.getId(),pageable)
                 .stream()
                 .map(image -> new AwsS3ResponseDto(image))
                 .toList();
