@@ -67,7 +67,7 @@ public class ImageUploadServiceImpl implements ImageUploadService {
     private void saveTagUserMapping(User user, List<Long> tagIdList) {
         tagIdList.stream()
                 .forEach(tagId -> {
-                    Optional<TagUser> optionalTagUser = tagUserRepository.findByTagId(tagId);
+                    Optional<TagUser> optionalTagUser = tagUserRepository.findByTagIdAndUserId(tagId,user.getId());
                     optionalTagUser.ifPresentOrElse(
                             TagUser::increaseCount,
                             () -> {
