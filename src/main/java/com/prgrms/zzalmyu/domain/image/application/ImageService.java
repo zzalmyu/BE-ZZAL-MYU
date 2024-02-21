@@ -4,9 +4,7 @@ import com.prgrms.zzalmyu.domain.image.presentation.dto.res.AwsS3ResponseDto;
 import com.prgrms.zzalmyu.domain.image.presentation.dto.res.ImageDetailResponse;
 import com.prgrms.zzalmyu.domain.user.domain.entity.User;
 import org.springframework.data.domain.Pageable;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.List;
 
 public interface ImageService {
@@ -36,4 +34,6 @@ public interface ImageService {
      * 업로드한 짤 조회
      */
     List<AwsS3ResponseDto> getUploadImages(User user, Pageable pageable);
+
+    List<AwsS3ResponseDto> getAllImages(Pageable pageable);
 }

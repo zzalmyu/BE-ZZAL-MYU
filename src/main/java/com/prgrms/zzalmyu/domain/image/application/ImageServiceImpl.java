@@ -38,7 +38,7 @@ public class ImageServiceImpl implements ImageService {
     public List<AwsS3ResponseDto> getLikeImages(User user, Pageable pageable) {
         return imageRepository.findImageLikesByUserId(user.getId(),pageable)
                 .stream()
-                .map(image -> new AwsS3ResponseDto(image))
+                .map(AwsS3ResponseDto::new)
                 .toList();
     }
 
@@ -47,7 +47,7 @@ public class ImageServiceImpl implements ImageService {
     public List<AwsS3ResponseDto> getUploadImages(User user,Pageable pageable) {
         return imageRepository.findByUserId(user.getId(),pageable)
                 .stream()
-                .map(image -> new AwsS3ResponseDto(image))
+                .map(AwsS3ResponseDto::new)
                 .toList();
     }
 
@@ -70,6 +70,14 @@ public class ImageServiceImpl implements ImageService {
         ImageLike imageLike = imageLikeRepository.findByUserIdAndImageId(user.getId(), imageId)
                 .orElseThrow(() -> new ImageException(ErrorCode.IMAGE_ALREADY_LIKE_CANCLE));
         imageLikeRepository.delete(imageLike);
+    }
+
+    @Override
+    public List<AwsS3ResponseDto> getAllImages(Pageable pageable) {
+        return imageRepository.findAll(pageable)
+                .stream()
+                .map(AwsS3ResponseDto::new)
+                .toList();
     }
 
     private Image getImage(Long imageId) {
