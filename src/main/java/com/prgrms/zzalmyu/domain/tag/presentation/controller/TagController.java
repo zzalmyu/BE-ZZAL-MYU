@@ -45,8 +45,13 @@ public class TagController {
 
     @ApiResponse(description = "태그 자동 검색")
     @GetMapping("/search")
-    public List<TagResponseDto> searchByInputString(@RequestParam String input) {
+    public List<TagResponseDto> searchTag(@RequestParam String input) {
         return tagService.searchTag(input);
     }
 
+    @ApiResponse(description = "유저가 좋아요한 사진들의 태그 자동 검색")
+    @GetMapping("/like/search")
+    public List<TagResponseDto> searchTagFromLikeImages(@AuthenticationPrincipal User user, @RequestParam String input) {
+        return tagService.searchTagFromLikeImages(user, input);
+    }
 }

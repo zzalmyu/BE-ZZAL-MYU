@@ -1,5 +1,12 @@
 package com.prgrms.zzalmyu.domain.tag.application;
 
+import com.prgrms.zzalmyu.domain.chat.domain.entity.ImageChatCount;
+import com.prgrms.zzalmyu.domain.chat.infrastructure.ImageChatCountRepository;
+import com.prgrms.zzalmyu.domain.image.application.ImageService;
+import com.prgrms.zzalmyu.domain.image.domain.entity.Image;
+import com.prgrms.zzalmyu.domain.image.domain.entity.ImageTag;
+import com.prgrms.zzalmyu.domain.image.infrastructure.ImageRepository;
+import com.prgrms.zzalmyu.domain.image.infrastructure.ImageTagRepository;
 import com.prgrms.zzalmyu.domain.tag.domain.entity.Tag;
 import com.prgrms.zzalmyu.domain.tag.domain.entity.TagUser;
 import com.prgrms.zzalmyu.domain.tag.infrastructure.TagRepository;
@@ -26,6 +33,18 @@ class TagServiceTest {
 
     @Autowired
     TagService tagService;
+
+    @Autowired
+    ImageService imageService;
+
+    @Autowired
+    ImageRepository imageRepository;
+
+    @Autowired
+    ImageTagRepository imageTagRepository;
+
+    @Autowired
+    ImageChatCountRepository imageChatCountRepository;
 
     @Autowired
     TagRepository tagRepository;
@@ -123,6 +142,35 @@ class TagServiceTest {
         String requestTagName = "요청태그이름";
         TagResponseDto responseDto = tagService.createTag(requestTagName);
         assertThat(responseDto.getTagName()).isEqualTo(requestTagName);
+    }
+
+
+    @DisplayName("유저가 좋아요한 사진들의 태그들로부터 초성/중성/종성을 활용한 검색이 가능하다.")
+    @Test
+    void searchTagFromLikeImages() {
+        //Given
+
+        Image image = Image.builder()
+                .userId(user1.getId())
+                .path("path")
+                .s3Key("s3key")
+                .imageChatCount(imageChatCountRepository.save(new ImageChatCount()))
+                .build();
+        imageRepository.save(image);
+        String tagName = "안유진";
+        String splitTagName = tagService.splitTagName(tagName);
+        Tag tag = Tag.from(tagName, splitTagName);
+        tagRepository.save(tag);
+        ImageTag imageTag = ImageTag.builder()
+                .image(image)
+                .tag(tag)
+                .build();
+        imageTagRepository.save(imageTag);
+        imageService.likeImage(image.getId(), user2);
+        //When
+        List<TagResponseDto> tagResponseDtos = tagService.searchTagFromLikeImages(user2, "안ㅇ");
+        //Then
+        assertThat(tagResponseDtos.stream().map(TagResponseDto::getTagName)).containsExactlyInAnyOrder(tagName);
     }
 
     @DisplayName("태그를 저장 후 초성/중성/종성을 활용해 검색할 수 있다.")

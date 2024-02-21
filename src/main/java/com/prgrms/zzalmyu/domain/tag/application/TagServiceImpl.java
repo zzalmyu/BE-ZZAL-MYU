@@ -49,6 +49,12 @@ public class TagServiceImpl implements TagService{
     }
 
     @Override
+    public List<TagResponseDto> searchTagFromLikeImages(User user, String inputName) {
+        String splitTagName = splitTagName(inputName);
+        return tagRepository.searchTagForAutoSearchNameFromLikeImages(user.getId(), splitTagName);
+    }
+
+    @Override
     public String splitTagName(String input) {
         char[] onsets = {'ㄱ', 'ㄲ', 'ㄴ', 'ㄷ', 'ㄸ', 'ㄹ', 'ㅁ', 'ㅂ', 'ㅃ', 'ㅅ', 'ㅆ', 'ㅇ', 'ㅈ', 'ㅉ', 'ㅊ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ'};
         char[] nuclears = {'ㅏ', 'ㅐ', 'ㅑ', 'ㅒ', 'ㅓ', 'ㅔ', 'ㅕ', 'ㅖ', 'ㅗ', 'ㅘ', 'ㅙ', 'ㅚ', 'ㅛ', 'ㅜ', 'ㅝ', 'ㅞ', 'ㅟ', 'ㅠ', 'ㅡ', 'ㅢ', 'ㅣ'};
