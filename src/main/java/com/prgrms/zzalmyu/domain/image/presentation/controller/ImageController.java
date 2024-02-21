@@ -88,4 +88,10 @@ public class ImageController {
         imageRemoveService.deleteUploadImages(user, imageId);
         return ResponseEntity.noContent().build();
     }
+
+    @ApiResponse(description = "전체 이미지 조회")
+    @GetMapping("/all")
+    List<AwsS3ResponseDto> getAllUploadImages(@PageableDefault(page = 0,size = 10) Pageable pageable) {
+        return imageService.getAllImages(pageable);
+    }
 }
