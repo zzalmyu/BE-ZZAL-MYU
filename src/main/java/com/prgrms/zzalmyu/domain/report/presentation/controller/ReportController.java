@@ -9,6 +9,8 @@ import java.util.List;
 
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -43,8 +45,8 @@ public class ReportController {
 
     @ApiResponse(description = "신고된 짤 리스트 반환")
     @GetMapping
-    public ResponseEntity<List<ReportResponse>> getReports() {
-        List<ReportResponse> responses = reportService.getReports();
+    public ResponseEntity<List<ReportResponse>> getReports(@PageableDefault(page = 0,size = 10) Pageable pageable) {
+        List<ReportResponse> responses = reportService.getReports(pageable);
         return ResponseEntity.ok(responses);
     }
 }
