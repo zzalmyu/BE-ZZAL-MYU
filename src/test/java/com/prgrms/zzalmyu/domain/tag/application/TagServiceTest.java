@@ -1,12 +1,5 @@
 package com.prgrms.zzalmyu.domain.tag.application;
 
-import com.prgrms.zzalmyu.domain.chat.domain.entity.ImageChatCount;
-import com.prgrms.zzalmyu.domain.chat.infrastructure.ImageChatCountRepository;
-import com.prgrms.zzalmyu.domain.image.application.ImageService;
-import com.prgrms.zzalmyu.domain.image.domain.entity.Image;
-import com.prgrms.zzalmyu.domain.image.domain.entity.ImageTag;
-import com.prgrms.zzalmyu.domain.image.infrastructure.ImageRepository;
-import com.prgrms.zzalmyu.domain.image.infrastructure.ImageTagRepository;
 import com.prgrms.zzalmyu.domain.tag.domain.entity.Tag;
 import com.prgrms.zzalmyu.domain.tag.domain.entity.TagUser;
 import com.prgrms.zzalmyu.domain.tag.infrastructure.TagRepository;
@@ -92,7 +85,7 @@ class TagServiceTest {
 
     @DisplayName("유저들이 가장 많이 사용한 태그 리스트를 가져올 수 있다.(정책 상 현재 5개)")
     @Test
-    void getTopTagsFromUserUsed() {
+    void getTopTagsFromUserUsed(){
         //Given
         // user1은 숫자 순서대로 6,5,4,3,2,1,0 번 사용했다 가정
         for (int i = 6; i >= 0; i--) {
@@ -125,7 +118,7 @@ class TagServiceTest {
         assertThat(responseDtoList).hasSizeLessThanOrEqualTo(5);
         assertThat(responseDtoList.stream().map(TagResponseDto::getTagId).toList())
                 .containsExactlyElementsOf(List.of(tag7.getId(), tag6.getId(), tag5.getId(), tag4.getId(), tag3.getId()));
-    }
+     }
 
     @Test
     void getTopTagsFromLikeImages() {
@@ -172,4 +165,18 @@ class TagServiceTest {
         //Then
         assertThat(tagResponseDtos.stream().map(TagResponseDto::getTagName)).containsExactlyInAnyOrder(tagName);
     }
+
+    @DisplayName("태그를 저장 후 초성/중성/종성을 활용해 검색할 수 있다.")
+    @Test
+    void searchTagForAutoSearch(){
+        //Given
+        String requestTagName = "요청태그이름";
+        String searchName = "요ㅊ";
+        //When
+        TagResponseDto responseDto = tagService.createTag(requestTagName);
+        List<TagResponseDto> tagResponseDtos = tagService.searchTag(searchName);
+        //Then
+        assertThat(tagResponseDtos.stream().map(TagResponseDto::getTagName)).containsExactlyInAnyOrder(responseDto.getTagName());
+
+     }
 }
