@@ -25,6 +25,9 @@ public class Tag {
     @Column(name = "name", nullable = false, length = 20)
     private String name;
 
+    @Column(name = "split_name")
+    private String splitName;
+
     @CreationTimestamp
     @Column(name = "created_at")
     private LocalDateTime createdAt;
@@ -32,8 +35,16 @@ public class Tag {
     private Tag(String name) {
         this.name = name;
     }
+    private Tag(String name, String splitName) {
+        this.name = name;
+        this.splitName = splitName;
+    }
 
     public static Tag from(String name) {
         return new Tag(name);
+    }
+
+    public static Tag from(String tagName, String splitName) {
+        return new Tag(tagName, splitName);
     }
 }
