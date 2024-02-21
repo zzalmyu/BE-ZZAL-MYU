@@ -9,6 +9,7 @@ import java.util.List;
 
 import static com.prgrms.zzalmyu.domain.image.domain.entity.QImage.image;
 import static com.prgrms.zzalmyu.domain.image.domain.entity.QImageLike.imageLike;
+import static com.prgrms.zzalmyu.domain.image.domain.entity.QImageTag.imageTag;
 import static com.prgrms.zzalmyu.domain.tag.domain.entity.QTag.tag;
 import static com.prgrms.zzalmyu.domain.tag.domain.entity.QTagUser.tagUser;
 
@@ -75,4 +76,18 @@ public class TagRepositoryCustomImpl implements TagRepositoryCustom {
                 .fetch();
     }
 
+    @Override
+    public List<TagResponseDto> searchTagForAutoSearchNameFromLikeImages(Long userId, String inputString) {
+        return queryFactory.select(Projections.constructor(
+                        TagResponseDto.class,
+                        tag.id,
+                        tag.name))
+                .from(tag)
+                .join(imageTag).on(imageTag.tag.eq(tag))
+                .join(imageLike).on(imageLike.image.eq(imageTag.image))
+                .where(imageLike.user.id.eq(userId),
+                        tag.splitName.startsWith(inputString))
+                .distinct()
+                .fetch();
+    }
 }

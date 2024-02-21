@@ -33,8 +33,11 @@ public interface TagService {
     TagResponseDto createTag(String tagName);
 
 
-    // 태그 자동완성 검색
+    // 전체 태그 자동완성 검색
     List<TagResponseDto> searchTag(String inputName);
+
+    // 좋아요한 사진들의 태그 자동완성 검색
+    List<TagResponseDto> searchTagFromLikeImages(User user, String inputName);
 
     // 태그 split_name 분리
     String splitTagName(String tagName);
