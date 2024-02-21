@@ -42,4 +42,11 @@ public class TagController {
     public TagResponseDto createTag(@RequestBody TagCreateRequestDto dto) {
         return tagService.createTag(dto.getName());
     }
+
+    @ApiResponse(description = "태그 자동 검색")
+    @GetMapping("/search")
+    public List<TagResponseDto> searchByInputString(@RequestParam String input) {
+        return tagService.searchTag(input);
+    }
+
 }
