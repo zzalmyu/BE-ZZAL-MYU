@@ -1,5 +1,12 @@
 package com.prgrms.zzalmyu.domain.tag.application;
 
+import com.prgrms.zzalmyu.domain.chat.domain.entity.ImageChatCount;
+import com.prgrms.zzalmyu.domain.chat.infrastructure.ImageChatCountRepository;
+import com.prgrms.zzalmyu.domain.image.application.ImageService;
+import com.prgrms.zzalmyu.domain.image.domain.entity.Image;
+import com.prgrms.zzalmyu.domain.image.domain.entity.ImageTag;
+import com.prgrms.zzalmyu.domain.image.infrastructure.ImageRepository;
+import com.prgrms.zzalmyu.domain.image.infrastructure.ImageTagRepository;
 import com.prgrms.zzalmyu.domain.tag.domain.entity.Tag;
 import com.prgrms.zzalmyu.domain.tag.domain.entity.TagUser;
 import com.prgrms.zzalmyu.domain.tag.infrastructure.TagRepository;
