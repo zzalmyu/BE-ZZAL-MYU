@@ -124,4 +124,18 @@ class TagServiceTest {
         TagResponseDto responseDto = tagService.createTag(requestTagName);
         assertThat(responseDto.getTagName()).isEqualTo(requestTagName);
     }
+
+    @DisplayName("태그를 저장 후 초성/중성/종성을 활용해 검색할 수 있다.")
+    @Test
+    void searchTagForAutoSearch(){
+        //Given
+        String requestTagName = "요청태그이름";
+        String searchName = "요ㅊ";
+        //When
+        TagResponseDto responseDto = tagService.createTag(requestTagName);
+        List<TagResponseDto> tagResponseDtos = tagService.searchTag(searchName);
+        //Then
+        assertThat(tagResponseDtos.stream().map(TagResponseDto::getTagName)).containsExactlyInAnyOrder(responseDto.getTagName());
+
+     }
 }
