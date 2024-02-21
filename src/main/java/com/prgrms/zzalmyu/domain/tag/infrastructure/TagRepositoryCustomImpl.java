@@ -63,4 +63,16 @@ public class TagRepositoryCustomImpl implements TagRepositoryCustom {
                 .limit(limit)
                 .fetch();
     }
+
+    @Override
+    public List<TagResponseDto> searchTagForAutoSearchName(String inputString) {
+        return queryFactory.select(Projections.constructor(
+                        TagResponseDto.class,
+                        tag.id,
+                        tag.name))
+                .from(tag)
+                .where(tag.splitName.startsWith(inputString))
+                .fetch();
+    }
+
 }
