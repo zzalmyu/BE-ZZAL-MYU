@@ -22,6 +22,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
@@ -149,8 +151,8 @@ class ReportServiceTest {
         reportService.reportImage(shogun.getId(), image.getId());
         reportService.reportImage(miko.getId(), image.getId());
         reportService.reportImage(nahida.getId(), image.getId());
-
-        List<ReportResponse> reports = reportService.getReports();
+        Pageable pageable = PageRequest.of(0, 10);
+        List<ReportResponse> reports = reportService.getReports(pageable);
 
         assertThat(reports.size()).isEqualTo(1);
         assertThat(reports.get(0).getReportCount()).isEqualTo(3);
@@ -162,8 +164,9 @@ class ReportServiceTest {
     public void getReportsBelowThree() {
         reportService.reportImage(shogun.getId(), image.getId());
         reportService.reportImage(miko.getId(), image.getId());
+        Pageable pageable = PageRequest.of(0, 10);
 
-        List<ReportResponse> reports = reportService.getReports();
+        List<ReportResponse> reports = reportService.getReports(pageable);
 
         assertThat(reports.size()).isEqualTo(0);
     }
