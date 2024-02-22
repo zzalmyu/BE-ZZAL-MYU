@@ -4,8 +4,8 @@ import com.prgrms.zzalmyu.domain.image.application.ImageRemoveService;
 import com.prgrms.zzalmyu.domain.image.application.ImageSearchService;
 import com.prgrms.zzalmyu.domain.image.application.ImageService;
 import com.prgrms.zzalmyu.domain.image.application.ImageUploadService;
+import com.prgrms.zzalmyu.domain.image.presentation.dto.req.ImageUploadRequestDto;
 import com.prgrms.zzalmyu.domain.image.presentation.dto.req.TagListRequestDto;
-import com.prgrms.zzalmyu.domain.image.presentation.dto.res.AwsS3RequestDto;
 import com.prgrms.zzalmyu.domain.image.presentation.dto.res.AwsS3ResponseDto;
 import com.prgrms.zzalmyu.domain.image.presentation.dto.res.ImageDetailResponse;
 import com.prgrms.zzalmyu.domain.user.domain.entity.User;
@@ -13,7 +13,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -77,9 +76,9 @@ public class ImageController {
     @ApiResponse(description = "짤 업로드")
     @PostMapping
     public AwsS3ResponseDto upload(@RequestPart(name = "file") MultipartFile file,
-                                   @RequestPart(name = "dto") TagListRequestDto tagListRequestDto,
+                                   @RequestPart(name = "dto")ImageUploadRequestDto imageUploadRequestDto,
                                    @AuthenticationPrincipal User user) throws IOException {
-        return imageUploadService.uploadImage(user, file, tagListRequestDto.getTagIdList());
+        return imageUploadService.uploadImage(user, file, imageUploadRequestDto);
     }
 
     @ApiResponse(description = "(유저 본인이)업로드한 짤 삭제 ")
