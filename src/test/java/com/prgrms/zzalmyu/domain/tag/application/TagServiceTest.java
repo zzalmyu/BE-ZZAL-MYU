@@ -150,6 +150,7 @@ class TagServiceTest {
     void searchTagFromLikeImages() {
         //Given
         Image image = Image.builder()
+                .title("title1")
                 .userId(user1.getId())
                 .path("path")
                 .s3Key("s3key")
@@ -177,6 +178,7 @@ class TagServiceTest {
     void searchTagFromUploadImages(){
         //Given
         Image image = Image.builder()
+                .title("title1")
                 .userId(user1.getId())  // user1이 업로드
                 .path("path")
                 .s3Key("s3key")
