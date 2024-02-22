@@ -8,8 +8,8 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ChatNameRequest {
+public class ChatPhotoRequest {
 
     private String channelId;
-    private String name;
+    private String image;
 }

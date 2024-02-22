@@ -20,13 +20,17 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/ws") // 웹소켓 서버의 엔드포인트
-            .setAllowedOrigins("*")
-            .withSockJS(); // 클라이언트는 다른 origin -> cors 오류 방지
+        registry.addEndpoint("/chat") // 웹소켓 서버의 엔드포인트
+            .setAllowedOrigins("*");
+//            .withSockJS(); // 클라이언트는 다른 origin -> cors 오류 방지
     }
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
-        registry.enableSimpleBroker("/topic");
+        // 해당 경로로 들어오는 것을 구독하는 것으로 정함
+        registry.enableSimpleBroker("/sub");
+
+        // @MessageMapping("hello") 라면 경로는 -> pub/hello
+        registry.setApplicationDestinationPrefixes("/pub");
     }
 }
