@@ -12,4 +12,5 @@ public class ChatPhotoRequest {
 
     private String channelId;
     private String image;
+    private String email;
 }
