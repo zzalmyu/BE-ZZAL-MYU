@@ -85,7 +85,7 @@ jobs:
 
             docker run -d \
               --name zzalmyu \
-              -p 80:80 \
+              -p 80:8080 \
               -e TZ=Asia/Seoul \
               ${{ secrets.DOCKER_ID }}/zzalmyu
 
