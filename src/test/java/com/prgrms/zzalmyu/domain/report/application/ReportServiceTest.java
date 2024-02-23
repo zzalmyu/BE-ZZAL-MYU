@@ -15,7 +15,9 @@ import com.prgrms.zzalmyu.domain.report.presentation.dto.response.ReportResponse
 import com.prgrms.zzalmyu.domain.user.domain.entity.User;
 import com.prgrms.zzalmyu.domain.user.domain.enums.Role;
 import com.prgrms.zzalmyu.domain.user.infrastructure.UserRepository;
+
 import java.util.List;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -46,28 +48,28 @@ class ReportServiceTest {
     ImageChatCountRepository imageChatCountRepository;
 
     User kazuha = User.builder()
-        .email("kazuha@naver.com")
-        .nickname("카즈하")
-        .role(Role.USER)
-        .build();
+            .email("kazuha@naver.com")
+            .nickname("카즈하")
+            .role(Role.USER)
+            .build();
 
     User shogun = User.builder()
-        .email("raiden@naver.com")
-        .nickname("라이덴")
-        .role(Role.USER)
-        .build();
+            .email("raiden@naver.com")
+            .nickname("라이덴")
+            .role(Role.USER)
+            .build();
 
     User nahida = User.builder()
-        .email("nahida@naver.com")
-        .nickname("나히다")
-        .role(Role.USER)
-        .build();
+            .email("nahida@naver.com")
+            .nickname("나히다")
+            .role(Role.USER)
+            .build();
 
     User miko = User.builder()
-        .email("miko@naver.com")
-        .nickname("야에 미코")
-        .role(Role.USER)
-        .build();
+            .email("miko@naver.com")
+            .nickname("야에 미코")
+            .role(Role.USER)
+            .build();
 
     ImageChatCount imageChatCount = new ImageChatCount();
 
@@ -81,12 +83,13 @@ class ReportServiceTest {
         nahida = userRepository.save(nahida);
         miko = userRepository.save(miko);
         image = Image.builder()
-            .imageChatCount(imageChatCount)
-            .path(
-                "https://i.namu.wiki/i/UQar4WhQAWFiJUmHBAbNlCSoqK-noyPt6tbI0DK6pDFbks3bhZdJehgSW3S50RMQgSzuzEx7ArHcg_ztlDYXwQ.webp")
-            .userId(kazuha.getId())
-            .s3Key("key")
-            .build();
+                .title("title1")
+                .imageChatCount(imageChatCount)
+                .path(
+                        "https://i.namu.wiki/i/UQar4WhQAWFiJUmHBAbNlCSoqK-noyPt6tbI0DK6pDFbks3bhZdJehgSW3S50RMQgSzuzEx7ArHcg_ztlDYXwQ.webp")
+                .userId(kazuha.getId())
+                .s3Key("key")
+                .build();
 
         image = imageRepository.save(image);
     }
@@ -132,7 +135,7 @@ class ReportServiceTest {
 
         // TODO: s3 연결 완료되면 수정하기
         assertThatThrownBy(() -> reportService.deleteReportedImage(image.getId()))
-            .isInstanceOf(AmazonS3Exception.class);
+                .isInstanceOf(AmazonS3Exception.class);
     }
 
     @Test
@@ -142,7 +145,7 @@ class ReportServiceTest {
         reportService.reportImage(miko.getId(), image.getId());
 
         assertThatThrownBy(() -> reportService.deleteReportedImage(image.getId()))
-            .isInstanceOf(ReportException.class);
+                .isInstanceOf(ReportException.class);
     }
 
     @Test

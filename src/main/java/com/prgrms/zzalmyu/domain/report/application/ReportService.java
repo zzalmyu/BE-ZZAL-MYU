@@ -2,6 +2,8 @@ package com.prgrms.zzalmyu.domain.report.application;
 
 import com.prgrms.zzalmyu.core.properties.ErrorCode;
 import com.prgrms.zzalmyu.domain.image.application.ImageRemoveService;
+import com.prgrms.zzalmyu.domain.image.domain.entity.Image;
+import com.prgrms.zzalmyu.domain.image.exception.ImageException;
 import com.prgrms.zzalmyu.domain.image.infrastructure.ImageRepository;
 import com.prgrms.zzalmyu.domain.report.domain.entity.Report;
 import com.prgrms.zzalmyu.domain.report.exception.ReportException;
@@ -43,6 +45,7 @@ public class ReportService {
 
     @Transactional(readOnly = true)
     public List<ReportDetailResponse> getReportDetail(Long imageId) {
+        Image image = imageRepository.findById(imageId).orElseThrow(() -> new ImageException(ErrorCode.IMAGE_NOT_FOUND_ERROR));
         List<Report> reports = reportRepository.findByImageId(imageId);
         if (reports.isEmpty()) {
             throw new ReportException(ErrorCode.REPORT_NOT_FOUND);
@@ -52,7 +55,7 @@ public class ReportService {
                 .map(report -> {
                     User reportUser = userService.findUserById(report.getReportUserId());
                     List<TagResponseDto> tags = getTags(report.getImageId());
-                    return ReportDetailResponse.of(report, reportUser, tags);
+                    return ReportDetailResponse.of(report, reportUser, tags, image);
                 })
                 .toList();
     }

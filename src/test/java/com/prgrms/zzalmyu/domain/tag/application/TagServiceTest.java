@@ -149,8 +149,8 @@ class TagServiceTest {
     @Test
     void searchTagFromLikeImages() {
         //Given
-
         Image image = Image.builder()
+                .title("title1")
                 .userId(user1.getId())
                 .path("path")
                 .s3Key("s3key")
@@ -173,6 +173,33 @@ class TagServiceTest {
         assertThat(tagResponseDtos.stream().map(TagResponseDto::getTagName)).containsExactlyInAnyOrder(tagName);
     }
 
+    @DisplayName("유저가 업로드한 사진들의 태그들로부터 초성/중성/종성을 활용한 검색이 가능하다.")
+    @Test
+    void searchTagFromUploadImages(){
+        //Given
+        Image image = Image.builder()
+                .title("title1")
+                .userId(user1.getId())  // user1이 업로드
+                .path("path")
+                .s3Key("s3key")
+                .imageChatCount(imageChatCountRepository.save(new ImageChatCount()))
+                .build();
+        imageRepository.save(image);
+        String tagName = "안유진";
+        String splitTagName = tagService.splitTagName(tagName);
+        Tag tag = Tag.from(tagName, splitTagName);
+        tagRepository.save(tag);
+        ImageTag imageTag = ImageTag.builder()
+                .image(image)
+                .tag(tag)
+                .build();
+        imageTagRepository.save(imageTag);
+        //When
+        List<TagResponseDto> tagResponseDtos = tagService.searchTagFromUploadImages(user1, "안ㅇ");
+        //Then
+        assertThat(tagResponseDtos.stream().map(TagResponseDto::getTagName)).containsExactlyInAnyOrder(tagName);
+     }
+
     @DisplayName("태그를 저장 후 초성/중성/종성을 활용해 검색할 수 있다.")
     @Test
     void searchTagForAutoSearch(){
@@ -186,4 +213,6 @@ class TagServiceTest {
         assertThat(tagResponseDtos.stream().map(TagResponseDto::getTagName)).containsExactlyInAnyOrder(responseDto.getTagName());
 
      }
+
+
 }
