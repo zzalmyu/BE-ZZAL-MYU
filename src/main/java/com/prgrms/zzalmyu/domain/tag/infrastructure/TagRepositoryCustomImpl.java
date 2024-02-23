@@ -90,4 +90,19 @@ public class TagRepositoryCustomImpl implements TagRepositoryCustom {
                 .distinct()
                 .fetch();
     }
+
+    @Override
+    public List<TagResponseDto> searchTagForAutoSearchNameFromUploadImages(Long userId, String inputString) {
+        return queryFactory.select(Projections.constructor(
+                        TagResponseDto.class,
+                        tag.id,
+                        tag.name))
+                .from(tag)
+                .join(imageTag).on(imageTag.tag.eq(tag))
+                .join(image).on(image.eq(imageTag.image))
+                .where(image.userId.eq(userId),
+                        tag.splitName.startsWith(inputString))
+                .distinct()
+                .fetch();
+    }
 }

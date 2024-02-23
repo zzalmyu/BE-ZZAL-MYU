@@ -27,6 +27,9 @@ public class Image {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "title", nullable = false)
+    private String title;
+
     @Column(name = "s3_key", nullable = false)
     private String s3Key;
 
@@ -45,7 +48,8 @@ public class Image {
     private LocalDateTime createdAt;
 
     @Builder
-    private Image(String s3Key, String path, ImageChatCount imageChatCount, Long userId) {
+    private Image(String title, String s3Key, String path, ImageChatCount imageChatCount, Long userId) {
+        this.title = title;
         this.s3Key = s3Key;
         this.path = path;
         this.imageChatCount = imageChatCount;

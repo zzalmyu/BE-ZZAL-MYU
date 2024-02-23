@@ -54,4 +54,10 @@ public class TagController {
     public List<TagResponseDto> searchTagFromLikeImages(@AuthenticationPrincipal User user, @RequestParam String input) {
         return tagService.searchTagFromLikeImages(user, input);
     }
+
+    @ApiResponse(description = "유저가 업로드한 사진들의 태그 자동 검색")
+    @GetMapping("/upload/search")
+    public List<TagResponseDto> searchTagFromUploadImages(@AuthenticationPrincipal User user, @RequestParam String input) {
+        return tagService.searchTagFromUploadImages(user, input);
+    }
 }

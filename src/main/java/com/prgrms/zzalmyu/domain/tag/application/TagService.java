@@ -39,6 +39,9 @@ public interface TagService {
     // 좋아요한 사진들의 태그 자동완성 검색
     List<TagResponseDto> searchTagFromLikeImages(User user, String inputName);
 
+    // 업로드한 사진들의 태그 자동완성 검색
+    List<TagResponseDto> searchTagFromUploadImages(User user, String inputName);
+
     // 태그 split_name 분리
     String splitTagName(String tagName);
 

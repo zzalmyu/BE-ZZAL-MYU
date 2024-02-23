@@ -8,6 +8,7 @@ import com.prgrms.zzalmyu.domain.image.domain.entity.Image;
 import com.prgrms.zzalmyu.domain.image.domain.entity.ImageTag;
 import com.prgrms.zzalmyu.domain.image.infrastructure.ImageRepository;
 import com.prgrms.zzalmyu.domain.image.infrastructure.ImageTagRepository;
+import com.prgrms.zzalmyu.domain.image.presentation.dto.req.ImageUploadRequestDto;
 import com.prgrms.zzalmyu.domain.image.presentation.dto.res.AwsS3ResponseDto;
 import com.prgrms.zzalmyu.domain.tag.domain.entity.TagUser;
 import com.prgrms.zzalmyu.domain.tag.exception.TagException;
@@ -35,16 +36,17 @@ public class ImageUploadServiceImpl implements ImageUploadService {
     private final TagUserRepository tagUserRepository;
 
     @Override
-    public AwsS3ResponseDto uploadImage(User user, MultipartFile multipartFile, List<Long> tagIdList) throws IOException {
+    public AwsS3ResponseDto uploadImage(User user, MultipartFile multipartFile, ImageUploadRequestDto imageUploadRequestDto) throws IOException {
         AwsS3 awsS3 = awsS3Service.upload(user, multipartFile);
-        Image image = saveImage(user, awsS3);
-        saveImageTagMapping(tagIdList, image);
-        saveTagUserMapping(user, tagIdList);
+        Image image = saveImage(user, awsS3, imageUploadRequestDto.getTitle());
+        saveImageTagMapping(imageUploadRequestDto.getTagIdList(), image);
+        saveTagUserMapping(user, imageUploadRequestDto.getTagIdList());
         return awsS3.convertResponseDto(image.getId());
     }
 
-    private Image saveImage(User user, AwsS3 awsS3) {
+    private Image saveImage(User user, AwsS3 awsS3, String title) {
         Image image = Image.builder()
+                .title(title)
                 .s3Key(awsS3.getKey())
                 .path(awsS3.getPath())
                 .imageChatCount(imageChatCountRepository.save(new ImageChatCount()))

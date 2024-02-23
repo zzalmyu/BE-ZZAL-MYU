@@ -11,4 +11,5 @@ public interface TagRepositoryCustom {
     List<TagResponseDto> getTopTagsFromUploadImages(Long userId, int limit);
     List<TagResponseDto> searchTagForAutoSearchName(String inputString);
     List<TagResponseDto> searchTagForAutoSearchNameFromLikeImages(Long userId, String inputString);
+    List<TagResponseDto> searchTagForAutoSearchNameFromUploadImages(Long userId, String inputString);
 }
