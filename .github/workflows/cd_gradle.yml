@@ -79,12 +79,19 @@ jobs:
               docker rm $(docker ps -aq)
             fi
 
+            if [ ! -z "$(docker network ls -qf name=zzalmyu)" ]; then
+              docker network rm zzalmyu
+            fi
+
             docker login -u ${{ secrets.DOCKER_ID }} -p ${{ secrets.DOCKER_PASSWORD }}
             
             docker pull ${{ secrets.DOCKER_ID }}/zzalmyu
 
+            docker network create zzalmyu
+            
             docker run -d \
               --name zzalmyu \
+              --network=zzalmyu \
               -p 8080:8080 \
               -e TZ=Asia/Seoul \
               ${{ secrets.DOCKER_ID }}/zzalmyu
@@ -93,6 +100,7 @@ jobs:
 
             docker run -d \
               --name zzal-redis \
+              --network=zzalmyu \
               -p 6379:6379 \
               redis
 
