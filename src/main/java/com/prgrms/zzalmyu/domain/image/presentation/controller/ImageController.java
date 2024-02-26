@@ -75,10 +75,9 @@ public class ImageController {
 
     @ApiResponse(description = "짤 업로드")
     @PostMapping
-    public AwsS3ResponseDto upload(@RequestPart(name = "file") MultipartFile file,
-                                   @RequestPart(name = "dto")ImageUploadRequestDto imageUploadRequestDto,
+    public AwsS3ResponseDto upload(@ModelAttribute ImageUploadRequestDto imageUploadRequestDto,
                                    @AuthenticationPrincipal User user) throws IOException {
-        return imageUploadService.uploadImage(user, file, imageUploadRequestDto);
+        return imageUploadService.uploadImage(user, imageUploadRequestDto.getFile(), imageUploadRequestDto);
     }
 
     @ApiResponse(description = "(유저 본인이)업로드한 짤 삭제 ")
