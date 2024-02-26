@@ -82,9 +82,9 @@ public class ImageController {
 
     @ApiResponse(description = "(유저 본인이)업로드한 짤 삭제 ")
     @DeleteMapping("/{imageId}")
-    public ResponseEntity remove(@AuthenticationPrincipal User user,@PathVariable Long imageId) {
+    public ResponseEntity<Long> remove(@AuthenticationPrincipal User user,@PathVariable Long imageId) {
         imageRemoveService.deleteUploadImages(user, imageId);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(imageId);
     }
 
     @ApiResponse(description = "전체 이미지 조회")

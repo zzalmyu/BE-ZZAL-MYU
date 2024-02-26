@@ -8,12 +8,15 @@ import com.prgrms.zzalmyu.domain.image.infrastructure.ImageRepository;
 import com.prgrms.zzalmyu.domain.report.domain.entity.Report;
 import com.prgrms.zzalmyu.domain.report.exception.ReportException;
 import com.prgrms.zzalmyu.domain.report.infrastructure.ReportRepository;
+import com.prgrms.zzalmyu.domain.report.presentation.dto.response.ReportDetailDto;
 import com.prgrms.zzalmyu.domain.report.presentation.dto.response.ReportDetailResponse;
 import com.prgrms.zzalmyu.domain.report.presentation.dto.response.ReportResponse;
 import com.prgrms.zzalmyu.domain.tag.domain.entity.Tag;
 import com.prgrms.zzalmyu.domain.tag.presentation.dto.res.TagResponseDto;
 import com.prgrms.zzalmyu.domain.user.application.UserService;
 import com.prgrms.zzalmyu.domain.user.domain.entity.User;
+import com.prgrms.zzalmyu.domain.user.exception.UserException;
+import com.prgrms.zzalmyu.domain.user.infrastructure.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -31,9 +34,10 @@ public class ReportService {
     private final UserService userService;
     private final ImageRemoveService imageRemoveService;
     private final ImageRepository imageRepository;
+    private final UserRepository userRepository;
 
     public void reportImage(Long userId, Long imageId) {
-        if(!reportRepository.findByImageIdAndReportUserId(imageId, userId).isEmpty()) {
+        if (!reportRepository.findByImageIdAndReportUserId(imageId, userId).isEmpty()) {
             throw new ReportException(ErrorCode.REPORT_ALREADY_EXIST_ERROR);
         }
         Report report = Report.builder()
@@ -44,20 +48,24 @@ public class ReportService {
     }
 
     @Transactional(readOnly = true)
-    public List<ReportDetailResponse> getReportDetail(Long imageId) {
+    public ReportDetailResponse getReportDetail(Long imageId) {
         Image image = imageRepository.findById(imageId).orElseThrow(() -> new ImageException(ErrorCode.IMAGE_NOT_FOUND_ERROR));
         List<Report> reports = reportRepository.findByImageId(imageId);
         if (reports.isEmpty()) {
             throw new ReportException(ErrorCode.REPORT_NOT_FOUND);
         }
 
-        return reports.stream()
+        List<TagResponseDto> tags = getTags(image.getId());
+        List<ReportDetailDto> reportDetailDtos = reports.stream()
                 .map(report -> {
-                    User reportUser = userService.findUserById(report.getReportUserId());
-                    List<TagResponseDto> tags = getTags(report.getImageId());
-                    return ReportDetailResponse.of(report, reportUser, tags, image);
+                    User reportUser = userRepository.findById(report.getReportUserId()).orElseThrow(() -> new UserException(ErrorCode.USER_NOT_FOUND));
+                    return ReportDetailDto.builder()
+                            .reportDate(report.getCreatedAt())
+                            .reportUserEmail(reportUser.getEmail())
+                            .build();
                 })
                 .toList();
+        return ReportDetailResponse.of(tags, image, reportDetailDtos);
     }
 
     public void deleteReportedImage(Long imageId) {
