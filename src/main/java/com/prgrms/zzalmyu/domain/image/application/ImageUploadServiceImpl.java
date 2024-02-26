@@ -41,7 +41,7 @@ public class ImageUploadServiceImpl implements ImageUploadService {
         Image image = saveImage(user, awsS3, imageUploadRequestDto.getTitle());
         saveImageTagMapping(imageUploadRequestDto.getTagIdList(), image);
         saveTagUserMapping(user, imageUploadRequestDto.getTagIdList());
-        return awsS3.convertResponseDto(image.getId());
+        return awsS3.convertResponseDto(image.getId(), image.getTitle());
     }
 
     private Image saveImage(User user, AwsS3 awsS3, String title) {
