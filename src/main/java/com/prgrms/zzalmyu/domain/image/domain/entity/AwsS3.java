@@ -19,9 +19,10 @@ public class AwsS3 {
         this.path = path;
     }
 
-    public AwsS3ResponseDto convertResponseDto(Long imageId) {
+    public AwsS3ResponseDto convertResponseDto(Long imageId, String imageTitle) {
         return AwsS3ResponseDto.builder()
                 .imageId(imageId)
+                .title(imageTitle)
                 .path(this.path)
                 .build();
     }
