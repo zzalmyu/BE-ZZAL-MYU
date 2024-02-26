@@ -38,9 +38,9 @@ public class ReportController {
 
     @ApiResponse(description = "신고된 짤 삭제(처리)하기")
     @DeleteMapping("/{imageId}")
-    public ResponseEntity<Void> deleteReportedImage(@PathVariable Long imageId) {
+    public ResponseEntity<Long> deleteReportedImage(@PathVariable Long imageId) {
         reportService.deleteReportedImage(imageId);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(imageId);
     }
 
     @ApiResponse(description = "신고된 짤 리스트 반환")
