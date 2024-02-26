@@ -4,6 +4,7 @@ import com.amazonaws.services.cloudformation.model.AlreadyExistsException;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.AmazonS3Exception;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.prgrms.zzalmyu.core.properties.ErrorCode;
 import com.prgrms.zzalmyu.domain.image.domain.entity.AwsS3;
 import com.prgrms.zzalmyu.domain.image.domain.entity.Image;
 import com.prgrms.zzalmyu.domain.user.domain.entity.User;
@@ -12,9 +13,15 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.IIOImage;
+import javax.imageio.ImageIO;
+import javax.imageio.ImageWriteParam;
+import javax.imageio.ImageWriter;
+import javax.imageio.stream.FileImageOutputStream;
+import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.Optional;
 
 @Service
@@ -29,7 +36,7 @@ public class AwsS3Service {
     private String bucket;
 
     public AwsS3 upload(User user, MultipartFile multipartFile) throws IOException {
-        File file = convertMultipartFileToFile(multipartFile)
+        File file = convertMultipartFileToProgressiveJPEG(multipartFile)
                 .orElseThrow(() -> new IllegalArgumentException("MultipartFile -> File convert fail"));
 
         return upload(user, file);
@@ -52,7 +59,7 @@ public class AwsS3Service {
     private String putS3(File uploadFile, String fileName) {
         // 이미 s3에 존재하는 파일 이름이라면 업로드 못하게 방지
         if (isS3Exists(fileName)) {
-            throw new AlreadyExistsException("이미 존재하는 파일 이름입니다.");
+            throw new AlreadyExistsException(ErrorCode.IMAGE_ALREADY_EXISTS.getMessage());
         }
         amazonS3.putObject(new PutObjectRequest(bucket, fileName, uploadFile));
         return getS3(fileName);
@@ -75,25 +82,21 @@ public class AwsS3Service {
         file.delete();
     }
 
-    public Optional<File> convertMultipartFileToFile(MultipartFile multipartFile) throws IOException {
-        String fileName = multipartFile.getOriginalFilename();
-        if (fileName == null || fileName.isEmpty()) {
-            return Optional.empty();
-        }
-
-        File file = new File(System.getProperty("user.dir") + "/" + fileName);
-        if (!file.exists()) {
-            if (file.createNewFile()) {
-                try (FileOutputStream fos = new FileOutputStream(file)) {
-                    fos.write(multipartFile.getBytes());
-                }
-                return Optional.of(file);
-            } else {
-                return Optional.empty();
+    private Optional<File> convertMultipartFileToProgressiveJPEG(MultipartFile multipartFile) throws IOException {
+        BufferedImage image = ImageIO.read(multipartFile.getInputStream());
+        File tempFile = File.createTempFile("temp_image", ".jpg");
+        try (FileImageOutputStream imageOutputStream = new FileImageOutputStream(tempFile)) {
+            Iterator<ImageWriter> writers = ImageIO.getImageWritersByFormatName("jpg");
+            if (writers.hasNext()) {
+                ImageWriter writer = writers.next();
+                writer.setOutput(imageOutputStream);
+                ImageWriteParam param = writer.getDefaultWriteParam();
+                param.setProgressiveMode(ImageWriteParam.MODE_DEFAULT);
+                writer.write(null, new IIOImage(image, null, null), param);
+                writer.dispose();
             }
-        } else {
-            return Optional.empty();
         }
+        return Optional.of(tempFile);
     }
 
     public void remove(Image image) {
