@@ -54,11 +54,6 @@ public class ImageRemoveService {
 
     private void deleteImage(Image image) {
         awsS3Service.remove(image); //aws에서 이미지 삭제
-        imageRepository.delete(image); // 이미지 삭제
-        imageLikeRepository.deleteImageLikeByImageId(image.getId());// 이미지 좋아요 삭제
-
-        List<Long> imageTags = imageTagRepository.findImageTagIdsByImageId(image.getId());//이미지 태그 다 불러오기
-        imageTagRepository.deleteAllByIdInBatch(imageTags);// 이미지 태그 배치 삭제
     }
 
 }
