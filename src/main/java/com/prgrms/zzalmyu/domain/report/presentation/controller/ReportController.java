@@ -31,9 +31,9 @@ public class ReportController {
 
     @ApiResponse(description = "신고된 짤 내역 상세보기")
     @GetMapping("/{imageId}")
-    public ResponseEntity<List<ReportDetailResponse>> getReportedImage(@PathVariable Long imageId) {
-        List<ReportDetailResponse> responses = reportService.getReportDetail(imageId);
-        return ResponseEntity.ok(responses);
+    public ResponseEntity<ReportDetailResponse> getReportedImage(@PathVariable Long imageId) {
+        ReportDetailResponse reportDetail = reportService.getReportDetail(imageId);
+        return ResponseEntity.ok(reportDetail);
     }
 
     @ApiResponse(description = "신고된 짤 삭제(처리)하기")
