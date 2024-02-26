@@ -121,9 +121,9 @@ class ReportServiceTest {
         reportService.reportImage(miko.getId(), image.getId());
         reportService.reportImage(nahida.getId(), image.getId());
 
-        List<ReportDetailResponse> reportDetail = reportService.getReportDetail(image.getId());
+        ReportDetailResponse reportDetail = reportService.getReportDetail(image.getId());
 
-        assertThat(reportDetail.size()).isEqualTo(3);
+        assertThat(reportDetail.getImageTitle()).isEqualTo(image.getTitle());
     }
 
     @Test
