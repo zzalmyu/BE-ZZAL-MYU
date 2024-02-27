@@ -78,7 +78,7 @@ public class ReportService {
     }
 
     private List<TagResponseDto> getTags(Long imageId) {
-        List<Tag> tags = imageRepository.findTagsByImageId(imageId);
+        List<Tag> tags = imageRepository.findTagsByImageIdLimitThree(imageId);
         return tags.stream()
                 .map(tag -> new TagResponseDto(tag.getId(), tag.getName()))
                 .toList();

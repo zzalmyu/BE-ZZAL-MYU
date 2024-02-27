@@ -16,5 +16,8 @@ public interface ImageRepository extends JpaRepository<Image, Long> {
     @Query("select t from Tag t join ImageTag i on t.id = i.tag.id where  i.image.id = :imageId")
     List<Tag> findTagsByImageId(Long imageId);
 
+    @Query("select t from Tag t join ImageTag i on t.id = i.tag.id where  i.image.id = :imageId limit 3")
+    List<Tag> findTagsByImageIdLimitThree(Long imageId);
+
     List<Image> findByUserId(Long userId, Pageable pageable);
 }
