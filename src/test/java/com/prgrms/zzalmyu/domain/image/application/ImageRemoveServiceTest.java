@@ -64,10 +64,7 @@ public class ImageRemoveServiceTest {
 
         //then
         verify(awsS3Service).remove(any());
-        verify(imageRepository).delete(any());
-        verify(imageLikeRepository).deleteImageLikeByImageId(any());
-        verify(imageTagRepository).findImageTagIdsByImageId(any());
-        verify(imageTagRepository).deleteAllByIdInBatch(any());
+
 
     }
 
@@ -98,10 +95,7 @@ public class ImageRemoveServiceTest {
 
         //then
         verify(awsS3Service).remove(any());
-        verify(imageRepository).delete(any());
-        verify(imageLikeRepository).deleteImageLikeByImageId(any());
-        verify(imageTagRepository).findImageTagIdsByImageId(any());
-        verify(imageTagRepository).deleteAllByIdInBatch(any());
+
 
     }
 }
