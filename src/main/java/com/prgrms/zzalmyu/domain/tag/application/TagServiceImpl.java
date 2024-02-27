@@ -43,20 +43,20 @@ public class TagServiceImpl implements TagService{
     }
 
     @Override
-    public List<TagResponseDto> searchTag(String inputName) {
-        String splitTagName = splitTagName(inputName);
+    public List<TagResponseDto> searchTag(String keyword) {
+        String splitTagName = splitTagName(keyword);
         return tagRepository.searchTagForAutoSearchName(splitTagName);
     }
 
     @Override
-    public List<TagResponseDto> searchTagFromLikeImages(User user, String inputName) {
-        String splitTagName = splitTagName(inputName);
+    public List<TagResponseDto> searchTagFromLikeImages(User user, String keyword) {
+        String splitTagName = splitTagName(keyword);
         return tagRepository.searchTagForAutoSearchNameFromLikeImages(user.getId(), splitTagName);
     }
 
     @Override
-    public List<TagResponseDto> searchTagFromUploadImages(User user, String inputName) {
-        String splitTagName = splitTagName(inputName);
+    public List<TagResponseDto> searchTagFromUploadImages(User user, String keyword) {
+        String splitTagName = splitTagName(keyword);
         return tagRepository.searchTagForAutoSearchNameFromUploadImages(user.getId(), splitTagName);
     }
 

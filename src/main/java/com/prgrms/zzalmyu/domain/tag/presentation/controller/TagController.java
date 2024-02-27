@@ -45,19 +45,19 @@ public class TagController {
 
     @ApiResponse(description = "태그 자동 검색")
     @GetMapping("/search")
-    public List<TagResponseDto> searchTag(@RequestParam String input) {
-        return tagService.searchTag(input);
+    public List<TagResponseDto> searchTag(@RequestParam String keyword) {
+        return tagService.searchTag(keyword);
     }
 
     @ApiResponse(description = "유저가 좋아요한 사진들의 태그 자동 검색")
     @GetMapping("/like/search")
-    public List<TagResponseDto> searchTagFromLikeImages(@AuthenticationPrincipal User user, @RequestParam String input) {
-        return tagService.searchTagFromLikeImages(user, input);
+    public List<TagResponseDto> searchTagFromLikeImages(@AuthenticationPrincipal User user, @RequestParam String keyword) {
+        return tagService.searchTagFromLikeImages(user, keyword);
     }
 
     @ApiResponse(description = "유저가 업로드한 사진들의 태그 자동 검색")
     @GetMapping("/upload/search")
-    public List<TagResponseDto> searchTagFromUploadImages(@AuthenticationPrincipal User user, @RequestParam String input) {
-        return tagService.searchTagFromUploadImages(user, input);
+    public List<TagResponseDto> searchTagFromUploadImages(@AuthenticationPrincipal User user, @RequestParam String keyword) {
+        return tagService.searchTagFromUploadImages(user, keyword);
     }
 }
