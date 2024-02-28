@@ -12,10 +12,9 @@ import java.util.List;
 public class ReportDetailResponse {
     private String imageUrl;
     private String imageTitle;
-    private List<TagResponseDto> tags;
     private List<ReportDetailDto> reports;
 
-    public static ReportDetailResponse of(List<TagResponseDto> tags, Image image, List<ReportDetailDto> reports) {
-        return new ReportDetailResponse(image.getPath(), image.getTitle(), tags, reports);
+    public static ReportDetailResponse of(Image image, List<ReportDetailDto> reports) {
+        return new ReportDetailResponse(image.getPath(), image.getTitle(), reports);
     }
 }

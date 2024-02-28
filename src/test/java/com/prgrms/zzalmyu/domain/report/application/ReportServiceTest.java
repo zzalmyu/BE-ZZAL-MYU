@@ -159,7 +159,6 @@ class ReportServiceTest {
 
         assertThat(reports.size()).isEqualTo(1);
         assertThat(reports.get(0).getReportCount()).isEqualTo(3);
-        assertThat(reports.get(0).getTags().size()).isEqualTo(0);
     }
 
     @Test
