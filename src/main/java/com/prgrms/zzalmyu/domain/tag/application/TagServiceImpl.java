@@ -9,6 +9,7 @@ import com.prgrms.zzalmyu.domain.user.domain.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -44,18 +45,30 @@ public class TagServiceImpl implements TagService{
 
     @Override
     public List<TagResponseDto> searchTag(String keyword) {
+        // keyword가 빈 값일 시 그냥 빈 리스트를 반환한다.
+        if (keyword.isBlank()) {
+            return new ArrayList<>();
+        }
         String splitTagName = splitTagName(keyword);
         return tagRepository.searchTagForAutoSearchName(splitTagName);
     }
 
     @Override
     public List<TagResponseDto> searchTagFromLikeImages(User user, String keyword) {
+        // keyword가 빈 값일 시 그냥 빈 리스트를 반환한다.
+        if (keyword.isBlank()) {
+            return new ArrayList<>();
+        }
         String splitTagName = splitTagName(keyword);
         return tagRepository.searchTagForAutoSearchNameFromLikeImages(user.getId(), splitTagName);
     }
 
     @Override
     public List<TagResponseDto> searchTagFromUploadImages(User user, String keyword) {
+        // keyword가 빈 값일 시 그냥 빈 리스트를 반환한다.
+        if (keyword.isBlank()) {
+            return new ArrayList<>();
+        }
         String splitTagName = splitTagName(keyword);
         return tagRepository.searchTagForAutoSearchNameFromUploadImages(user.getId(), splitTagName);
     }
