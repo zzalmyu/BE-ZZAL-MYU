@@ -11,8 +11,6 @@ import com.prgrms.zzalmyu.domain.report.infrastructure.ReportRepository;
 import com.prgrms.zzalmyu.domain.report.presentation.dto.response.ReportDetailDto;
 import com.prgrms.zzalmyu.domain.report.presentation.dto.response.ReportDetailResponse;
 import com.prgrms.zzalmyu.domain.report.presentation.dto.response.ReportResponse;
-import com.prgrms.zzalmyu.domain.tag.domain.entity.Tag;
-import com.prgrms.zzalmyu.domain.tag.presentation.dto.res.TagResponseDto;
 import com.prgrms.zzalmyu.domain.user.application.UserService;
 import com.prgrms.zzalmyu.domain.user.domain.entity.User;
 import com.prgrms.zzalmyu.domain.user.exception.UserException;
@@ -24,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -49,13 +48,12 @@ public class ReportService {
 
     @Transactional(readOnly = true)
     public ReportDetailResponse getReportDetail(Long imageId) {
-        Image image = imageRepository.findById(imageId).orElseThrow(() -> new ImageException(ErrorCode.IMAGE_NOT_FOUND_ERROR));
+        Image image = getImage(imageId);
         List<Report> reports = reportRepository.findByImageId(imageId);
         if (reports.isEmpty()) {
             throw new ReportException(ErrorCode.REPORT_NOT_FOUND);
         }
 
-        List<TagResponseDto> tags = getTags(image.getId());
         List<ReportDetailDto> reportDetailDtos = reports.stream()
                 .map(report -> {
                     User reportUser = userRepository.findById(report.getReportUserId()).orElseThrow(() -> new UserException(ErrorCode.USER_NOT_FOUND));
@@ -65,7 +63,7 @@ public class ReportService {
                             .build();
                 })
                 .toList();
-        return ReportDetailResponse.of(tags, image, reportDetailDtos);
+        return ReportDetailResponse.of( image, reportDetailDtos);
     }
 
     public void deleteReportedImage(Long imageId) {
@@ -77,13 +75,6 @@ public class ReportService {
         }
     }
 
-    private List<TagResponseDto> getTags(Long imageId) {
-        List<Tag> tags = imageRepository.findTagsByImageId(imageId);
-        return tags.stream()
-                .map(tag -> new TagResponseDto(tag.getId(), tag.getName()))
-                .toList();
-    }
-
     @Transactional(readOnly = true)
     public List<ReportResponse> getReports(Pageable pageable) {
         List<Long> reportedImageIds = reportRepository.getImageIdReportedOverThree(pageable);
@@ -91,9 +82,13 @@ public class ReportService {
                 .map(imageId -> {
                     LocalDateTime lastReportDate = reportRepository.getLastReportAt(imageId);
                     int reportCount = reportRepository.countByImageId(imageId);
-                    List<TagResponseDto> tags = getTags(imageId);
-                    return ReportResponse.of(imageId, lastReportDate, reportCount, tags);
+                    Image image = getImage(imageId);
+                    return ReportResponse.of(imageId,image.getTitle(),lastReportDate, reportCount);
                 })
                 .toList();
+    }
+
+    private Image getImage(Long imageId) {
+        return imageRepository.findById(imageId).orElseThrow(() -> new ImageException(ErrorCode.IMAGE_NOT_FOUND_ERROR));
     }
 }

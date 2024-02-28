@@ -11,19 +11,17 @@ import java.util.List;
 @Builder
 public class ReportResponse {
     private Long imageId;
-
+    private String imageTitle;
     private LocalDateTime lastReportAt;
-
     private int reportCount;
 
-    private List<TagResponseDto> tags;
 
-    public static ReportResponse of(Long imageId, LocalDateTime thirdReportDate, int reportCount, List<TagResponseDto> tags) {
+    public static ReportResponse of(Long imageId, String imageTitle, LocalDateTime thirdReportDate, int reportCount) {
         return ReportResponse.builder()
                 .imageId(imageId)
+                .imageTitle(imageTitle)
                 .lastReportAt(thirdReportDate)
                 .reportCount(reportCount)
-                .tags(tags)
                 .build();
     }
 }
