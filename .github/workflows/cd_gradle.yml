@@ -88,6 +88,9 @@ jobs:
             docker pull ${{ secrets.DOCKER_ID }}/zzalmyu
 
             docker network create zzalmyu
+
+            
+            docker rmi $(docker images -q)
             
             docker run -d \
               --name zzalmyu \
