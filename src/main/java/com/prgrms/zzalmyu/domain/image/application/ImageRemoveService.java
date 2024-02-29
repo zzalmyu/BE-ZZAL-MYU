@@ -54,6 +54,7 @@ public class ImageRemoveService {
 
     private void deleteImage(Image image) {
         awsS3Service.remove(image); //aws에서 이미지 삭제
+        imageRepository.delete(image);
     }
 
 }
