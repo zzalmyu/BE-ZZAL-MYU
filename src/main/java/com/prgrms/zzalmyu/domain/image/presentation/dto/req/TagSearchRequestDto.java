@@ -8,6 +8,8 @@ import java.util.List;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class TagListRequestDto {
+public class TagSearchRequestDto {
     private List<Long> tagIdList;
+    private Long newTagId;
+
 }
