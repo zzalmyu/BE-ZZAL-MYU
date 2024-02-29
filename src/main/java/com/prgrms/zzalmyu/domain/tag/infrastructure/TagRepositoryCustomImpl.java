@@ -17,6 +17,7 @@ import static com.prgrms.zzalmyu.domain.tag.domain.entity.QTagUser.tagUser;
 public class TagRepositoryCustomImpl implements TagRepositoryCustom {
 
     private final JPAQueryFactory queryFactory;
+    private static final Long LIMIT_TAG_NUM = 10L;
 
     @Override
     public List<TagResponseDto> getTopTagsFromUserUsed(int limit) {
@@ -72,7 +73,11 @@ public class TagRepositoryCustomImpl implements TagRepositoryCustom {
                         tag.id,
                         tag.name))
                 .from(tag)
+                .join(tagUser).on(tagUser.tagId.eq(tag.id))
                 .where(tag.splitName.startsWith(inputString))
+                .groupBy(tag.id, tag.name)
+                .orderBy(tagUser.count.sum().desc())
+                .limit(LIMIT_TAG_NUM)
                 .fetch();
     }
 
@@ -83,10 +88,14 @@ public class TagRepositoryCustomImpl implements TagRepositoryCustom {
                         tag.id,
                         tag.name))
                 .from(tag)
+                .join(tagUser).on(tagUser.tagId.eq(tag.id))
                 .join(imageTag).on(imageTag.tag.eq(tag))
                 .join(imageLike).on(imageLike.image.eq(imageTag.image))
                 .where(imageLike.user.id.eq(userId),
                         tag.splitName.startsWith(inputString))
+                .groupBy(tag.id, tag.name)
+                .orderBy(tagUser.count.sum().desc())
+                .limit(LIMIT_TAG_NUM)
                 .distinct()
                 .fetch();
     }
@@ -98,10 +107,14 @@ public class TagRepositoryCustomImpl implements TagRepositoryCustom {
                         tag.id,
                         tag.name))
                 .from(tag)
+                .join(tagUser).on(tagUser.tagId.eq(tag.id))
                 .join(imageTag).on(imageTag.tag.eq(tag))
                 .join(image).on(image.eq(imageTag.image))
                 .where(image.userId.eq(userId),
                         tag.splitName.startsWith(inputString))
+                .groupBy(tag.id, tag.name)
+                .orderBy(tagUser.count.sum().desc())
+                .limit(LIMIT_TAG_NUM)
                 .distinct()
                 .fetch();
     }
