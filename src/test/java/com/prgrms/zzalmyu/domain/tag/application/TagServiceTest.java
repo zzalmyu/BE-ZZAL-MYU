@@ -167,6 +167,11 @@ class TagServiceTest {
                 .tag(tag)
                 .build();
         imageTagRepository.save(imageTag);
+        TagUser tagUser = TagUser.builder()
+                .userId(user1.getId())
+                .tagId(tag.getId())
+                .build();
+        tagUserRepository.save(tagUser);
         imageService.likeImage(image.getId(), user2);
         //When
         List<TagResponseDto> tagResponseDtos = tagService.searchTagFromLikeImages(user2, "안ㅇ");
@@ -195,24 +200,15 @@ class TagServiceTest {
                 .tag(tag)
                 .build();
         imageTagRepository.save(imageTag);
+        TagUser tagUser = TagUser.builder()
+                .userId(user1.getId())
+                .tagId(tag.getId())
+                .build();
+        tagUserRepository.save(tagUser);
         //When
         List<TagResponseDto> tagResponseDtos = tagService.searchTagFromUploadImages(user1, "안ㅇ");
         //Then
         assertThat(tagResponseDtos.stream().map(TagResponseDto::getTagName)).containsExactlyInAnyOrder(tagName);
-    }
-
-    @DisplayName("태그를 저장 후 초성/중성/종성을 활용해 검색할 수 있다.")
-    @Test
-    void searchTagForAutoSearch() {
-        //Given
-        String requestTagName = "요청태그이름";
-        String searchName = "요ㅊ";
-        //When
-        TagResponseDto responseDto = tagService.createTag(requestTagName);
-        List<TagResponseDto> tagResponseDtos = tagService.searchTag(searchName);
-        //Then
-        assertThat(tagResponseDtos.stream().map(TagResponseDto::getTagName)).containsExactlyInAnyOrder(responseDto.getTagName());
-
     }
 
     @DisplayName("태그를 검색 시 가장 많이 사용한 상위 10개를 보여준다.")

@@ -71,7 +71,8 @@ public class TagRepositoryCustomImpl implements TagRepositoryCustom {
         return queryFactory.select(Projections.constructor(
                         TagResponseDto.class,
                         tag.id,
-                        tag.name))
+                        tag.name,
+                        tagUser.count.sum().as("count")))
                 .from(tag)
                 .join(tagUser).on(tagUser.tagId.eq(tag.id))
                 .where(tag.splitName.startsWith(inputString))
@@ -86,7 +87,8 @@ public class TagRepositoryCustomImpl implements TagRepositoryCustom {
         return queryFactory.select(Projections.constructor(
                         TagResponseDto.class,
                         tag.id,
-                        tag.name))
+                        tag.name,
+                        tagUser.count.sum().as("count")))
                 .from(tag)
                 .join(tagUser).on(tagUser.tagId.eq(tag.id))
                 .join(imageTag).on(imageTag.tag.eq(tag))
@@ -105,7 +107,8 @@ public class TagRepositoryCustomImpl implements TagRepositoryCustom {
         return queryFactory.select(Projections.constructor(
                         TagResponseDto.class,
                         tag.id,
-                        tag.name))
+                        tag.name,
+                        tagUser.count.sum().as("count")))
                 .from(tag)
                 .join(tagUser).on(tagUser.tagId.eq(tag.id))
                 .join(imageTag).on(imageTag.tag.eq(tag))
