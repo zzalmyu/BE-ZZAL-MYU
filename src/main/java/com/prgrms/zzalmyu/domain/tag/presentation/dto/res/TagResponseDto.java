@@ -10,8 +10,15 @@ import lombok.NoArgsConstructor;
 public class TagResponseDto {
     private Long tagId;
     private String tagName;
+    private Integer count;
 
     @Builder
+    public TagResponseDto(Long tagId, String tagName, Integer count) {
+        this.tagId = tagId;
+        this.tagName = tagName;
+        this.count = count;
+    }
+
     public TagResponseDto(Long tagId, String tagName) {
         this.tagId = tagId;
         this.tagName = tagName;

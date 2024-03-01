@@ -23,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -92,7 +93,7 @@ class TagServiceTest {
 
     @DisplayName("유저들이 가장 많이 사용한 태그 리스트를 가져올 수 있다.(정책 상 현재 5개)")
     @Test
-    void getTopTagsFromUserUsed(){
+    void getTopTagsFromUserUsed() {
         //Given
         // user1은 숫자 순서대로 6,5,4,3,2,1,0 번 사용했다 가정
         for (int i = 6; i >= 0; i--) {
@@ -125,7 +126,7 @@ class TagServiceTest {
         assertThat(responseDtoList).hasSizeLessThanOrEqualTo(5);
         assertThat(responseDtoList.stream().map(TagResponseDto::getTagId).toList())
                 .containsExactlyElementsOf(List.of(tag7.getId(), tag6.getId(), tag5.getId(), tag4.getId(), tag3.getId()));
-     }
+    }
 
     @Test
     void getTopTagsFromLikeImages() {
@@ -166,6 +167,11 @@ class TagServiceTest {
                 .tag(tag)
                 .build();
         imageTagRepository.save(imageTag);
+        TagUser tagUser = TagUser.builder()
+                .userId(user1.getId())
+                .tagId(tag.getId())
+                .build();
+        tagUserRepository.save(tagUser);
         imageService.likeImage(image.getId(), user2);
         //When
         List<TagResponseDto> tagResponseDtos = tagService.searchTagFromLikeImages(user2, "안ㅇ");
@@ -175,7 +181,7 @@ class TagServiceTest {
 
     @DisplayName("유저가 업로드한 사진들의 태그들로부터 초성/중성/종성을 활용한 검색이 가능하다.")
     @Test
-    void searchTagFromUploadImages(){
+    void searchTagFromUploadImages() {
         //Given
         Image image = Image.builder()
                 .title("title1")
@@ -194,25 +200,43 @@ class TagServiceTest {
                 .tag(tag)
                 .build();
         imageTagRepository.save(imageTag);
+        TagUser tagUser = TagUser.builder()
+                .userId(user1.getId())
+                .tagId(tag.getId())
+                .build();
+        tagUserRepository.save(tagUser);
         //When
         List<TagResponseDto> tagResponseDtos = tagService.searchTagFromUploadImages(user1, "안ㅇ");
         //Then
         assertThat(tagResponseDtos.stream().map(TagResponseDto::getTagName)).containsExactlyInAnyOrder(tagName);
-     }
+    }
 
-    @DisplayName("태그를 저장 후 초성/중성/종성을 활용해 검색할 수 있다.")
+    @DisplayName("태그를 검색 시 가장 많이 사용한 상위 10개를 보여준다.")
     @Test
-    void searchTagForAutoSearch(){
+    void searchTagForAutoSearchLimit10() {
         //Given
-        String requestTagName = "요청태그이름";
-        String searchName = "요ㅊ";
+        List<String> expectedTagNameList = new ArrayList<>();
+        for (int i = 0; i < 20; i++) {
+            String tagName = "tagName" + i;
+            TagResponseDto tagResponseDto = tagService.createTag(tagName);
+            TagUser tagUser = TagUser.builder()
+                    .userId(user1.getId())
+                    .tagId(tagResponseDto.getTagId())
+                    .build();
+            tagUserRepository.save(tagUser);
+            // 인덱스에 따른 횟수 증가
+            for (int j = 0; j < i; j++) {
+                tagUser.increaseCount();
+            }
+            if (i >= 10) {
+                expectedTagNameList.add(tagName);
+            }
+        }
         //When
-        TagResponseDto responseDto = tagService.createTag(requestTagName);
-        List<TagResponseDto> tagResponseDtos = tagService.searchTag(searchName);
+        List<TagResponseDto> result = tagService.searchTag("tagNa");
         //Then
-        assertThat(tagResponseDtos.stream().map(TagResponseDto::getTagName)).containsExactlyInAnyOrder(responseDto.getTagName());
-
-     }
-
-
+        assertThat(result).hasSizeLessThanOrEqualTo(10);
+        assertThat(result.stream().map(TagResponseDto::getTagName).toList())
+                .containsExactlyInAnyOrderElementsOf(expectedTagNameList);
+    }
 }
