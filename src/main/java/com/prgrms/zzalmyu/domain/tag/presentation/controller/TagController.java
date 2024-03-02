@@ -3,6 +3,7 @@ package com.prgrms.zzalmyu.domain.tag.presentation.controller;
 
 import com.prgrms.zzalmyu.domain.tag.application.TagService;
 import com.prgrms.zzalmyu.domain.tag.presentation.dto.req.TagCreateRequestDto;
+import com.prgrms.zzalmyu.domain.tag.presentation.dto.res.TagMeResponseDto;
 import com.prgrms.zzalmyu.domain.tag.presentation.dto.res.TagResponseDto;
 import com.prgrms.zzalmyu.domain.user.domain.entity.User;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -21,13 +22,13 @@ public class TagController {
 
     @ApiResponse(description = "좋아요한 이미지 중 많이 사용한 태그 5개")
     @GetMapping("/me/like")
-    public List<TagResponseDto> getTopTagsFromLikeImages(@AuthenticationPrincipal User user) {
+    public List<TagMeResponseDto> getTopTagsFromLikeImages(@AuthenticationPrincipal User user) {
         return tagService.getTopTagsFromLikeImages(user);
     }
 
     @ApiResponse(description = "업로드한 이미지 중 많이 사용한 태그 5개")
     @GetMapping("/me/upload")
-    public List<TagResponseDto> getTopTagsFromUploadImages(@AuthenticationPrincipal User user) {
+    public List<TagMeResponseDto> getTopTagsFromUploadImages(@AuthenticationPrincipal User user) {
         return tagService.getTopTagsFromUploadImages(user);
     }
 
