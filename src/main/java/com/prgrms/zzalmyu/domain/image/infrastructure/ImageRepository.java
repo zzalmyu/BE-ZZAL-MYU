@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
-public interface ImageRepository extends JpaRepository<Image, Long> {
+public interface ImageRepository extends JpaRepository<Image, Long>,ImageRepositoryCustom {
 
     @Query("select i from Image i join ImageLike k on i.id = k.image.id where k.user.id= :userId")
     List<Image> findImageLikesByUserId(Long userId, Pageable pageable);
@@ -17,4 +17,7 @@ public interface ImageRepository extends JpaRepository<Image, Long> {
     List<Tag> findTagsByImageId(Long imageId);
 
     List<Image> findByUserId(Long userId, Pageable pageable);
+
+    @Query("select i from ImageLike il join Image i on il.image.id = i.id group by il.image.id order by count(il)desc limit 30")
+    List<Image> findTopImageLike();
 }

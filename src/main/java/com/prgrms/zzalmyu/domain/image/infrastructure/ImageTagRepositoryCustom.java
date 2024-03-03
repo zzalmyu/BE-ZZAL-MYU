@@ -7,4 +7,6 @@ import java.util.List;
 public interface ImageTagRepositoryCustom {
     List<Image> findLikeImagesByUserIdAndTagIdList(Long userId, List<Long> tagIdList);
     List<Image> findUploadImagesByUserIdAndTagIdList(Long userId, List<Long> tagIdList);
+    List<Image> findImageByTagIdAndLimit(Long tagId, int limit);
+
 }

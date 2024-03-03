@@ -33,4 +33,13 @@ public class ImageTagRepositoryImpl implements ImageTagRepositoryCustom {
                         imageTag.tag.id.in(tagIdList))
                 .fetch();
     }
+
+    @Override
+    public List<Image> findImageByTagIdAndLimit(Long tagId, int limit) {
+        return queryFactory.selectFrom(image)
+                .join(imageTag).on(imageTag.image.eq(image))
+                .where(imageTag.tag.id.eq(tagId))
+                .limit(limit)
+                .fetch();
+    }
 }

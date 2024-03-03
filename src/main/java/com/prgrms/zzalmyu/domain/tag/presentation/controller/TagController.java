@@ -32,10 +32,19 @@ public class TagController {
         return tagService.getTopTagsFromUploadImages(user);
     }
 
-    @ApiResponse(description = "유저가 (좋아요,업로드할 때)많이 사용한 태그 5개")
+    @ApiResponse(description = "전체 유저가 (좋아요,업로드할 때)많이 사용한 태그 5개")
     @GetMapping("/popular")
     public List<TagResponseDto> getTopTagsFromUsersUsed() {
         return tagService.getTopTagsFromUsersUsed();
+    }
+
+    @ApiResponse(description = "메인페이지 검색창에서 태그 추천 (로그인/비로그인에 따라 다르게 나옴)")
+    @GetMapping
+    public List<TagResponseDto> getRecommendationTags(@AuthenticationPrincipal User user) {
+        if (user == null) {
+            return tagService.getTopTagsFromUsersUsed();
+        }
+        return tagService.getRecommendationTags(user);
     }
 
     @ApiResponse(description = "태그 생성")
