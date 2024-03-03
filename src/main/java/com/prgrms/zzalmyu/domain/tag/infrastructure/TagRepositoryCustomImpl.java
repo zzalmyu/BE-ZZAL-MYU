@@ -1,5 +1,6 @@
 package com.prgrms.zzalmyu.domain.tag.infrastructure;
 
+import com.prgrms.zzalmyu.domain.tag.presentation.dto.res.TagMeResponseDto;
 import com.prgrms.zzalmyu.domain.tag.presentation.dto.res.TagResponseDto;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -25,7 +26,8 @@ public class TagRepositoryCustomImpl implements TagRepositoryCustom {
                 .select(Projections.constructor(
                         TagResponseDto.class,
                         tag.id,
-                        tag.name))
+                        tag.name,
+                        tagUser.count.sum().as("count")))
                 .from(tag)
                 .join(tagUser).on(tagUser.tagId.eq(tag.id))
                 .groupBy(tag.id, tag.name)
@@ -35,9 +37,9 @@ public class TagRepositoryCustomImpl implements TagRepositoryCustom {
     }
 
     @Override
-    public List<TagResponseDto> getTopTagsFromLikedImages(Long userId, int limit) {
+    public List<TagMeResponseDto> getTopTagsFromLikedImages(Long userId, int limit) {
         return queryFactory.select(Projections.constructor(
-                        TagResponseDto.class,
+                        TagMeResponseDto.class,
                         tag.id,
                         tag.name))
                 .from(tag)
@@ -51,9 +53,9 @@ public class TagRepositoryCustomImpl implements TagRepositoryCustom {
     }
 
     @Override
-    public List<TagResponseDto> getTopTagsFromUploadImages(Long userId, int limit) {
+    public List<TagMeResponseDto> getTopTagsFromUploadImages(Long userId, int limit) {
         return queryFactory.select(Projections.constructor(
-                        TagResponseDto.class,
+                        TagMeResponseDto.class,
                         tag.id,
                         tag.name))
                 .from(tag)
