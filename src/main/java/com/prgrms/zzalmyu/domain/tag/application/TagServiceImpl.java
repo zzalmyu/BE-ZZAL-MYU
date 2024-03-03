@@ -4,6 +4,7 @@ import com.prgrms.zzalmyu.core.properties.ErrorCode;
 import com.prgrms.zzalmyu.domain.tag.domain.entity.Tag;
 import com.prgrms.zzalmyu.domain.tag.exception.TagException;
 import com.prgrms.zzalmyu.domain.tag.infrastructure.TagRepository;
+import com.prgrms.zzalmyu.domain.tag.presentation.dto.res.TagMeResponseDto;
 import com.prgrms.zzalmyu.domain.tag.presentation.dto.res.TagResponseDto;
 import com.prgrms.zzalmyu.domain.user.domain.entity.User;
 import lombok.RequiredArgsConstructor;
@@ -23,12 +24,12 @@ public class TagServiceImpl implements TagService{
     }
 
     @Override
-    public List<TagResponseDto> getTopTagsFromLikeImages(User user) {
+    public List<TagMeResponseDto> getTopTagsFromLikeImages(User user) {
         return tagRepository.getTopTagsFromLikedImages(user.getId(), RANK_NUM);
     }
 
     @Override
-    public List<TagResponseDto> getTopTagsFromUploadImages(User user) {
+    public List<TagMeResponseDto> getTopTagsFromUploadImages(User user) {
         return tagRepository.getTopTagsFromUploadImages(user.getId(), RANK_NUM);
     }
 

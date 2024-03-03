@@ -1,5 +1,6 @@
 package com.prgrms.zzalmyu.domain.tag.application;
 
+import com.prgrms.zzalmyu.domain.tag.presentation.dto.res.TagMeResponseDto;
 import com.prgrms.zzalmyu.domain.tag.presentation.dto.res.TagResponseDto;
 import com.prgrms.zzalmyu.domain.user.domain.entity.User;
 
@@ -19,12 +20,12 @@ public interface TagService {
      *
      * @return
      */
-    List<TagResponseDto> getTopTagsFromLikeImages(User user);
+    List<TagMeResponseDto> getTopTagsFromLikeImages(User user);
 
     /**
      * 업로드한 사진 들 중 공통된 상위 5개 태그 조회
      */
-    List<TagResponseDto> getTopTagsFromUploadImages(User user);
+    List<TagMeResponseDto> getTopTagsFromUploadImages(User user);
 
 
     /**
