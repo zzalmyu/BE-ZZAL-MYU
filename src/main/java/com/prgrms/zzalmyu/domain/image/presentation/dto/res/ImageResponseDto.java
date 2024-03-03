@@ -1,5 +1,6 @@
 package com.prgrms.zzalmyu.domain.image.presentation.dto.res;
 
+import com.prgrms.zzalmyu.domain.image.domain.entity.Image;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -24,6 +25,10 @@ public class ImageResponseDto {
         this.title = title;
         this.path = path;
         this.imageLikeYn = false;
+    }
+
+    public static ImageResponseDto getImageByLoginUser(Image image, boolean imageLikeYn) {
+        return new ImageResponseDto(image.getId(), image.getTitle(), image.getPath(), imageLikeYn);
     }
 
 }
