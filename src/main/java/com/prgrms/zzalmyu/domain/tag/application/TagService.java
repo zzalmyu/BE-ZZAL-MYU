@@ -46,4 +46,5 @@ public interface TagService {
     // 태그 split_name 분리
     String splitTagName(String tagName);
 
+    List<TagResponseDto> getRecommendationTags(User user);
 }

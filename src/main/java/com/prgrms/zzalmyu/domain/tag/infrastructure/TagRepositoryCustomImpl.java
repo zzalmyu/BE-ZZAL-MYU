@@ -2,6 +2,7 @@ package com.prgrms.zzalmyu.domain.tag.infrastructure;
 
 import com.prgrms.zzalmyu.domain.tag.presentation.dto.res.TagMeResponseDto;
 import com.prgrms.zzalmyu.domain.tag.presentation.dto.res.TagResponseDto;
+import com.prgrms.zzalmyu.domain.user.domain.entity.User;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -121,6 +122,19 @@ public class TagRepositoryCustomImpl implements TagRepositoryCustom {
                 .orderBy(tagUser.count.sum().desc())
                 .limit(LIMIT_TAG_NUM)
                 .distinct()
+                .fetch();
+    }
+
+    @Override
+    public List<TagResponseDto> getRecommendationTags(User user) {
+        return queryFactory.select(Projections.constructor(
+                        TagResponseDto.class, tag.id, tag.name))
+                .from(tag)
+                .join(tagUser).on(tag.id.eq(tagUser.tagId))
+                .where(tagUser.userId.eq(user.getId()))
+                .groupBy(tagUser.tagId)
+                .orderBy(tagUser.count.sum().desc())
+                .limit(5)
                 .fetch();
     }
 }

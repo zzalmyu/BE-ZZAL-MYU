@@ -32,7 +32,10 @@ public class TagServiceImpl implements TagService{
     public List<TagMeResponseDto> getTopTagsFromUploadImages(User user) {
         return tagRepository.getTopTagsFromUploadImages(user.getId(), RANK_NUM);
     }
-
+    @Override
+    public List<TagResponseDto> getRecommendationTags(User user) {
+        return tagRepository.getRecommendationTags(user);
+    }
     @Override
     public TagResponseDto createTag(String tagName) {
         if (tagRepository.existsByName(tagName)) {

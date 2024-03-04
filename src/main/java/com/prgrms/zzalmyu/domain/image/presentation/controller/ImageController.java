@@ -1,13 +1,11 @@
 package com.prgrms.zzalmyu.domain.image.presentation.controller;
 
-import com.prgrms.zzalmyu.domain.image.application.ImageRemoveService;
-import com.prgrms.zzalmyu.domain.image.application.ImageSearchService;
-import com.prgrms.zzalmyu.domain.image.application.ImageService;
-import com.prgrms.zzalmyu.domain.image.application.ImageUploadService;
+import com.prgrms.zzalmyu.domain.image.application.*;
 import com.prgrms.zzalmyu.domain.image.presentation.dto.req.ImageUploadRequestDto;
 import com.prgrms.zzalmyu.domain.image.presentation.dto.req.TagSearchRequestDto;
 import com.prgrms.zzalmyu.domain.image.presentation.dto.res.AwsS3ResponseDto;
 import com.prgrms.zzalmyu.domain.image.presentation.dto.res.ImageDetailResponse;
+import com.prgrms.zzalmyu.domain.image.presentation.dto.res.ImageResponseDto;
 import com.prgrms.zzalmyu.domain.user.domain.entity.User;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +27,7 @@ public class ImageController {
     private final ImageUploadService imageUploadService;
     private final ImageRemoveService imageRemoveService;
     private final ImageSearchService imageSearchService;
+    private final ImageMainService imageMainService;
 
     @ApiResponse(description = "짤 상세보기 페이지에 반환 될 값")
     @GetMapping("/{imageId}")
@@ -86,9 +85,18 @@ public class ImageController {
         return ResponseEntity.ok(imageId);
     }
 
-    @ApiResponse(description = "전체 이미지 조회")
+    @ApiResponse(description = "전체 이미지 조회(테스트용,삭제 예정)")
     @GetMapping("/all")
     List<AwsS3ResponseDto> getAllUploadImages(@PageableDefault(page = 0,size = 10) Pageable pageable) {
         return imageService.getAllImages(pageable);
+    }
+
+    @ApiResponse(description = "전체 이미지 조회 (실사용)")
+    @GetMapping
+    List<ImageResponseDto> getImages(@AuthenticationPrincipal User user, @PageableDefault(page = 0, size = 15) Pageable pageable) {
+        if (user == null) {
+            return imageMainService.getTopUserUsedImage(pageable);
+        }
+        return imageMainService.getRecommendedImage(user, pageable);
     }
 }
