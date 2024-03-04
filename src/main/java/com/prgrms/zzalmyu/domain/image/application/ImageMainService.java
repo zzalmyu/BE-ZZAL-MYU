@@ -24,6 +24,7 @@ public class ImageMainService {
 
     private static final int MAX = 150;
     private static final int PER_COUNT = 15;
+    private static final int BEST_IMAGE = 30;
 
     private TagUserRepository tagUserRepository;
     private ImageRepository imageRepository;
@@ -77,17 +78,7 @@ public class ImageMainService {
 
     private List<ImageResponseDto> getImageList(User user) {
         //레디스에 저장된 내가 자주보는 태그 기반의 image
-        List<ImageResponseDto> list = setOperations.pop(user.getId().toString(), PER_COUNT)
-                .stream()
-                .map(image -> ImageResponseDto.builder()
-                        .imageId(image.getImageId())
-                        .title(image.getTitle())
-                        .path(image.getTitle())
-                        .build())
-                .toList();
-
-
-        return list;
+        return setOperations.pop(user.getId().toString(), PER_COUNT);
     }
 
     // setOperations에 새로운 Image 채워넣음
@@ -119,7 +110,7 @@ public class ImageMainService {
                             });
                 });
 
-        imageRepository.findTopImageLike()
+        imageRepository.findTopImageLike(BEST_IMAGE)
                 .forEach(image -> {
                     boolean present = imageLikeRepository.findByUserIdAndImageId(user.getId(), image.getId()).isPresent();
                     setOperations.add(user.getId().toString(),
