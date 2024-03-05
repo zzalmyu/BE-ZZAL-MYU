@@ -17,8 +17,6 @@ import javax.security.sasl.AuthenticationException;
 import org.springframework.http.MediaType;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import static com.prgrms.zzalmyu.exception.dto.ErrorResponse.extractAccessToken;
-import static com.prgrms.zzalmyu.exception.dto.ErrorResponse.extractRefreshToken;
 
 public class ExceptionHandlerFilter extends OncePerRequestFilter {
 
@@ -32,20 +30,19 @@ public class ExceptionHandlerFilter extends OncePerRequestFilter {
         try {
             filterChain.doFilter(request, response);
         } catch (UserException e) {
-            setErrorResponse(response, e.getErrorCode(), e.getRuntimeValue());
+            setErrorResponse(response, e.getErrorCode());
         } catch (TokenExpiredException e) {
-            setErrorResponse(response, ErrorCode.SECURITY_INVALID_TOKEN, null);
+            setErrorResponse(response, ErrorCode.SECURITY_INVALID_TOKEN);
         } catch (AuthenticationException | JWTVerificationException e) {
-            setErrorResponse(response, ErrorCode.SECURITY_UNAUTHORIZED, null);
+            setErrorResponse(response, ErrorCode.SECURITY_UNAUTHORIZED);
         } catch (AccessDeniedException e) {
-            setErrorResponse(response, ErrorCode.SECURITY_ACCESS_DENIED, null);
+            setErrorResponse(response, ErrorCode.SECURITY_ACCESS_DENIED);
         }
     }
 
     private void setErrorResponse(
         HttpServletResponse response,
-        ErrorCode errorCode,
-        String runtimeValue
+        ErrorCode errorCode
     ) {
         ObjectMapper objectMapper = new ObjectMapper();
         response.setCharacterEncoding("UTF-8");
@@ -58,12 +55,6 @@ public class ExceptionHandlerFilter extends OncePerRequestFilter {
             .message(errorCode.getMessage())
             .build();
         try {
-            if(errorCode == ErrorCode.SECURITY_INVALID_ACCESS_TOKEN) {
-                String accessToken = extractAccessToken(runtimeValue);
-                String refreshToken = extractRefreshToken(runtimeValue);
-                response.setHeader("Authorization", accessToken);
-                response.setHeader("Authorization-refresh", refreshToken);
-            }
             response.getWriter().write(objectMapper.registerModule(new JavaTimeModule())
                 .writeValueAsString(errorResponse));
         } catch (IOException e) {

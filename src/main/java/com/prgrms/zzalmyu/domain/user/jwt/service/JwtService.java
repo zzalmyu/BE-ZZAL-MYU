@@ -41,6 +41,7 @@ public class JwtService {
     private static final String REFRESH_TOKEN_SUBJECT = "RefreshToken";
     private static final String EMAIL_CLAIM = "email";
     private static final String BEARER = "Bearer ";
+    private static final String NOT_EXIST = "false";
 
     private final UserRepository userRepository;
     private final RedisService redisService;
@@ -61,6 +62,12 @@ public class JwtService {
             .withSubject(REFRESH_TOKEN_SUBJECT)
             .withExpiresAt(new Date(now.getTime() + refreshTokenExpirationPeriod))
             .sign(Algorithm.HMAC512(secretKey));
+    }
+
+    public String reissueRefreshToken(String email) {
+        String reissuedRefreshToken = createRefreshToken();
+        updateRefreshToken(reissuedRefreshToken, email);
+        return reissuedRefreshToken;
     }
 
     public Optional<String> extractRefreshToken(HttpServletRequest request) {
@@ -114,11 +121,25 @@ public class JwtService {
             Duration.ofMillis(accessTokenExpirationPeriod));
     }
 
-    private void setAccessTokenHeader(HttpServletResponse response, String accessToken) {
-        response.setHeader(accessHeader, accessToken);
+    public String findRefreshTokenAndExtractEmail(String refreshToken) {
+        String email = redisService.getValues(refreshToken);
+
+        if (email.equals(NOT_EXIST)) {
+            throw new UserException(ErrorCode.SECURITY_INVALID_REFRESH_TOKEN);
+        }
+        return email;
     }
 
-    private void setRefreshTokenHeader(HttpServletResponse response, String refreshToken) {
-        response.setHeader(refreshHeader, refreshToken);
+    private void sendTokens(HttpServletResponse response, String reissuedAccessToken, String reissuedRefreshToken) {
+        response.setHeader(accessHeader, BEARER + reissuedAccessToken);
+        response.setHeader(refreshHeader, BEARER + reissuedRefreshToken);
+    }
+
+    public void reissueAndSendTokens(HttpServletResponse response, String refreshToken) {
+        String email = findRefreshTokenAndExtractEmail(refreshToken);
+        String reissuedRefreshToken = reissueRefreshToken(email);
+        String reissuedAccessToken = createAccessToken(email);
+
+        sendTokens(response, reissuedAccessToken, reissuedRefreshToken);
     }
 }

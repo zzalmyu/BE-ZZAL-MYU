@@ -27,8 +27,6 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
     private final RedisService redisService;
     private final UserRepository userRepository;
 
-    private static String NOT_EXIST = "false";
-
     private static String NO_CHECK_URL = "/api/v1/user/logout";
 
     private GrantedAuthoritiesMapper authoritiesMapper = new NullAuthoritiesMapper();
@@ -45,19 +43,12 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 
         jwtService.extractAccessToken(request)
                 .ifPresent(accessToken -> {
-                            if(!jwtService.isTokenValid(accessToken)) { //accessToken 만료 시
-                                jwtService.extractRefreshToken(request).ifPresent(refreshToken -> {
-                                    if(jwtService.isTokenValid(refreshToken)) { //refreshToken 만료 안됐을 때
-                                        checkRefreshTokenAndReissueAccessToken(response, refreshToken);
-                                    } else { //refreshToken 만료 시
-                                        throw new UserException(ErrorCode.SECURITY_INVALID_REFRESH_TOKEN);
-                                    }
-                                });
-                            } else {
-                                checkAccessTokenAndSaveAuthentication(request, response, filterChain);
-                            }
-                        }
-                );
+                    if(!jwtService.isTokenValid(accessToken)) { //accessToken 만료 시
+                        throw new UserException(ErrorCode.SECURITY_INVALID_ACCESS_TOKEN);
+                    } else {
+                        checkAccessTokenAndSaveAuthentication(request, response, filterChain);
+                    }
+                });
         filterChain.doFilter(request, response);
     }
 
@@ -69,31 +60,6 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
                 throw new UserException(ErrorCode.SECURITY_UNAUTHORIZED);
             }
         });
-    }
-
-    private void checkRefreshTokenAndReissueAccessToken(HttpServletResponse response,
-        String refreshToken) {
-        String email = findRefreshTokenAndExtractEmail(refreshToken);
-        String reissuedRefreshToken = reissueRefreshToken(email);
-        String reissuedAccessToken = jwtService.createAccessToken(email);
-        String runtimeValue = reissuedAccessToken + " " + reissuedRefreshToken;
-
-        throw new UserException(ErrorCode.SECURITY_INVALID_ACCESS_TOKEN, runtimeValue);
-    }
-
-    private String findRefreshTokenAndExtractEmail(String refreshToken) {
-        String email = redisService.getValues(refreshToken);
-
-        if (email.equals(NOT_EXIST)) {
-            throw new UserException(ErrorCode.SECURITY_INVALID_TOKEN);
-        }
-        return email;
-    }
-
-    private String reissueRefreshToken(String email) {
-        String reissuedRefreshToken = jwtService.createRefreshToken();
-        jwtService.updateRefreshToken(reissuedRefreshToken, email);
-        return reissuedRefreshToken;
     }
 
     private void checkAccessTokenAndSaveAuthentication(HttpServletRequest request,
