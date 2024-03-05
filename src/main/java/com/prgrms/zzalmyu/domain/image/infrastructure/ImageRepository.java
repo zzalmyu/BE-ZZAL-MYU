@@ -18,6 +18,4 @@ public interface ImageRepository extends JpaRepository<Image, Long>,ImageReposit
 
     List<Image> findByUserId(Long userId, Pageable pageable);
 
-    @Query("select i from ImageLike il join Image i on il.image.id = i.id group by il.image.id order by count(il)desc limit 30")
-    List<Image> findTopImageLike();
 }

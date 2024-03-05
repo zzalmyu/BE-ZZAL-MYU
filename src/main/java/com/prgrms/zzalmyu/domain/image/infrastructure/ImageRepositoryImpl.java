@@ -1,5 +1,6 @@
 package com.prgrms.zzalmyu.domain.image.infrastructure;
 
+import com.prgrms.zzalmyu.domain.image.domain.entity.Image;
 import com.prgrms.zzalmyu.domain.image.presentation.dto.res.ImageResponseDto;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -44,6 +45,18 @@ public class ImageRepositoryImpl implements ImageRepositoryCustom {
 //                .limit(pageable.getPageSize())
 //                .fetch();
 
+    }
+
+    @Override
+    public List<Image> findTopImageLike(int limit) {
+        return queryFactory
+                .select(image)
+                .from(imageLike)
+                .join(image).on(image.id.eq(imageLike.image.id))
+                .groupBy(imageLike.image.id)
+                .orderBy(imageLike.count().desc())
+                .limit(limit)
+                .fetch();
     }
 }
 
