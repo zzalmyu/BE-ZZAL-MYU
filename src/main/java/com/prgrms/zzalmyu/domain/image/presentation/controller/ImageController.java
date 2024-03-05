@@ -49,14 +49,14 @@ public class ImageController {
 
     @ApiResponse(description = "짤 좋아요 클릭")
     @PostMapping("/{imageId}/like")
-    public void likeImage(@AuthenticationPrincipal User user, @PathVariable Long imageId) {
-        imageService.likeImage(imageId, user);
+    public ImageResponseDto likeImage(@AuthenticationPrincipal User user, @PathVariable Long imageId) {
+        return imageService.likeImage(imageId, user);
     }
 
     @ApiResponse(description = "짤 좋아요 취소 클릭")
     @PostMapping("/{imageId}/like/cancel")
-    public void cancelLikeImage(@AuthenticationPrincipal User user, @PathVariable Long imageId) {
-        imageService.cancelLikeImage(imageId, user);
+    public ImageResponseDto cancelLikeImage(@AuthenticationPrincipal User user, @PathVariable Long imageId) {
+        return imageService.cancelLikeImage(imageId, user);
     }
 
     @ApiResponse(description = "좋아요 누른 짤 페이지에서 태그 검색")
