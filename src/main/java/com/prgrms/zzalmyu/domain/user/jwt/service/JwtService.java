@@ -63,14 +63,6 @@ public class JwtService {
             .sign(Algorithm.HMAC512(secretKey));
     }
 
-    public void sendAccessTokenAndRefreshToken(HttpServletResponse response, String accessToken,
-        String refreshToken) {
-        response.setStatus(HttpServletResponse.SC_OK);
-
-        setAccessTokenHeader(response, BEARER + accessToken);
-        setRefreshTokenHeader(response, BEARER + refreshToken);
-    }
-
     public Optional<String> extractRefreshToken(HttpServletRequest request) {
         return Optional.ofNullable(request.getHeader(refreshHeader))
             .filter(refreshToken -> refreshToken.startsWith(BEARER))
@@ -106,7 +98,7 @@ public class JwtService {
             JWT.require(Algorithm.HMAC512(secretKey)).build().verify(token);
             return true;
         } catch (JWTVerificationException e) {
-            throw new UserException(ErrorCode.SECURITY_UNAUTHORIZED);
+            return false;
         }
     }
 

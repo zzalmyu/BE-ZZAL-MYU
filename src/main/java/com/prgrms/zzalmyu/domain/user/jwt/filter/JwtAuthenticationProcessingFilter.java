@@ -11,6 +11,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -42,17 +43,22 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
         }
         checkLogout(request); //로그아웃한 사용자면 인증 처리 안함
 
-        jwtService.extractRefreshToken(request)
-            .ifPresentOrElse(
-                refreshToken -> {
-                    if (jwtService.isTokenValid(refreshToken)) {
-                        checkRefreshTokenAndReissueAccessToken(response, refreshToken);
-                    } else {
-                        throw new UserException(ErrorCode.SECURITY_INVALID_TOKEN);
-                    }
-                },
-                () -> checkAccessTokenAndAuthentication(request, response, filterChain)
-            );
+        jwtService.extractAccessToken(request)
+                .ifPresent(accessToken -> {
+                            if(!jwtService.isTokenValid(accessToken)) { //accessToken 만료 시
+                                jwtService.extractRefreshToken(request).ifPresent(refreshToken -> {
+                                    if(jwtService.isTokenValid(refreshToken)) { //refreshToken 만료 안됐을 때
+                                        checkRefreshTokenAndReissueAccessToken(response, refreshToken);
+                                    } else { //refreshToken 만료 시
+                                        throw new UserException(ErrorCode.SECURITY_INVALID_REFRESH_TOKEN);
+                                    }
+                                });
+                            } else {
+                                checkAccessTokenAndSaveAuthentication(request, response, filterChain);
+                            }
+                        }
+                );
+        filterChain.doFilter(request, response);
     }
 
     private void checkLogout(HttpServletRequest request) {
@@ -69,8 +75,10 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
         String refreshToken) {
         String email = findRefreshTokenAndExtractEmail(refreshToken);
         String reissuedRefreshToken = reissueRefreshToken(email);
-        jwtService.sendAccessTokenAndRefreshToken(response, jwtService.createAccessToken(email),
-            reissuedRefreshToken);
+        String reissuedAccessToken = jwtService.createAccessToken(email);
+        String runtimeValue = reissuedAccessToken + " " + reissuedRefreshToken;
+
+        throw new UserException(ErrorCode.SECURITY_INVALID_ACCESS_TOKEN, runtimeValue);
     }
 
     private String findRefreshTokenAndExtractEmail(String refreshToken) {
@@ -88,11 +96,11 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
         return reissuedRefreshToken;
     }
 
-    private void checkAccessTokenAndAuthentication(HttpServletRequest request,
-        HttpServletResponse response, FilterChain filterChain) {
+    private void checkAccessTokenAndSaveAuthentication(HttpServletRequest request,
+                                                       HttpServletResponse response, FilterChain filterChain) {
         jwtService.extractAccessToken(request)
-            .filter(jwtService::isTokenValid).flatMap(jwtService::extractEmail)
-            .flatMap(userRepository::findByEmail).ifPresent(this::saveAuthentication);
+                .flatMap(jwtService::extractEmail)
+                .flatMap(userRepository::findByEmail).ifPresent(this::saveAuthentication);
 
         try {
             filterChain.doFilter(request, response);

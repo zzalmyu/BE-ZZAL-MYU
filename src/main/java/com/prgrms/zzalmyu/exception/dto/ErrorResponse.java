@@ -1,13 +1,18 @@
 package com.prgrms.zzalmyu.exception.dto;
 
+import com.nimbusds.oauth2.sdk.token.AccessTokenType;
 import com.prgrms.zzalmyu.core.properties.ErrorCode;
 import java.time.LocalDateTime;
+import java.util.StringTokenizer;
+
 import lombok.Builder;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 
 @Getter
 @Builder
+@Slf4j
 public class ErrorResponse {
 
     private final LocalDateTime timestamp = LocalDateTime.now();
@@ -16,6 +21,7 @@ public class ErrorResponse {
     private final String code;
     private final String message;
     private final String runtimeValue;
+    private static final AccessTokenType BEARER = new AccessTokenType("Bearer ");
 
     public static ResponseEntity<ErrorResponse> toResponseEntity(
         ErrorCode errorCode, String runtimeValue
@@ -30,5 +36,18 @@ public class ErrorResponse {
                 .runtimeValue(runtimeValue)
                 .build()
             );
+    }
+
+    public static String extractAccessToken(String runtimeValue) {
+        StringTokenizer st = new StringTokenizer(runtimeValue);
+
+        return BEARER + st.nextToken();
+    }
+
+    public static String extractRefreshToken(String runtimeValue) {
+        StringTokenizer st = new StringTokenizer(runtimeValue);
+        st.nextToken();
+
+        return BEARER + st.nextToken();
     }
 }
