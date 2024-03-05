@@ -2,7 +2,6 @@ package com.prgrms.zzalmyu.exception.dto;
 
 import com.prgrms.zzalmyu.core.properties.ErrorCode;
 import java.time.LocalDateTime;
-
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.http.ResponseEntity;

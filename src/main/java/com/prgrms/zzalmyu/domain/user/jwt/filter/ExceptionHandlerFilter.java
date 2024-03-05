@@ -17,7 +17,6 @@ import javax.security.sasl.AuthenticationException;
 import org.springframework.http.MediaType;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-
 public class ExceptionHandlerFilter extends OncePerRequestFilter {
 
     @Override
