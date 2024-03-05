@@ -2,8 +2,10 @@ package com.prgrms.zzalmyu.domain.tag.application;
 
 import com.prgrms.zzalmyu.core.properties.ErrorCode;
 import com.prgrms.zzalmyu.domain.tag.domain.entity.Tag;
+import com.prgrms.zzalmyu.domain.tag.domain.entity.TagUser;
 import com.prgrms.zzalmyu.domain.tag.exception.TagException;
 import com.prgrms.zzalmyu.domain.tag.infrastructure.TagRepository;
+import com.prgrms.zzalmyu.domain.tag.infrastructure.TagUserRepository;
 import com.prgrms.zzalmyu.domain.tag.presentation.dto.res.TagMeResponseDto;
 import com.prgrms.zzalmyu.domain.tag.presentation.dto.res.TagResponseDto;
 import com.prgrms.zzalmyu.domain.user.domain.entity.User;
@@ -12,12 +14,15 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class TagServiceImpl implements TagService{
+public class TagServiceImpl implements TagService {
     private final TagRepository tagRepository;
+    private final TagUserRepository tagUserRepository;
     private static final int RANK_NUM = 5;
+
     @Override
     public List<TagResponseDto> getTopTagsFromUsersUsed() {
         return tagRepository.getTopTagsFromUserUsed(RANK_NUM);
@@ -32,10 +37,12 @@ public class TagServiceImpl implements TagService{
     public List<TagMeResponseDto> getTopTagsFromUploadImages(User user) {
         return tagRepository.getTopTagsFromUploadImages(user.getId(), RANK_NUM);
     }
+
     @Override
     public List<TagResponseDto> getRecommendationTags(User user) {
         return tagRepository.getRecommendationTags(user);
     }
+
     @Override
     public TagResponseDto createTag(String tagName) {
         if (tagRepository.existsByName(tagName)) {
@@ -75,6 +82,25 @@ public class TagServiceImpl implements TagService{
         }
         String splitTagName = splitTagName(keyword);
         return tagRepository.searchTagForAutoSearchNameFromUploadImages(user.getId(), splitTagName);
+    }
+
+    @Override
+    public TagResponseDto increaseTagCount(User user, String tagName) {
+        Tag tag = tagRepository.findByName(tagName).orElseThrow(() -> new TagException(ErrorCode.TAG_NOT_FOUND_ERROR));
+        Long tagId = tag.getId();
+        Optional<TagUser> optionalTagUser = tagUserRepository.findByTagIdAndUserId(tagId, user.getId());
+        optionalTagUser.ifPresentOrElse(
+                TagUser::increaseCount,
+                () -> {
+                    TagUser newTagUser = TagUser.builder()
+                            .userId(user.getId())
+                            .tagId(tagId)
+                            .build();
+                    tagUserRepository.save(newTagUser);
+                }
+        );
+        TagUser tagUser = tagUserRepository.findByTagIdAndUserId(tagId, user.getId()).orElseThrow(() -> new TagException(ErrorCode.TAG_NOT_FOUND_ERROR));
+        return TagResponseDto.from(tag, tagUser);
     }
 
     @Override

@@ -47,4 +47,7 @@ public interface TagService {
     String splitTagName(String tagName);
 
     List<TagResponseDto> getRecommendationTags(User user);
+
+    // 태그 사용 횟수 증가
+    TagResponseDto increaseTagCount(User user, String newTagName);
 }
