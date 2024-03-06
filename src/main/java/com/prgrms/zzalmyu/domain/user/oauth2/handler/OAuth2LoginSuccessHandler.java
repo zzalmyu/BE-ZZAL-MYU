@@ -37,7 +37,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
         jwtService.updateRefreshToken(refreshToken, email);
 
         //응답 보내기
-        response.sendRedirect(UriComponentsBuilder.fromUriString("http://localhost:5173/redirect")
+        response.sendRedirect(UriComponentsBuilder.fromUriString("http://localhost:5173")
                 .queryParam("accessToken", accessToken)
                 .queryParam("refreshToken", refreshToken)
                 .build()
