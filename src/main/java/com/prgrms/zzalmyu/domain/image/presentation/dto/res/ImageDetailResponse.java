@@ -2,6 +2,7 @@ package com.prgrms.zzalmyu.domain.image.presentation.dto.res;
 
 import com.prgrms.zzalmyu.domain.image.domain.entity.Image;
 import com.prgrms.zzalmyu.domain.tag.domain.entity.Tag;
+import com.prgrms.zzalmyu.domain.tag.presentation.dto.res.TagMeResponseDto;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,7 +18,7 @@ public class ImageDetailResponse {
     private String imgUrl;
     private String imageTitle;
     private boolean imageLikeYn; // 상세페이지 반환할 때, 사용자의 좋아요 유무
-    private List<Tag> tags; //TagResponse 로 수정 필요
+    private List<TagMeResponseDto> tags; //TagResponse로 수정완료
 
     @Builder
     private ImageDetailResponse(Long imageId,Long uploadUserId, String imgUrl, String imageTitle, boolean imageLikeYn, List<Tag> tags) {
@@ -26,7 +27,7 @@ public class ImageDetailResponse {
         this.imageTitle = imageTitle;
         this.imgUrl = imgUrl;
         this.imageLikeYn = imageLikeYn;
-        this.tags = tags;
+        this.tags = tags.stream().map(TagMeResponseDto::new).toList();
     }
 
     public static ImageDetailResponse of(Image image, List<Tag>tags, boolean image_like_yn) {
