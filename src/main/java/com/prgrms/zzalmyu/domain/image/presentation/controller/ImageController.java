@@ -2,7 +2,6 @@ package com.prgrms.zzalmyu.domain.image.presentation.controller;
 
 import com.prgrms.zzalmyu.domain.image.application.*;
 import com.prgrms.zzalmyu.domain.image.presentation.dto.req.ImageUploadRequestDto;
-import com.prgrms.zzalmyu.domain.image.presentation.dto.req.TagSearchRequestDto;
 import com.prgrms.zzalmyu.domain.image.presentation.dto.res.AwsS3ResponseDto;
 import com.prgrms.zzalmyu.domain.image.presentation.dto.res.ImageDetailResponse;
 import com.prgrms.zzalmyu.domain.image.presentation.dto.res.ImageResponseDto;
@@ -60,15 +59,15 @@ public class ImageController {
     }
 
     @ApiResponse(description = "좋아요 누른 짤 페이지에서 태그 검색")
-    @PostMapping("/me/like")
-    List<AwsS3ResponseDto> searchLikeImages(@AuthenticationPrincipal User user, @RequestBody TagSearchRequestDto dto) {
-        return imageSearchService.searchLikeImages(user, dto);
+    @GetMapping("/me/like")
+    List<AwsS3ResponseDto> searchLikeImages(@AuthenticationPrincipal User user, @RequestParam(name = "tagName") List<String> tagNames) {
+        return imageSearchService.searchLikeImages(user, tagNames);
     }
 
     @ApiResponse(description = "업로드한 짤 페이지에서 태그 검색")
-    @PostMapping("/me/upload")
-    List<AwsS3ResponseDto> searchUploadImages(@AuthenticationPrincipal User user, @RequestBody TagSearchRequestDto dto) {
-        return imageSearchService.searchUploadImages(user, dto);
+    @GetMapping("/me/upload")
+    List<AwsS3ResponseDto> searchUploadImages(@AuthenticationPrincipal User user, @RequestParam(name = "tagName") List<String> tagNames) {
+        return imageSearchService.searchUploadImages(user, tagNames);
     }
 
     @ApiResponse(description = "짤 업로드")
