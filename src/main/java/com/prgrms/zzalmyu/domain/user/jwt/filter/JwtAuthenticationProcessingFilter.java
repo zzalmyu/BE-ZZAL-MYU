@@ -42,11 +42,9 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
                 .ifPresent(accessToken -> {
                     if(!jwtService.isTokenValid(accessToken)) { //accessToken 만료 시
                         throw new UserException(ErrorCode.SECURITY_INVALID_ACCESS_TOKEN);
-                    } else {
-                        checkAccessTokenAndSaveAuthentication(request, response, filterChain);
                     }
                 });
-        filterChain.doFilter(request, response);
+        checkAccessTokenAndSaveAuthentication(request, response, filterChain);
     }
 
     private void checkLogout(HttpServletRequest request) {
