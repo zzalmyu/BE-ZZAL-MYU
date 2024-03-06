@@ -22,6 +22,8 @@ public class ImageTagRepositoryImpl implements ImageTagRepositoryCustom {
                 .join(imageLike).on(imageLike.image.eq(image))
                 .where(imageLike.user.id.eq(userId))
                 .where(imageTag.tag.id.in(tagIdList))
+                .groupBy(image)
+                .having(imageTag.tag.id.countDistinct().eq(Long.valueOf(tagIdList.size())))
                 .fetch();
     }
 
@@ -29,8 +31,10 @@ public class ImageTagRepositoryImpl implements ImageTagRepositoryCustom {
     public List<Image> findUploadImagesByUserIdAndTagIdList(Long userId, List<Long> tagIdList) {
         return queryFactory.selectFrom(image)
                 .join(imageTag).on(imageTag.image.eq(image))
-                .where(image.userId.eq(userId),
-                        imageTag.tag.id.in(tagIdList))
+                .where(image.userId.eq(userId))
+                .where(imageTag.tag.id.in(tagIdList))
+                .groupBy(image)
+                .having(imageTag.tag.id.countDistinct().eq(Long.valueOf(tagIdList.size())))
                 .fetch();
     }
 

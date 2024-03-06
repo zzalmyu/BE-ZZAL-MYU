@@ -137,4 +137,12 @@ public class TagRepositoryCustomImpl implements TagRepositoryCustom {
                 .limit(5)
                 .fetch();
     }
+
+    @Override
+    public List<Long> findTagIdListByTagNameList(List<String> tagNameList) {
+        return queryFactory.select(tag.id)
+                .from(tag)
+                .where(tag.name.in(tagNameList))
+                .fetch();
+    }
 }
