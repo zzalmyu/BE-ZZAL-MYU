@@ -12,6 +12,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
@@ -20,6 +21,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 @RequiredArgsConstructor
+@Slf4j
 public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
@@ -42,17 +44,14 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
         }
         checkLogout(request); //로그아웃한 사용자면 인증 처리 안함
 
-        jwtService.extractRefreshToken(request)
-            .ifPresentOrElse(
-                refreshToken -> {
-                    if (jwtService.isTokenValid(refreshToken)) {
-                        checkRefreshTokenAndReissueAccessToken(response, refreshToken);
-                    } else {
-                        throw new UserException(ErrorCode.SECURITY_INVALID_TOKEN);
+        jwtService.extractAccessToken(request)
+                .ifPresent(accessToken -> {
+                    if (!jwtService.isTokenValid(accessToken)) { //accessToken 만료 시
+                        throw new UserException(ErrorCode.SECURITY_INVALID_ACCESS_TOKEN);
                     }
-                },
-                () -> checkAccessTokenAndAuthentication(request, response, filterChain)
-            );
+                });
+        log.info("으엥");
+        checkAccessTokenAndSaveAuthentication(request, response, filterChain);
     }
 
     private void checkLogout(HttpServletRequest request) {
