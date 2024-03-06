@@ -8,7 +8,6 @@ import com.prgrms.zzalmyu.domain.image.infrastructure.ImageLikeRepository;
 import com.prgrms.zzalmyu.domain.image.infrastructure.ImageRepository;
 import com.prgrms.zzalmyu.domain.image.presentation.dto.res.AwsS3ResponseDto;
 import com.prgrms.zzalmyu.domain.image.presentation.dto.res.ImageDetailResponse;
-import com.prgrms.zzalmyu.domain.image.presentation.dto.res.ImageResponseDto;
 import com.prgrms.zzalmyu.domain.tag.domain.entity.Tag;
 import com.prgrms.zzalmyu.domain.user.domain.entity.User;
 import lombok.RequiredArgsConstructor;
@@ -53,7 +52,7 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
-    public ImageResponseDto likeImage(Long imageId, User user) {
+    public void likeImage(Long imageId, User user) {
         Image image = getImage(imageId);
         if (isLikeImage(imageId, user.getId())) {
             throw new ImageException(ErrorCode.IMAGE_ALREADY_LIKE);
@@ -63,16 +62,14 @@ public class ImageServiceImpl implements ImageService {
                 .user(user)
                 .build()
         );
-        return ImageResponseDto.of(image, true);
     }
 
     @Override
-    public ImageResponseDto cancelLikeImage(Long imageId, User user) {
+    public void cancelLikeImage(Long imageId, User user) {
         Image image = getImage(imageId);
         ImageLike imageLike = imageLikeRepository.findByUserIdAndImageId(user.getId(), imageId)
                 .orElseThrow(() -> new ImageException(ErrorCode.IMAGE_ALREADY_LIKE_CANCLE));
         imageLikeRepository.delete(imageLike);
-        return ImageResponseDto.of(image, false);
     }
 
     @Override

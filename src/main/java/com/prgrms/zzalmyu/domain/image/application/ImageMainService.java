@@ -106,7 +106,7 @@ public class ImageMainService {
                             .forEach(image -> {
                                 boolean present = imageLikeRepository.findByUserIdAndImageId(user.getId(), image.getId()).isPresent();
                                 setOperations.add(user.getId().toString(),
-                                        ImageResponseDto.of(image, present));
+                                        ImageResponseDto.getImageByLoginUser(image, present));
                             });
                 });
 
@@ -114,7 +114,7 @@ public class ImageMainService {
                 .forEach(image -> {
                     boolean present = imageLikeRepository.findByUserIdAndImageId(user.getId(), image.getId()).isPresent();
                     setOperations.add(user.getId().toString(),
-                            ImageResponseDto.of(image, present));
+                            ImageResponseDto.getImageByLoginUser(image, present));
                 });
 
     }
