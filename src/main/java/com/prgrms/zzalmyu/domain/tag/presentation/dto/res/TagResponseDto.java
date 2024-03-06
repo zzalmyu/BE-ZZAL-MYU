@@ -1,6 +1,7 @@
 package com.prgrms.zzalmyu.domain.tag.presentation.dto.res;
 
 import com.prgrms.zzalmyu.domain.tag.domain.entity.Tag;
+import com.prgrms.zzalmyu.domain.tag.domain.entity.TagUser;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,6 +27,14 @@ public class TagResponseDto {
 
     public TagResponseDto(Tag tag) {
         this(tag.getId(), tag.getName());
+    }
+
+    public static TagResponseDto from(Tag tag, TagUser tagUser) {
+        return TagResponseDto.builder()
+                .tagId(tag.getId())
+                .tagName(tag.getName())
+                .count(tagUser.getCount())
+                .build();
     }
 
 }

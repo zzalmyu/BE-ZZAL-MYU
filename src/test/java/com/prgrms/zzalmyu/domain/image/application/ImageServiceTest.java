@@ -78,7 +78,7 @@ public class ImageServiceTest {
 
         //then
         Assertions.assertThat(imageDetail.getImgUrl()).isEqualTo(path);
-        Assertions.assertThat(imageDetail.getTags().get(0).getName()).isEqualTo(tagName);
+        Assertions.assertThat(imageDetail.getTags().get(0).getTagName()).isEqualTo(tagName);
         Assertions.assertThat(imageDetail.isImageLikeYn()).isTrue();
 
     }
