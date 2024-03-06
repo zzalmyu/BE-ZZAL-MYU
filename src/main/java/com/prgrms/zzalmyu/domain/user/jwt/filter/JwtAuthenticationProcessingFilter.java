@@ -11,7 +11,6 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -29,9 +28,12 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
     private final RedisService redisService;
     private final UserRepository userRepository;
 
+    private static String NOT_EXIST = "false";
+
     private static String NO_CHECK_URL = "/api/v1/user/logout";
 
     private GrantedAuthoritiesMapper authoritiesMapper = new NullAuthoritiesMapper();
+
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
@@ -62,11 +64,34 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
         });
     }
 
-    private void checkAccessTokenAndSaveAuthentication(HttpServletRequest request,
-                                                       HttpServletResponse response, FilterChain filterChain) {
+    private void checkRefreshTokenAndReissueAccessToken(HttpServletResponse response,
+        String refreshToken) {
+        String email = findRefreshTokenAndExtractEmail(refreshToken);
+        String reissuedRefreshToken = reissueRefreshToken(email);
+        jwtService.sendAccessTokenAndRefreshToken(response, jwtService.createAccessToken(email),
+            reissuedRefreshToken);
+    }
+
+    private String findRefreshTokenAndExtractEmail(String refreshToken) {
+        String email = redisService.getValues(refreshToken);
+
+        if (email.equals(NOT_EXIST)) {
+            throw new UserException(ErrorCode.SECURITY_INVALID_TOKEN);
+        }
+        return email;
+    }
+
+    private String reissueRefreshToken(String email) {
+        String reissuedRefreshToken = jwtService.createRefreshToken();
+        jwtService.updateRefreshToken(reissuedRefreshToken, email);
+        return reissuedRefreshToken;
+    }
+
+    private void checkAccessTokenAndAuthentication(HttpServletRequest request,
+        HttpServletResponse response, FilterChain filterChain) {
         jwtService.extractAccessToken(request)
-                .flatMap(jwtService::extractEmail)
-                .flatMap(userRepository::findByEmail).ifPresent(this::saveAuthentication);
+            .filter(jwtService::isTokenValid).flatMap(jwtService::extractEmail)
+            .flatMap(userRepository::findByEmail).ifPresent(this::saveAuthentication);
 
         try {
             filterChain.doFilter(request, response);

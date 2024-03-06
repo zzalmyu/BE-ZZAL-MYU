@@ -26,14 +26,11 @@ public enum ErrorCode {
     IMAGE_DELETION_NOT_ALLOWED(BAD_REQUEST, "신고가 3번 이상 누적되어야 이미지를 삭제할 수 있습니다."),
     TAG_NOT_FOUND_ERROR(BAD_REQUEST, "해당 태그가 존재하지 않습니다,"),
     TAG_ALREADY_EXIST_ERROR(BAD_REQUEST, "해당하는 태그가 이미 존재합니다."),
-    REFRESH_TOKEN_REQUIRED(BAD_REQUEST, "refresh token이 필요합니다."),
 
 
     // 401
     SECURITY_UNAUTHORIZED(UNAUTHORIZED, "인증 정보가 유효하지 않습니다"),
     SECURITY_INVALID_TOKEN(UNAUTHORIZED, "토큰이 유효하지 않습니다."),
-    SECURITY_INVALID_REFRESH_TOKEN(UNAUTHORIZED, "refresh token이 유효하지 않습니다."),
-    SECURITY_INVALID_ACCESS_TOKEN(UNAUTHORIZED, "access token이 유효하지 않습니다."),
     SOCIAL_LOGIN_FAIL(UNAUTHORIZED, "소셜 로그인에 실패했습니다."),
 
     // 403
