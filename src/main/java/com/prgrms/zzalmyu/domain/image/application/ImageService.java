@@ -2,6 +2,7 @@ package com.prgrms.zzalmyu.domain.image.application;
 
 import com.prgrms.zzalmyu.domain.image.presentation.dto.res.AwsS3ResponseDto;
 import com.prgrms.zzalmyu.domain.image.presentation.dto.res.ImageDetailResponse;
+import com.prgrms.zzalmyu.domain.image.presentation.dto.res.ImageResponseDto;
 import com.prgrms.zzalmyu.domain.user.domain.entity.User;
 import org.springframework.data.domain.Pageable;
 
@@ -18,12 +19,12 @@ public interface ImageService {
     /**
      * 로그인 한 유저는 짤의 좋아요를 누를 수 있다.
      */
-    void likeImage(Long imageId, User user);
+    ImageResponseDto likeImage(Long imageId, User user);
 
     /**
      * 로그인 한 유저는 짤의 좋아요를 취소할 수 있다.
      */
-    void cancelLikeImage(Long imageId, User user);
+    ImageResponseDto cancelLikeImage(Long imageId, User user);
 
     /**
      * 좋아요한 짤 조회
