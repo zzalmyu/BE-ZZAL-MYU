@@ -3,6 +3,7 @@ package com.prgrms.zzalmyu.domain.user.presentation.controller;
 import com.prgrms.zzalmyu.domain.user.application.UserService;
 import com.prgrms.zzalmyu.domain.user.domain.entity.User;
 import com.prgrms.zzalmyu.domain.user.jwt.service.JwtService;
+import com.prgrms.zzalmyu.domain.user.presentation.dto.res.UserInfoResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -37,6 +38,12 @@ public class UserController {
     public ResponseEntity<Void> withdraw(@AuthenticationPrincipal User user) {
         userService.withdraw(user.getId());
         return ResponseEntity.noContent().build();
+    }
+
+    @ApiResponse(description = "유저 정보 반환")
+    @GetMapping("/info")
+    public UserInfoResponse getUserInfo(@AuthenticationPrincipal User user) {
+        return UserInfoResponse.of(user);
     }
 
     //    테스트용 컨트롤러
