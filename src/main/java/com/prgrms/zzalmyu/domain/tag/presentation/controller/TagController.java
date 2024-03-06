@@ -70,4 +70,10 @@ public class TagController {
     public List<TagResponseDto> searchTagFromUploadImages(@AuthenticationPrincipal User user, @RequestParam String keyword) {
         return tagService.searchTagFromUploadImages(user, keyword);
     }
+
+    @ApiResponse(description = "태그 사용 횟수 증가")
+    @PostMapping("/use")
+    public TagResponseDto increaseTagCount(@AuthenticationPrincipal User user, @RequestParam String newTagName) {
+        return tagService.increaseTagCount(user, newTagName);
+    }
 }
