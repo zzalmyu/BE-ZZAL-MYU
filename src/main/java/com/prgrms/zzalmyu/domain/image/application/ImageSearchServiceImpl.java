@@ -30,6 +30,13 @@ public class ImageSearchServiceImpl implements ImageSearchService {
         return convertListToResponseDtoList(imageList);
     }
 
+    @Override
+    public List<AwsS3ResponseDto> searchImages(List<String> tagNames) {
+        List<Long> tagIdList = tagRepository.findTagIdListByTagNameList(tagNames);
+        List<Image> images = imageTagRepository.findImagesByTagIdList(tagIdList);
+        return convertListToResponseDtoList(images);
+    }
+
     private List<AwsS3ResponseDto> convertListToResponseDtoList(List<Image> imageList) {
         return imageList.stream()
                 .map(AwsS3ResponseDto::new)
