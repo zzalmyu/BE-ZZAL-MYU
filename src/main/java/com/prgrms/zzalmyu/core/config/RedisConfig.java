@@ -16,13 +16,21 @@ public class RedisConfig {
     @Value("${spring.data.redis.host}")
     private String host;
 
-    @Value("${spring.data.redis.port}")
-    private int port;
+    @Value("${spring.data.redis.port1}")
+    private int port1;
+
+    @Value("${spring.data.redis.port2}")
+    private int port2;
 
     // RedisProperties로 yaml에 저장한 host, post를 연결
     @Bean
-    public RedisConnectionFactory redisConnectionFactory() {
-        return new LettuceConnectionFactory(host, port);
+    public RedisConnectionFactory defaultRedisConnectionFactory() {
+        return new LettuceConnectionFactory(host, port1);
+    }
+
+    @Bean
+    public RedisConnectionFactory chatRedisConnectionFactory() {
+        return new LettuceConnectionFactory(host, port2);
     }
 
     // serializer 설정으로 redis-cli를 통해 직접 데이터를 조회할 수 있도록 설정
@@ -31,7 +39,7 @@ public class RedisConfig {
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
         redisTemplate.setKeySerializer(new StringRedisSerializer());
         redisTemplate.setValueSerializer(new StringRedisSerializer());
-        redisTemplate.setConnectionFactory(redisConnectionFactory());
+        redisTemplate.setConnectionFactory(defaultRedisConnectionFactory());
 
         return redisTemplate;
     }
@@ -41,7 +49,17 @@ public class RedisConfig {
         RedisTemplate<String, ImageResponseDto> redisTemplate = new RedisTemplate<>();
         redisTemplate.setKeySerializer(new StringRedisSerializer());
         redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer(ImageResponseDto.class));
-        redisTemplate.setConnectionFactory(redisConnectionFactory());
+        redisTemplate.setConnectionFactory(defaultRedisConnectionFactory());
+
+        return redisTemplate;
+    }
+
+    @Bean
+    public RedisTemplate<String, String> chatRedisTemplate() {
+        RedisTemplate<String, String> redisTemplate = new RedisTemplate<>();
+        redisTemplate.setKeySerializer(new StringRedisSerializer());
+        redisTemplate.setValueSerializer(new StringRedisSerializer());
+        redisTemplate.setConnectionFactory(chatRedisConnectionFactory());
 
         return redisTemplate;
     }

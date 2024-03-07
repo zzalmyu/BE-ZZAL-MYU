@@ -18,4 +18,7 @@ public class ChatService {
         int randomNumber = random.nextInt(suffix.length);
         return "짤" + suffix[randomNumber] + "이";
     }
+
+    public void saveNickname(String email, String nickname) {
+    }
 }

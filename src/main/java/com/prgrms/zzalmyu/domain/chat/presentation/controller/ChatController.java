@@ -22,6 +22,7 @@ public class ChatController {
     @MessageMapping("/hello")
     public void greeting(ChatHelloRequest request) {
         String nickname = chatService.generateNickname();
+        chatService.saveNickname(request.getEmail(), nickname);
         simpMessageSendingOperations.convertAndSend("/sub/" + request.getChannelId(), ChatHelloResponse.of(request.getEmail(), nickname));
     }
 
