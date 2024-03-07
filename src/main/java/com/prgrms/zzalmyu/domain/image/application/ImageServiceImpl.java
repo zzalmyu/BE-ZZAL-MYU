@@ -30,6 +30,9 @@ public class ImageServiceImpl implements ImageService {
     public ImageDetailResponse getImageDetail(Long imageId, User user) {
         Image image = getImage(imageId);
         List<Tag> tags = imageRepository.findTagsByImageId(imageId);
+        if (user==null)
+            return ImageDetailResponse.of(image, tags, false);
+
         boolean likeImage = isLikeImage(imageId, user.getId());
         return ImageDetailResponse.of(image, tags, likeImage);
     }

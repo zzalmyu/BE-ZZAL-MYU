@@ -18,4 +18,9 @@ public interface ImageSearchService {
      *
      */
     List<AwsS3ResponseDto> searchUploadImages(User user, List<String> tagNames);
+
+    /**
+     * 전체 짤 태그 필터링
+     */
+    List<AwsS3ResponseDto> searchImages(List<String> tagNames);
 }

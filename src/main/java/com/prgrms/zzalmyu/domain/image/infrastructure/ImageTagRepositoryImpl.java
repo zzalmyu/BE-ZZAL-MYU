@@ -46,4 +46,15 @@ public class ImageTagRepositoryImpl implements ImageTagRepositoryCustom {
                 .limit(limit)
                 .fetch();
     }
+
+    @Override
+    public List<Image> findImagesByTagIdList(List<Long> tagIdList) {
+        return queryFactory.selectFrom(image)
+                .join(imageTag).on(imageTag.image.eq(image))
+                .where(imageTag.tag.id.in(tagIdList))
+                .groupBy(image)
+                .having(imageTag.tag.id.countDistinct().eq(Long.valueOf(tagIdList.size())))
+                .fetch();
+    }
+
 }

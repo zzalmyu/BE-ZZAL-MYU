@@ -98,4 +98,10 @@ public class ImageController {
         }
         return imageMainService.getRecommendedImage(user, pageable);
     }
+
+    @ApiResponse(description = "메인페이지에서 태그 검색")
+    @GetMapping("/me")
+    List<AwsS3ResponseDto> searchImages(@AuthenticationPrincipal User user, @RequestParam(name = "tagName") List<String> tagNames) {
+        return imageSearchService.searchImages(tagNames);
+    }
 }
