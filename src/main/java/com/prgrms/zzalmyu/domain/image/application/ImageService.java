@@ -29,12 +29,12 @@ public interface ImageService {
     /**
      * 좋아요한 짤 조회
      */
-    List<AwsS3ResponseDto> getLikeImages(User user, Pageable pageable);
+    List<ImageResponseDto> getLikeImages(User user, Pageable pageable);
 
     /**
      * 업로드한 짤 조회
      */
-    List<AwsS3ResponseDto> getUploadImages(User user, Pageable pageable);
+    List<ImageResponseDto> getUploadImages(User user, Pageable pageable);
 
     List<AwsS3ResponseDto> getAllImages(Pageable pageable);
 }

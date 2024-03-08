@@ -8,6 +8,7 @@ import com.prgrms.zzalmyu.domain.image.infrastructure.ImageLikeRepository;
 import com.prgrms.zzalmyu.domain.image.infrastructure.ImageRepository;
 import com.prgrms.zzalmyu.domain.image.presentation.dto.res.AwsS3ResponseDto;
 import com.prgrms.zzalmyu.domain.image.presentation.dto.res.ImageDetailResponse;
+import com.prgrms.zzalmyu.domain.image.presentation.dto.res.ImageResponseDto;
 import com.prgrms.zzalmyu.domain.tag.domain.entity.Tag;
 import com.prgrms.zzalmyu.domain.user.domain.entity.User;
 import com.prgrms.zzalmyu.domain.user.domain.enums.Role;
@@ -93,7 +94,7 @@ public class ImageServiceTest {
         when(imageRepository.findImageLikesByUserId(any(),any())).thenReturn(images);
 
         //when
-        List<AwsS3ResponseDto> likeImages = imageService.getLikeImages(user,pageable);
+        List<ImageResponseDto> likeImages = imageService.getLikeImages(user,pageable);
 
         //then
         Assertions.assertThat(likeImages.get(0).getImageId()).isEqualTo(1L);
@@ -106,10 +107,10 @@ public class ImageServiceTest {
         Pageable pageable = PageRequest.of(0, 10);
         ReflectionTestUtils.setField(image,"id",1L);
         List<Image>images =List.of(image);
-        when(imageRepository.findByUserId(any(),any())).thenReturn(images);
+        when(imageRepository.findByUserId(any(),any())).thenReturn(anyList());
 
         //when
-        List<AwsS3ResponseDto> likeImages = imageService.getUploadImages(user,pageable);
+        List<ImageResponseDto> likeImages = imageService.getUploadImages(user,pageable);
 
         //then
         Assertions.assertThat(likeImages.get(0).getImageId()).isEqualTo(1L);
