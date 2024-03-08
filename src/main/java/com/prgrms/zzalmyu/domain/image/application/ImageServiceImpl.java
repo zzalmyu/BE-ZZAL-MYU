@@ -39,19 +39,22 @@ public class ImageServiceImpl implements ImageService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<AwsS3ResponseDto> getLikeImages(User user, Pageable pageable) {
+    public List<ImageResponseDto> getLikeImages(User user, Pageable pageable) {
         return imageRepository.findImageLikesByUserId(user.getId(),pageable)
                 .stream()
-                .map(AwsS3ResponseDto::new)
+                .map(image-> ImageResponseDto.of(image, true))
                 .toList();
     }
 
     @Transactional(readOnly = true)
     @Override
-    public List<AwsS3ResponseDto> getUploadImages(User user,Pageable pageable) {
+    public List<ImageResponseDto> getUploadImages(User user,Pageable pageable) {
         return imageRepository.findByUserId(user.getId(),pageable)
                 .stream()
-                .map(AwsS3ResponseDto::new)
+                .map(image ->{
+                    boolean like = imageLikeRepository.findByUserIdAndImageId(user.getId(), image.getId()).isPresent();
+                    return ImageResponseDto.of(image, like);
+                })
                 .toList();
     }
 
