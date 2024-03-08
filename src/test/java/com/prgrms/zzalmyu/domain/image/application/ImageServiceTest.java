@@ -106,14 +106,15 @@ public class ImageServiceTest {
         //given
         Pageable pageable = PageRequest.of(0, 10);
         ReflectionTestUtils.setField(image,"id",1L);
-        List<Image>images =List.of(image);
-        when(imageRepository.findByUserId(any(),any())).thenReturn(anyList());
+        ImageResponseDto imageResponseDto = ImageResponseDto.of(image, true);
+        List<ImageResponseDto> imageResponseDto1 = List.of(imageResponseDto);
+        when(imageRepository.findByUserId(any(),any())).thenReturn(imageResponseDto1);
 
         //when
         List<ImageResponseDto> likeImages = imageService.getUploadImages(user,pageable);
 
         //then
-        Assertions.assertThat(likeImages.get(0).getImageId()).isEqualTo(1L);
+        Assertions.assertThat(imageResponseDto1.get(0).getImageId()).isEqualTo(1L);
     }
 
     @Test
