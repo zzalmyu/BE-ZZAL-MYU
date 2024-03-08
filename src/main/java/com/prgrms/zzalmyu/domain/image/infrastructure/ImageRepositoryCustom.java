@@ -11,7 +11,7 @@ import java.util.List;
 public interface ImageRepositoryCustom {
     List<ImageResponseDto> getTopUserUsedImage(Pageable pageable);
 
-    List<Image> findTopImageLike(int limit);
+    List<ImageResponseDto> findTopImageLike(int limit);
 
     List<Image> findImageLikesByUserId(Long userId, Pageable pageable);
     List<ImageResponseDto> findByUserId(Long userId, Pageable pageable);
