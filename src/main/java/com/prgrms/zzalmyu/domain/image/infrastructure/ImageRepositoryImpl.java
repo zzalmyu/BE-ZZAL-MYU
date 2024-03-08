@@ -53,6 +53,8 @@ public class ImageRepositoryImpl implements ImageRepositoryCustom {
         return queryFactory.selectFrom(image)
                 .join(imageLike).on(image.id.eq(imageLike.image.id))
                 .where(imageLike.user.id.eq(userId))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
                 .fetch();
     }
 
@@ -64,7 +66,9 @@ public class ImageRepositoryImpl implements ImageRepositoryCustom {
                 .from(image)
                 .leftJoin(imageLike).on(image.id.eq(imageLike.image.id))
                 .where(image.userId.eq(userId))
-                .fetch();
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch(); 
     }
 }
 
