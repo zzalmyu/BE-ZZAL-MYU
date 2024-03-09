@@ -1,6 +1,8 @@
 package com.prgrms.zzalmyu.domain.image.infrastructure;
 
 import com.prgrms.zzalmyu.domain.image.domain.entity.Image;
+import com.prgrms.zzalmyu.domain.image.presentation.dto.res.ImageResponseDto;
+import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 
@@ -39,8 +41,11 @@ public class ImageTagRepositoryImpl implements ImageTagRepositoryCustom {
     }
 
     @Override
-    public List<Image> findImageByTagIdAndLimit(Long tagId, int limit) {
-        return queryFactory.selectFrom(image)
+    public List<ImageResponseDto> findImageByTagIdAndLimit(Long tagId, int limit) {
+        return queryFactory.select(Projections.constructor(ImageResponseDto.class,
+                        image.id,image.title,image.path,imageLike.id.isNotNull()))
+                .from(image)
+                .leftJoin(imageLike).on(image.id.eq(imageLike.image.id))
                 .join(imageTag).on(imageTag.image.eq(image))
                 .where(imageTag.tag.id.eq(tagId))
                 .limit(limit)

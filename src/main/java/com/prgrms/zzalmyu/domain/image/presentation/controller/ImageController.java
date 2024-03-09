@@ -36,13 +36,13 @@ public class ImageController {
 
     @ApiResponse(description = "좋아요 누른 짤 리스트 반환")
     @GetMapping("/like")
-    public List<AwsS3ResponseDto> getImageLikes(@AuthenticationPrincipal User user, @PageableDefault(page = 0,size = 10) Pageable pageable) {
+    public List<ImageResponseDto> getImageLikes(@AuthenticationPrincipal User user, @PageableDefault(page = 0,size = 10) Pageable pageable) {
         return imageService.getLikeImages(user, pageable);
     }
 
     @ApiResponse(description = "업로드한 짤 리스트 반환")
     @GetMapping("/upload")
-    public List<AwsS3ResponseDto> getImageUploads(@AuthenticationPrincipal User user, @PageableDefault(page = 0,size = 10) Pageable pageable) {
+    public List<ImageResponseDto> getImageUploads(@AuthenticationPrincipal User user, @PageableDefault(page = 0,size = 10) Pageable pageable) {
         return imageService.getUploadImages(user, pageable);
     }
 

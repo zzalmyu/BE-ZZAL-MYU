@@ -29,15 +29,13 @@ public class ImageMainService {
     private TagUserRepository tagUserRepository;
     private ImageRepository imageRepository;
     private ImageTagRepository imageTagRepository;
-    private ImageLikeRepository imageLikeRepository;
     private RedisTemplate<String, ImageResponseDto> imageRedisTemplate;
     private SetOperations<String, ImageResponseDto> setOperations;
 
     @Autowired
-    public ImageMainService(TagUserRepository tagUserRepository, ImageRepository imageRepository, ImageLikeRepository imageLikeRepository, ImageTagRepository imageTagRepository, RedisTemplate<String, ImageResponseDto> imageRedisTemplate) {
+    public ImageMainService(TagUserRepository tagUserRepository, ImageRepository imageRepository, ImageTagRepository imageTagRepository, RedisTemplate<String, ImageResponseDto> imageRedisTemplate) {
         this.tagUserRepository = tagUserRepository;
         this.imageRepository = imageRepository;
-        this.imageLikeRepository = imageLikeRepository;
         this.imageTagRepository = imageTagRepository;
         this.imageRedisTemplate = imageRedisTemplate;
         setOperations = this.imageRedisTemplate.opsForSet(); // redis set 자료구조 이용(초기화)
@@ -102,19 +100,14 @@ public class ImageMainService {
                     int limit = (tagUser.getCount() * MAX) / totalCount;
 
                     imageTagRepository.findImageByTagIdAndLimit(tagUser.getTagId(), limit)
-                            .stream()
-                            .forEach(image -> {
-                                boolean present = imageLikeRepository.findByUserIdAndImageId(user.getId(), image.getId()).isPresent();
-                                setOperations.add(user.getId().toString(),
-                                        ImageResponseDto.of(image, present));
+                            .forEach(imageResponseDto -> {
+                                setOperations.add(user.getId().toString(), imageResponseDto);
                             });
                 });
 
         imageRepository.findTopImageLike(BEST_IMAGE)
-                .forEach(image -> {
-                    boolean present = imageLikeRepository.findByUserIdAndImageId(user.getId(), image.getId()).isPresent();
-                    setOperations.add(user.getId().toString(),
-                            ImageResponseDto.of(image, present));
+                .forEach(imageResponseDto -> {
+                    setOperations.add(user.getId().toString(), imageResponseDto);
                 });
 
     }
