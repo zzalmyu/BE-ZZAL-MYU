@@ -17,7 +17,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -142,7 +142,7 @@ class ImageTagRepositoryTest {
 
         //When
         List<Long> tagIdList = List.of(tag1.getId(), tag2.getId());
-        List<ImageResponseDto> imageResultList = imageTagRepository.findUploadImagesByUserIdAndTagIdList(userId, tagIdList, Pageable.ofSize(0));
+        List<ImageResponseDto> imageResultList = imageTagRepository.findUploadImagesByUserIdAndTagIdList(userId, tagIdList, PageRequest.of(0, 15));
         //Then
         assertThat(imageResultList).hasSize(1);
         assertThat(imageResultList.get(0).getTitle()).isEqualTo(image1.getTitle());
@@ -217,7 +217,7 @@ class ImageTagRepositoryTest {
          imageLikeRepository.save(imageLike);
          //When
          List<Long> tagIdList = List.of(tag1.getId(), tag2.getId());
-         List<Image> likeImageResult = imageTagRepository.findLikeImagesByUserIdAndTagIdList(user1.getId(), tagIdList, Pageable.ofSize(0));
+         List<Image> likeImageResult = imageTagRepository.findLikeImagesByUserIdAndTagIdList(user1.getId(), tagIdList, PageRequest.of(0, 15));
          //Then
          assertThat(likeImageResult).hasSize(1);
          assertThat(likeImageResult.get(0).getTitle()).isEqualTo(image1.getTitle());
