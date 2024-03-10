@@ -3,9 +3,11 @@ package com.prgrms.zzalmyu.domain.image.application;
 import com.prgrms.zzalmyu.domain.image.domain.entity.Image;
 import com.prgrms.zzalmyu.domain.image.infrastructure.ImageTagRepository;
 import com.prgrms.zzalmyu.domain.image.presentation.dto.res.AwsS3ResponseDto;
+import com.prgrms.zzalmyu.domain.image.presentation.dto.res.ImageResponseDto;
 import com.prgrms.zzalmyu.domain.tag.infrastructure.TagRepository;
 import com.prgrms.zzalmyu.domain.user.domain.entity.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,29 +19,27 @@ public class ImageSearchServiceImpl implements ImageSearchService {
     private final TagRepository tagRepository;
 
     @Override
-    public List<AwsS3ResponseDto> searchLikeImages(User user, List<String> tagNames) {
+    public List<ImageResponseDto> searchLikeImages(User user, List<String> tagNames, Pageable pageable) {
         List<Long> tagIdList = tagRepository.findTagIdListByTagNameList(tagNames);
-        List<Image> imageList = imageTagRepository.findLikeImagesByUserIdAndTagIdList(user.getId(), tagIdList);
-        return convertListToResponseDtoList(imageList);
+        List<Image> imageList = imageTagRepository.findLikeImagesByUserIdAndTagIdList(user.getId(), tagIdList, pageable);
+        return convertLikeListToResponseDtoList(imageList);
     }
 
     @Override
-    public List<AwsS3ResponseDto> searchUploadImages(User user, List<String> tagNames) {
+    public List<ImageResponseDto> searchUploadImages(User user, List<String> tagNames, Pageable pageable) {
         List<Long> tagIdList = tagRepository.findTagIdListByTagNameList(tagNames);
-        List<Image> imageList = imageTagRepository.findUploadImagesByUserIdAndTagIdList(user.getId(), tagIdList);
-        return convertListToResponseDtoList(imageList);
+        return imageTagRepository.findUploadImagesByUserIdAndTagIdList(user.getId(), tagIdList, pageable);
     }
 
     @Override
-    public List<AwsS3ResponseDto> searchImages(List<String> tagNames) {
+    public List<ImageResponseDto> searchImages(List<String> tagNames, Pageable pageable) {
         List<Long> tagIdList = tagRepository.findTagIdListByTagNameList(tagNames);
-        List<Image> images = imageTagRepository.findImagesByTagIdList(tagIdList);
-        return convertListToResponseDtoList(images);
+        return imageTagRepository.findImagesByTagIdList(tagIdList, pageable);
     }
 
-    private List<AwsS3ResponseDto> convertListToResponseDtoList(List<Image> imageList) {
+    private List<ImageResponseDto> convertLikeListToResponseDtoList(List<Image> imageList) {
         return imageList.stream()
-                .map(AwsS3ResponseDto::new)
+                .map(image -> ImageResponseDto.of(image, true))
                 .toList();
     }
 }

@@ -1,5 +1,6 @@
 package com.prgrms.zzalmyu.domain.image.presentation.controller;
 
+import com.amazonaws.util.CollectionUtils;
 import com.prgrms.zzalmyu.domain.image.application.*;
 import com.prgrms.zzalmyu.domain.image.presentation.dto.req.ImageUploadRequestDto;
 import com.prgrms.zzalmyu.domain.image.presentation.dto.res.AwsS3ResponseDto;
@@ -34,16 +35,22 @@ public class ImageController {
         return imageService.getImageDetail(imageId, user);
     }
 
-    @ApiResponse(description = "좋아요 누른 짤 리스트 반환")
+    @ApiResponse(description = "좋아요 누른 짤 전체 또는 태그 검색")
     @GetMapping("/like")
-    public List<ImageResponseDto> getImageLikes(@AuthenticationPrincipal User user, @PageableDefault(page = 0,size = 10) Pageable pageable) {
-        return imageService.getLikeImages(user, pageable);
+    public List<ImageResponseDto> getImageLikes(@AuthenticationPrincipal User user, @RequestParam(name = "tagName", required = false) List<String> tagNames, @PageableDefault(page = 0,size = 15) Pageable pageable) {
+        if (CollectionUtils.isNullOrEmpty(tagNames)) {
+            return imageService.getLikeImages(user, pageable);
+        }
+        return imageSearchService.searchLikeImages(user, tagNames, pageable);
     }
 
-    @ApiResponse(description = "업로드한 짤 리스트 반환")
+    @ApiResponse(description = "업로드한 짤 전체 또는 태그 검색")
     @GetMapping("/upload")
-    public List<ImageResponseDto> getImageUploads(@AuthenticationPrincipal User user, @PageableDefault(page = 0,size = 10) Pageable pageable) {
-        return imageService.getUploadImages(user, pageable);
+    public List<ImageResponseDto> getImageUploads(@AuthenticationPrincipal User user, @RequestParam(name = "tagName", required = false) List<String> tagNames, @PageableDefault(page = 0,size = 15) Pageable pageable) {
+        if (CollectionUtils.isNullOrEmpty(tagNames)) {
+            return imageService.getUploadImages(user, pageable);
+        }
+        return imageSearchService.searchUploadImages(user, tagNames, pageable);
     }
 
     @ApiResponse(description = "짤 좋아요 클릭")
@@ -56,18 +63,6 @@ public class ImageController {
     @PostMapping("/{imageId}/like/cancel")
     public ImageResponseDto cancelLikeImage(@AuthenticationPrincipal User user, @PathVariable Long imageId) {
         return imageService.cancelLikeImage(imageId, user);
-    }
-
-    @ApiResponse(description = "좋아요 누른 짤 페이지에서 태그 검색")
-    @GetMapping("/me/like")
-    List<AwsS3ResponseDto> searchLikeImages(@AuthenticationPrincipal User user, @RequestParam(name = "tagName") List<String> tagNames) {
-        return imageSearchService.searchLikeImages(user, tagNames);
-    }
-
-    @ApiResponse(description = "업로드한 짤 페이지에서 태그 검색")
-    @GetMapping("/me/upload")
-    List<AwsS3ResponseDto> searchUploadImages(@AuthenticationPrincipal User user, @RequestParam(name = "tagName") List<String> tagNames) {
-        return imageSearchService.searchUploadImages(user, tagNames);
     }
 
     @ApiResponse(description = "짤 업로드")
@@ -101,7 +96,7 @@ public class ImageController {
 
     @ApiResponse(description = "메인페이지에서 태그 검색")
     @GetMapping("/me")
-    List<AwsS3ResponseDto> searchImages(@AuthenticationPrincipal User user, @RequestParam(name = "tagName") List<String> tagNames) {
-        return imageSearchService.searchImages(tagNames);
+    List<ImageResponseDto> searchImages(@AuthenticationPrincipal User user, @RequestParam(name = "tagName") List<String> tagNames, @PageableDefault(page = 0, size = 15) Pageable pageable) {
+        return imageSearchService.searchImages(tagNames, pageable);
     }
 }
