@@ -5,6 +5,7 @@ import com.prgrms.zzalmyu.domain.chat.infrastructure.ImageChatCountRepository;
 import com.prgrms.zzalmyu.domain.image.domain.entity.Image;
 import com.prgrms.zzalmyu.domain.image.domain.entity.ImageLike;
 import com.prgrms.zzalmyu.domain.image.domain.entity.ImageTag;
+import com.prgrms.zzalmyu.domain.image.presentation.dto.res.ImageResponseDto;
 import com.prgrms.zzalmyu.domain.tag.domain.entity.Tag;
 import com.prgrms.zzalmyu.domain.tag.infrastructure.TagRepository;
 import com.prgrms.zzalmyu.domain.user.domain.entity.User;
@@ -16,6 +17,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -140,7 +142,7 @@ class ImageTagRepositoryTest {
 
         //When
         List<Long> tagIdList = List.of(tag1.getId(), tag2.getId());
-        List<Image> imageResultList = imageTagRepository.findUploadImagesByUserIdAndTagIdList(userId, tagIdList);
+        List<ImageResponseDto> imageResultList = imageTagRepository.findUploadImagesByUserIdAndTagIdList(userId, tagIdList, Pageable.ofSize(0));
         //Then
         assertThat(imageResultList).hasSize(1);
         assertThat(imageResultList.get(0).getTitle()).isEqualTo(image1.getTitle());
@@ -215,7 +217,7 @@ class ImageTagRepositoryTest {
          imageLikeRepository.save(imageLike);
          //When
          List<Long> tagIdList = List.of(tag1.getId(), tag2.getId());
-         List<Image> likeImageResult = imageTagRepository.findLikeImagesByUserIdAndTagIdList(user1.getId(), tagIdList);
+         List<Image> likeImageResult = imageTagRepository.findLikeImagesByUserIdAndTagIdList(user1.getId(), tagIdList, Pageable.ofSize(0));
          //Then
          assertThat(likeImageResult).hasSize(1);
          assertThat(likeImageResult.get(0).getTitle()).isEqualTo(image1.getTitle());
