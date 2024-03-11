@@ -31,31 +31,41 @@ public class ImageRepositoryImpl implements ImageRepositoryCustom {
                 .limit(pageable.getPageSize())
                 .fetch();
 
-
-//        return queryFactory
-//                .selectDistinct(Projections.constructor(AwsS3ResponseDto.class,
-//                                image.id,image.title,image.path))
-//                .from(image)
-//                .join(imageTag).on(imageTag.image.eq(image))
-//                .join(tag).on(imageTag.tag.eq(tag))
-//                .join(tagUser).on(tagUser.tagId.eq(tag.id))
-//                .groupBy(tagUser.tagId,image.id)
-//                .orderBy(tagUser.count.sum().desc())
-//                .offset(pageable.getOffset())
-//                .limit(pageable.getPageSize())
-//                .fetch();
-
     }
 
     @Override
-    public List<Image> findTopImageLike(int limit) {
+    public List<ImageResponseDto> findTopImageLike(int limit) {
         return queryFactory
-                .select(image)
-                .from(imageLike)
-                .join(image).on(image.id.eq(imageLike.image.id))
+                .select(Projections.constructor(ImageResponseDto.class,
+                        image.id,image.title,image.path,imageLike.id.isNotNull()))
+                .from(image)
+                .leftJoin(imageLike).on(image.id.eq(imageLike.image.id))
                 .groupBy(imageLike.image.id)
                 .orderBy(imageLike.count().desc())
                 .limit(limit)
+                .fetch();
+    }
+
+    @Override
+    public List<Image> findImageLikesByUserId(Long userId, Pageable pageable) {
+        return queryFactory.selectFrom(image)
+                .join(imageLike).on(image.id.eq(imageLike.image.id))
+                .where(imageLike.user.id.eq(userId))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+    }
+
+    @Override
+    public List<ImageResponseDto> findByUserId(Long userId, Pageable pageable) {
+
+        return queryFactory.select(Projections.constructor(ImageResponseDto.class,
+                        image.id,image.title,image.path,imageLike.id.isNotNull()))
+                .from(image)
+                .leftJoin(imageLike).on(image.id.eq(imageLike.image.id))
+                .where(image.userId.eq(userId))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
                 .fetch();
     }
 }
