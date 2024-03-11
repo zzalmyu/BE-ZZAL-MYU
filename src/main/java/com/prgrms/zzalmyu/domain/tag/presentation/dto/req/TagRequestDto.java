@@ -6,11 +6,11 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class TagCreateRequestDto {
+public class TagRequestDto {
 
     String name;
 
-    public TagCreateRequestDto(String name) {
+    public TagRequestDto(String name) {
         this.name = name;
     }
 }
