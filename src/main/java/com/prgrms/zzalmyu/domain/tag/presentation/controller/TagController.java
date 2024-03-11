@@ -2,7 +2,7 @@ package com.prgrms.zzalmyu.domain.tag.presentation.controller;
 
 
 import com.prgrms.zzalmyu.domain.tag.application.TagService;
-import com.prgrms.zzalmyu.domain.tag.presentation.dto.req.TagCreateRequestDto;
+import com.prgrms.zzalmyu.domain.tag.presentation.dto.req.TagRequestDto;
 import com.prgrms.zzalmyu.domain.tag.presentation.dto.res.TagMeResponseDto;
 import com.prgrms.zzalmyu.domain.tag.presentation.dto.res.TagResponseDto;
 import com.prgrms.zzalmyu.domain.user.domain.entity.User;
@@ -49,7 +49,7 @@ public class TagController {
 
     @ApiResponse(description = "태그 생성")
     @PostMapping
-    public TagResponseDto createTag(@RequestBody TagCreateRequestDto dto) {
+    public TagResponseDto createTag(@RequestBody TagRequestDto dto) {
         return tagService.createTag(dto.getName());
     }
 
@@ -73,7 +73,7 @@ public class TagController {
 
     @ApiResponse(description = "태그 사용 횟수 증가")
     @PostMapping("/use")
-    public TagResponseDto increaseTagCount(@AuthenticationPrincipal User user, @RequestParam String newTagName) {
-        return tagService.increaseTagCount(user, newTagName);
+    public TagResponseDto increaseTagCount(@AuthenticationPrincipal User user, @RequestBody TagRequestDto dto) {
+        return tagService.increaseTagCount(user, dto.getName());
     }
 }
