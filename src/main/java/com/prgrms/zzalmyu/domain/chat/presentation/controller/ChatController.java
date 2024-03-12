@@ -28,7 +28,7 @@ public class ChatController {
 
     @MessageMapping("/image")
     public void sendPhoto(ChatPhotoRequest request) {
-        log.info("사진 보낸당");
-        simpMessageSendingOperations.convertAndSend("/sub/" + request.getChannelId(), ChatImageResponse.of(request.getEmail(), request.getImage()));
+        String nickname = chatService.getNickname(request.getEmail());
+        simpMessageSendingOperations.convertAndSend("/sub/" + request.getChannelId(), ChatImageResponse.of(request.getEmail(), request.getImage(), nickname));
     }
 }

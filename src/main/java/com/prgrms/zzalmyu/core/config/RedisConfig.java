@@ -13,13 +13,13 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 @Configuration
 public class RedisConfig {
 
-    @Value("${spring.data.redis.host}")
+    @Value("${spring.data.redis1.host}")
     private String host;
 
-    @Value("${spring.data.redis.port1}")
+    @Value("${spring.data.redis1.port}")
     private int port1;
 
-    @Value("${spring.data.redis.port2}")
+    @Value("${spring.data.redis2.port}")
     private int port2;
 
     // RedisProperties로 yaml에 저장한 host, post를 연결
