@@ -22,12 +22,13 @@ public class ChatController {
     @MessageMapping("/hello")
     public void greeting(ChatHelloRequest request) {
         String nickname = chatService.generateNickname();
+        chatService.saveNickname(request.getEmail(), nickname);
         simpMessageSendingOperations.convertAndSend("/sub/" + request.getChannelId(), ChatHelloResponse.of(request.getEmail(), nickname));
     }
 
     @MessageMapping("/image")
     public void sendPhoto(ChatPhotoRequest request) {
-        log.info("사진 보낸당");
-        simpMessageSendingOperations.convertAndSend("/sub/" + request.getChannelId(), ChatImageResponse.of(request.getEmail(), request.getImage()));
+        String nickname = chatService.getNickname(request.getEmail());
+        simpMessageSendingOperations.convertAndSend("/sub/" + request.getChannelId(), ChatImageResponse.of(request.getEmail(), request.getImage(), nickname));
     }
 }

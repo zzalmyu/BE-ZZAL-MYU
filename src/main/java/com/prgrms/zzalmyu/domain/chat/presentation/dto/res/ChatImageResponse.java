@@ -12,10 +12,14 @@ import java.util.List;
 @Getter
 @Builder
 public class ChatImageResponse {
+
     private String email;
+
     private String image;
 
-    public static ChatImageResponse of(String email, String image) {
-        return new ChatImageResponse(email, image);
+    private String nickname;
+
+    public static ChatImageResponse of(String email, String image, String nickname) {
+        return new ChatImageResponse(email, image, nickname);
     }
 }

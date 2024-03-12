@@ -27,7 +27,8 @@ public enum ErrorCode {
     TAG_NOT_FOUND_ERROR(BAD_REQUEST, "해당 태그가 존재하지 않습니다,"),
     TAG_ALREADY_EXIST_ERROR(BAD_REQUEST, "해당하는 태그가 이미 존재합니다."),
     REFRESH_TOKEN_REQUIRED(BAD_REQUEST, "refresh token이 필요합니다."),
-
+    EMAIL_NOT_EXTRACTED(BAD_REQUEST, "이메일을 추출할 수 없습니다."),
+    CHAT_NICKNAME_NOT_FOUND(BAD_REQUEST, "이메일에 매칭되는 채팅 닉네임이 존재하지 않습니다."),
 
     // 401
     SECURITY_UNAUTHORIZED(UNAUTHORIZED, "인증 정보가 유효하지 않습니다"),
