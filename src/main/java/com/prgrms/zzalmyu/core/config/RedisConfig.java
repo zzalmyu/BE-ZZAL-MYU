@@ -6,9 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
-import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
@@ -23,7 +21,7 @@ public class RedisConfig {
 
     // RedisProperties로 yaml에 저장한 host, post를 연결
     @Bean
-    public RedisConnectionFactory defaultRedisConnectionFactory() {
+    public RedisConnectionFactory redisConnectionFactory() {
         return new LettuceConnectionFactory(host, port);
     }
 
@@ -32,9 +30,8 @@ public class RedisConfig {
     public RedisTemplate<String, Object> redisTemplate() {
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
         redisTemplate.setKeySerializer(new StringRedisSerializer());
-        redisTemplate.setHashValueSerializer(new GenericJackson2JsonRedisSerializer());
-        redisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer());
-        redisTemplate.setConnectionFactory(defaultRedisConnectionFactory());
+        redisTemplate.setValueSerializer(new StringRedisSerializer());
+        redisTemplate.setConnectionFactory(redisConnectionFactory());
 
         return redisTemplate;
     }
@@ -44,13 +41,8 @@ public class RedisConfig {
         RedisTemplate<String, ImageResponseDto> redisTemplate = new RedisTemplate<>();
         redisTemplate.setKeySerializer(new StringRedisSerializer());
         redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer(ImageResponseDto.class));
-        redisTemplate.setConnectionFactory(defaultRedisConnectionFactory());
+        redisTemplate.setConnectionFactory(redisConnectionFactory());
 
         return redisTemplate;
-    }
-
-    @Bean
-    public HashOperations<String, String, String> hashOperations() {
-        return redisTemplate().opsForHash();
     }
 }
