@@ -10,8 +10,7 @@ public class ChatHelloResponse {
     private String nickname;
     private String message;
 
-    public static ChatHelloResponse of(String email, String nickname) {
-        String message = nickname + "님이 입장하셨습니다.";
+    public static ChatHelloResponse of(String email, String nickname, String message) {
         return new ChatHelloResponse(email, nickname, message);
     }
 }
