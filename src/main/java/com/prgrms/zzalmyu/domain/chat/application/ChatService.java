@@ -60,9 +60,10 @@ public class ChatService {
         redisService.delete(email);
     }
 
-    public String saveMessage(String nickname) {
+    public String saveMessage(String email, String nickname) {
         String message = nickname + HELLO_MESSAGE_SUFFIX;
         ChatMessage chatMessage = ChatMessage.builder()
+            .email(email)
             .nickname(nickname)
             .message(message)
             .build();
@@ -71,8 +72,9 @@ public class ChatService {
         return message;
     }
 
-    public void saveMessage(String nickname, String image) {
+    public void saveMessage(String email, String nickname, String image) {
         ChatMessage chatMessage = ChatMessage.builder()
+            .email(email)
             .nickname(nickname)
             .message(image)
             .build();
@@ -81,7 +83,7 @@ public class ChatService {
 
     @Transactional(readOnly = true)
     public List<ChatOldMessageResponse> getOldChats(Pageable pageable) {
-        return chatMessageRepository.findForOneDay(pageable)
+        return chatMessageRepository.findAllByLatest(pageable)
             .stream()
             .map(message -> ChatOldMessageResponse.of(
                 message.getNickname(),
