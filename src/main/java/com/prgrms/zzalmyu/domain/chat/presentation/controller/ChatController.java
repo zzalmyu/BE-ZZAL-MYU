@@ -5,6 +5,7 @@ import com.prgrms.zzalmyu.domain.chat.presentation.dto.req.ChatHelloRequest;
 import com.prgrms.zzalmyu.domain.chat.presentation.dto.req.ChatPhotoRequest;
 import com.prgrms.zzalmyu.domain.chat.presentation.dto.res.ChatHelloResponse;
 import com.prgrms.zzalmyu.domain.chat.presentation.dto.res.ChatImageResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -19,6 +20,7 @@ public class ChatController {
     private final SimpMessageSendingOperations simpMessageSendingOperations;
     private final ChatService chatService;
 
+    @ApiResponse(description = "채팅 내역 불러오기")
     @MessageMapping("/hello")
     public void greeting(ChatHelloRequest request) {
         String nickname = chatService.generateNickname();
