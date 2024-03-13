@@ -20,7 +20,7 @@ public class ChatController {
 
     @ApiResponse(description = "채팅 내역 불러오기")
     @GetMapping
-    public List<ChatOldMessageResponse> getOldChats(@PageableDefault(size = 5) Pageable pageable) {
+    public List<ChatOldMessageResponse> getOldChats(@PageableDefault(size = 10) Pageable pageable) {
         return chatService.getOldChats(pageable);
     }
 }
