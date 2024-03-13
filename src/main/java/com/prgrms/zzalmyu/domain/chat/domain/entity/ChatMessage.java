@@ -23,6 +23,9 @@ public class ChatMessage {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false, length = 50)
+    private String email;
+
     @Column(nullable = false, length = 10)
     private String nickname;
 
@@ -34,7 +37,8 @@ public class ChatMessage {
     private LocalDateTime createdAt;
 
     @Builder
-    private ChatMessage(String nickname, String message) {
+    private ChatMessage(String email, String nickname, String message) {
+        this.email = email;
         this.nickname = nickname;
         this.message = message;
     }

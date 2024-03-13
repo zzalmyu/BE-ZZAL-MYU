@@ -28,14 +28,14 @@ public class WebSocketController {
     public void greeting(ChatHelloRequest request) {
         String nickname = chatService.generateNickname();
         chatService.saveNickname(request.getEmail(), nickname);
-        String message = chatService.saveMessage(nickname);
+        String message = chatService.saveMessage(request.getEmail(), nickname);
         simpMessageSendingOperations.convertAndSend("/sub/" + request.getChannelId(), ChatHelloResponse.of(request.getEmail(), nickname, message));
     }
 
     @MessageMapping("/image")
     public void sendPhoto(ChatPhotoRequest request) {
         String nickname = chatService.getNickname(request.getEmail());
-        chatService.saveMessage(nickname, request.getImage());
+        chatService.saveMessage(request.getEmail(), nickname, request.getImage());
         simpMessageSendingOperations.convertAndSend("/sub/" + request.getChannelId(), ChatImageResponse.of(request.getEmail(), request.getImage(), nickname));
     }
 }

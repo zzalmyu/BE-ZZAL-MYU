@@ -9,5 +9,5 @@ import org.springframework.data.jpa.repository.Query;
 public interface ChatMessageRepository extends JpaRepository<ChatMessage, Long> {
 
     @Query("select c from ChatMessage c order by c.createdAt desc")
-    List<ChatMessage> findForOneDay(Pageable pageable);
+    List<ChatMessage> findAllByLatest(Pageable pageable);
 }
