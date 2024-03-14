@@ -1,6 +1,7 @@
 package com.prgrms.zzalmyu.domain.user.application;
 
 import com.prgrms.zzalmyu.core.properties.ErrorCode;
+import com.prgrms.zzalmyu.domain.chat.application.ChatService;
 import com.prgrms.zzalmyu.domain.user.domain.entity.User;
 import com.prgrms.zzalmyu.domain.user.exception.UserException;
 import com.prgrms.zzalmyu.domain.user.infrastructure.UserRepository;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 public class UserService {
     private final UserRepository userRepository;
     private final JwtService jwtService;
+    private final ChatService chatService;
 
     public void reissueTokens(HttpServletRequest request, HttpServletResponse response) {
         String refreshToken = jwtService.extractRefreshToken(request)
@@ -27,9 +29,12 @@ public class UserService {
     }
 
     public void logout(String accessToken, String refreshToken) {
+        String email = jwtService.extractEmail(accessToken)
+            .orElseThrow(() -> new UserException(ErrorCode.EMAIL_NOT_EXTRACTED));
+        chatService.deleteChatNickname(email);
+
         jwtService.isTokenValid(refreshToken);
         jwtService.isTokenValid(accessToken);
-
         //refresh token 삭제
         jwtService.deleteRefreshToken(refreshToken);
         //access token blacklist 처리 -> 로그아웃한 사용자가 요청 시 access token이 redis에 존재하면 jwtAuthenticationProcessingFilter에서 인증처리 거부
