@@ -1,7 +1,10 @@
 package com.prgrms.zzalmyu.domain.chat.domain.entity;
 
+import com.prgrms.zzalmyu.domain.chat.domain.enums.MessageType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -36,10 +39,15 @@ public class ChatMessage {
     @Column(nullable = false)
     private LocalDateTime createdAt;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private MessageType type;
+
     @Builder
-    private ChatMessage(String email, String nickname, String message) {
+    private ChatMessage(String email, String nickname, String message, MessageType type) {
         this.email = email;
         this.nickname = nickname;
         this.message = message;
+        this.type = type;
     }
 }

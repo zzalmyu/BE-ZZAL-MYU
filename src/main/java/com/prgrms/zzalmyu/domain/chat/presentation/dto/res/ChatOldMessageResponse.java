@@ -1,5 +1,6 @@
 package com.prgrms.zzalmyu.domain.chat.presentation.dto.res;
 
+import com.prgrms.zzalmyu.domain.chat.domain.enums.MessageType;
 import java.time.LocalDateTime;
 import lombok.Builder;
 import lombok.Getter;
@@ -14,11 +15,14 @@ public class ChatOldMessageResponse {
 
     private LocalDateTime createdAt;
 
-    public static ChatOldMessageResponse of(String nickname, String message, LocalDateTime createdAt) {
+    private MessageType type;
+
+    public static ChatOldMessageResponse of(String nickname, String message, LocalDateTime createdAt, MessageType type) {
         return ChatOldMessageResponse.builder()
             .nickname(nickname)
             .message(message)
             .createdAt(createdAt)
+            .type(type)
             .build();
     }
 }

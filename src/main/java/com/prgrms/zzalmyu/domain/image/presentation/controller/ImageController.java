@@ -34,6 +34,17 @@ public class ImageController {
     public ImageDetailResponse getImage(@AuthenticationPrincipal User user, @PathVariable Long imageId) {
         return imageService.getImageDetail(imageId, user);
     }
+    @ApiResponse(description = "전체 이미지 조회 (실사용) 또는 태그 검색")
+    @GetMapping
+    List<ImageResponseDto> getImages(@AuthenticationPrincipal User user,@RequestParam(name = "tagName", required = false) List<String> tagNames, @PageableDefault(page = 0, size = 15) Pageable pageable) {
+        if (CollectionUtils.isNullOrEmpty(tagNames)) {
+            if (user == null) {
+                return imageMainService.getTopUserUsedImage(pageable);
+            }
+            return imageMainService.getRecommendedImage(user, pageable);
+        }
+        return imageSearchService.searchImages(tagNames, pageable);
+    }
 
     @ApiResponse(description = "좋아요 누른 짤 전체 또는 태그 검색")
     @GetMapping("/like")
@@ -85,18 +96,6 @@ public class ImageController {
         return imageService.getAllImages(pageable);
     }
 
-    @ApiResponse(description = "전체 이미지 조회 (실사용)")
-    @GetMapping
-    List<ImageResponseDto> getImages(@AuthenticationPrincipal User user, @PageableDefault(page = 0, size = 15) Pageable pageable) {
-        if (user == null) {
-            return imageMainService.getTopUserUsedImage(pageable);
-        }
-        return imageMainService.getRecommendedImage(user, pageable);
-    }
 
-    @ApiResponse(description = "메인페이지에서 태그 검색")
-    @GetMapping("/me")
-    List<ImageResponseDto> searchImages(@AuthenticationPrincipal User user, @RequestParam(name = "tagName") List<String> tagNames, @PageableDefault(page = 0, size = 15) Pageable pageable) {
-        return imageSearchService.searchImages(tagNames, pageable);
-    }
+
 }

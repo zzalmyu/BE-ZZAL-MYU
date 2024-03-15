@@ -3,6 +3,7 @@ package com.prgrms.zzalmyu.domain.chat.application;
 import com.prgrms.zzalmyu.common.redis.RedisService;
 import com.prgrms.zzalmyu.core.properties.ErrorCode;
 import com.prgrms.zzalmyu.domain.chat.domain.entity.ChatMessage;
+import com.prgrms.zzalmyu.domain.chat.domain.enums.MessageType;
 import com.prgrms.zzalmyu.domain.chat.infrastructure.ChatMessageRepository;
 import com.prgrms.zzalmyu.domain.chat.presentation.dto.res.ChatOldMessageResponse;
 import com.prgrms.zzalmyu.domain.user.exception.UserException;
@@ -60,23 +61,25 @@ public class ChatService {
         redisService.delete(email);
     }
 
-    public String saveMessage(String email, String nickname) {
+    public String saveHelloMessage(String email, String nickname) {
         String message = nickname + HELLO_MESSAGE_SUFFIX;
         ChatMessage chatMessage = ChatMessage.builder()
             .email(email)
             .nickname(nickname)
             .message(message)
+            .type(MessageType.HELLO)
             .build();
         chatMessageRepository.save(chatMessage);
 
         return message;
     }
 
-    public void saveMessage(String email, String nickname, String image) {
+    public void saveImageMessage(String email, String nickname, String image) {
         ChatMessage chatMessage = ChatMessage.builder()
             .email(email)
             .nickname(nickname)
             .message(image)
+            .type(MessageType.IMAGE)
             .build();
         chatMessageRepository.save(chatMessage);
     }
@@ -88,7 +91,8 @@ public class ChatService {
             .map(message -> ChatOldMessageResponse.of(
                 message.getNickname(),
                 message.getMessage(),
-                message.getCreatedAt()
+                message.getCreatedAt(),
+                message.getType()
             ))
             .collect(Collectors.toList());
     }
