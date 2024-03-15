@@ -57,7 +57,8 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/api/v1/image", "/api/v1/image/{imageId}").permitAll()
                 .requestMatchers("/api/v1/image/**").authenticated()
                 .requestMatchers("/api/v1/chat").permitAll()
-                .requestMatchers("/chat").permitAll())
+                .requestMatchers("/chat").permitAll()
+                    .requestMatchers("/api/v1/login").permitAll())
             .exceptionHandling(customizer -> customizer
                 .authenticationEntryPoint(customAuthenticationEntryPoint())
                 .accessDeniedHandler(customAccessDeniedHandler()))
