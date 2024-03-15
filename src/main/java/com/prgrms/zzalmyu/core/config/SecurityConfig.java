@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -47,8 +48,16 @@ public class SecurityConfig {
                     SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(authorize -> authorize
                 .requestMatchers("/h2-console/*").permitAll()
-                .requestMatchers(HttpMethod.GET, "/api/v1/report/{imageId}").hasRole("ADMIN")
-                .requestMatchers("/**").permitAll())
+                .requestMatchers("/api/v1/user/reissue").permitAll()
+                .requestMatchers("/api/v1/user/**").authenticated()
+                .requestMatchers(HttpMethod.GET, "/api/v1/tag", "/api/v1/tag/search", "/api/v1/tag/popular").permitAll()
+                .requestMatchers("/api/v1/tag/**").authenticated()
+                .requestMatchers(HttpMethod.POST, "/api/v1/report/**").authenticated()
+                .requestMatchers("/api/v1/report/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.GET, "/api/v1/image", "/api/v1/image/{imageId}").permitAll()
+                .requestMatchers("/api/v1/image/**").authenticated()
+                .requestMatchers("/api/v1/chat").permitAll()
+                .requestMatchers("/chat").permitAll())
             .exceptionHandling(customizer -> customizer
                 .authenticationEntryPoint(customAuthenticationEntryPoint())
                 .accessDeniedHandler(customAccessDeniedHandler()))
