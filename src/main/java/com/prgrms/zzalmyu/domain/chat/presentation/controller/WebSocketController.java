@@ -30,6 +30,6 @@ public class WebSocketController {
     public void sendPhoto(ChatPhotoRequest request) {
         String nickname = chatService.getNickname(request.getEmail());
         chatService.saveMessage(request.getEmail(), nickname, request.getImage());
-        simpMessageSendingOperations.convertAndSend("/sub/" + request.getChannelId(), ChatResponse.of(request.getEmail(), request.getImage(), nickname));
+        simpMessageSendingOperations.convertAndSend("/sub/" + request.getChannelId(), ChatResponse.of(request.getEmail(), nickname, request.getImage()));
     }
 }
