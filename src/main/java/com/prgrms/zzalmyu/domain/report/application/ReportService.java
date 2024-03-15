@@ -36,9 +36,14 @@ public class ReportService {
     private final UserRepository userRepository;
 
     public void reportImage(Long userId, Long imageId) {
-        if (!reportRepository.findByImageIdAndReportUserId(imageId, userId).isEmpty()) {
+        if(imageRepository.findById(imageId).isEmpty()) {
+            throw new ImageException(ErrorCode.IMAGE_NOT_FOUND_ERROR);
+        }
+
+        if (reportRepository.findByImageIdAndReportUserId(imageId, userId).isPresent()) {
             throw new ReportException(ErrorCode.REPORT_ALREADY_EXIST_ERROR);
         }
+
         Report report = Report.builder()
                 .reportUserId(userId)
                 .imageId(imageId)
