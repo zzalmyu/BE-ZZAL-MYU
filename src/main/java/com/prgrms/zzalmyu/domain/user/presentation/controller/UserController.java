@@ -45,11 +45,4 @@ public class UserController {
     public UserInfoResponse getUserInfo(@AuthenticationPrincipal User user) {
         return UserInfoResponse.of(user);
     }
-
-    //    테스트용 컨트롤러
-    @ApiResponse(description = "테스트용 (무시해주세요)")
-    @GetMapping("/jwt-test")
-    public String jwtTest(@AuthenticationPrincipal User user) {
-        return "jwtTest 요청 성공";
-    }
 }
