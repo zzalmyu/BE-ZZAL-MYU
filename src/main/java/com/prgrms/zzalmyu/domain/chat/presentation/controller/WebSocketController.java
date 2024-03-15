@@ -3,18 +3,12 @@ package com.prgrms.zzalmyu.domain.chat.presentation.controller;
 import com.prgrms.zzalmyu.domain.chat.application.ChatService;
 import com.prgrms.zzalmyu.domain.chat.presentation.dto.req.ChatHelloRequest;
 import com.prgrms.zzalmyu.domain.chat.presentation.dto.req.ChatPhotoRequest;
-import com.prgrms.zzalmyu.domain.chat.presentation.dto.res.ChatHelloResponse;
-import com.prgrms.zzalmyu.domain.chat.presentation.dto.res.ChatImageResponse;
-import com.prgrms.zzalmyu.domain.chat.presentation.dto.res.ChatOldMessageResponse;
-import java.util.List;
+import com.prgrms.zzalmyu.domain.chat.presentation.dto.res.ChatResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 @RequiredArgsConstructor
@@ -29,13 +23,13 @@ public class WebSocketController {
         String nickname = chatService.generateNickname();
         chatService.saveNickname(request.getEmail(), nickname);
         String message = chatService.saveMessage(request.getEmail(), nickname);
-        simpMessageSendingOperations.convertAndSend("/sub/" + request.getChannelId(), ChatHelloResponse.of(request.getEmail(), nickname, message));
+        simpMessageSendingOperations.convertAndSend("/sub/" + request.getChannelId(), ChatResponse.of(request.getEmail(), nickname, message));
     }
 
     @MessageMapping("/image")
     public void sendPhoto(ChatPhotoRequest request) {
         String nickname = chatService.getNickname(request.getEmail());
         chatService.saveMessage(request.getEmail(), nickname, request.getImage());
-        simpMessageSendingOperations.convertAndSend("/sub/" + request.getChannelId(), ChatImageResponse.of(request.getEmail(), request.getImage(), nickname));
+        simpMessageSendingOperations.convertAndSend("/sub/" + request.getChannelId(), ChatResponse.of(request.getEmail(), request.getImage(), nickname));
     }
 }

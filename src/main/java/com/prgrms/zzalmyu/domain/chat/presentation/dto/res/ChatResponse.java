@@ -5,12 +5,12 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class ChatHelloResponse {
+public class ChatResponse {
     private String email;
     private String nickname;
     private String message;
 
-    public static ChatHelloResponse of(String email, String nickname, String message) {
-        return new ChatHelloResponse(email, nickname, message);
+    public static ChatResponse of(String email, String nickname, String message) {
+        return new ChatResponse(email, nickname, message);
     }
 }
