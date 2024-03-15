@@ -1,6 +1,7 @@
 package com.prgrms.zzalmyu.domain.chat.presentation.controller;
 
 import com.prgrms.zzalmyu.domain.chat.application.ChatService;
+import com.prgrms.zzalmyu.domain.chat.domain.enums.MessageType;
 import com.prgrms.zzalmyu.domain.chat.presentation.dto.req.ChatHelloRequest;
 import com.prgrms.zzalmyu.domain.chat.presentation.dto.req.ChatPhotoRequest;
 import com.prgrms.zzalmyu.domain.chat.presentation.dto.res.ChatResponse;
@@ -22,14 +23,14 @@ public class WebSocketController {
     public void greeting(ChatHelloRequest request) {
         String nickname = chatService.generateNickname();
         chatService.saveNickname(request.getEmail(), nickname);
-        String message = chatService.saveMessage(request.getEmail(), nickname);
-        simpMessageSendingOperations.convertAndSend("/sub/" + request.getChannelId(), ChatResponse.of(request.getEmail(), nickname, message));
+        String message = chatService.saveHelloMessage(request.getEmail(), nickname);
+        simpMessageSendingOperations.convertAndSend("/sub/" + request.getChannelId(), ChatResponse.of(request.getEmail(), nickname, message, MessageType.HELLO));
     }
 
     @MessageMapping("/image")
     public void sendPhoto(ChatPhotoRequest request) {
         String nickname = chatService.getNickname(request.getEmail());
-        chatService.saveMessage(request.getEmail(), nickname, request.getImage());
-        simpMessageSendingOperations.convertAndSend("/sub/" + request.getChannelId(), ChatResponse.of(request.getEmail(), nickname, request.getImage()));
+        chatService.saveImageMessage(request.getEmail(), nickname, request.getImage());
+        simpMessageSendingOperations.convertAndSend("/sub/" + request.getChannelId(), ChatResponse.of(request.getEmail(), nickname, request.getImage(), MessageType.IMAGE));
     }
 }
