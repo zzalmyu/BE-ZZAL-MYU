@@ -48,7 +48,6 @@ public class SecurityConfig {
             .authorizeHttpRequests(authorize -> authorize
                 .requestMatchers("/h2-console/*").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/v1/report/{imageId}").hasRole("ADMIN")
-                .requestMatchers("/api/v1/user/jwt-test").authenticated()
                 .requestMatchers("/**").permitAll())
             .exceptionHandling(customizer -> customizer
                 .authenticationEntryPoint(customAuthenticationEntryPoint())
