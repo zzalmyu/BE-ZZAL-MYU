@@ -9,6 +9,7 @@ import com.prgrms.zzalmyu.domain.user.jwt.service.JwtService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -28,22 +29,36 @@ public class UserService {
         jwtService.reissueAndSendTokens(response, refreshToken);
     }
 
-    public void logout(String accessToken, String refreshToken) {
-        String email = jwtService.extractEmail(accessToken)
+    public void logout(Optional<String> accessToken, Optional<String> refreshToken) {
+        String access = accessToken
+            .orElseThrow(() -> new UserException(ErrorCode.SECURITY_INVALID_ACCESS_TOKEN));
+        String refresh = refreshToken
+            .orElseThrow(() -> new UserException(ErrorCode.REFRESH_TOKEN_REQUIRED));
+        String email = jwtService.extractEmail(access)
             .orElseThrow(() -> new UserException(ErrorCode.EMAIL_NOT_EXTRACTED));
         chatService.deleteChatNickname(email);
 
-        jwtService.isTokenValid(refreshToken);
-        jwtService.isTokenValid(accessToken);
+        jwtService.isTokenValid(refresh);
+        jwtService.isTokenValid(access);
         //refresh token 삭제
-        jwtService.deleteRefreshToken(refreshToken);
+        jwtService.deleteRefreshToken(refresh);
         //access token blacklist 처리 -> 로그아웃한 사용자가 요청 시 access token이 redis에 존재하면 jwtAuthenticationProcessingFilter에서 인증처리 거부
-        jwtService.logoutAccessToken(accessToken);
+        jwtService.invalidAccessToken(access);
     }
 
-    public void withdraw(Long id) {
+    public void withdraw(Long id, Optional<String> accessToken, Optional<String> refreshToken) {
         User user = findUserById(id);
         user.delete();
+
+        String access = accessToken
+            .orElseThrow(() -> new UserException(ErrorCode.SECURITY_INVALID_ACCESS_TOKEN));
+        String refresh = refreshToken
+            .orElseThrow(() -> new UserException(ErrorCode.REFRESH_TOKEN_REQUIRED));
+
+        jwtService.isTokenValid(refresh);
+        jwtService.isTokenValid(access);
+        jwtService.deleteRefreshToken(refresh);
+        jwtService.invalidAccessToken(access);
     }
 
     public User findUserById(Long id) {

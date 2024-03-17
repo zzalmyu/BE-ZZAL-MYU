@@ -7,6 +7,7 @@ import com.prgrms.zzalmyu.domain.user.presentation.dto.res.UserInfoResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -27,16 +28,18 @@ public class UserController {
     @ApiResponse(description = "로그아웃")
     @PatchMapping("/logout")
     public ResponseEntity<Void> logout(HttpServletRequest request) {
-        String accessToken = jwtService.extractAccessToken(request).get();
-        String refreshToken = jwtService.extractRefreshToken(request).get();
+        Optional<String> accessToken = jwtService.extractAccessToken(request);
+        Optional<String> refreshToken = jwtService.extractRefreshToken(request);
         userService.logout(accessToken, refreshToken);
         return ResponseEntity.ok().build();
     }
 
     @ApiResponse(description = "유저 탈퇴")
     @DeleteMapping
-    public ResponseEntity<Void> withdraw(@AuthenticationPrincipal User user) {
-        userService.withdraw(user.getId());
+    public ResponseEntity<Void> withdraw(HttpServletRequest request, @AuthenticationPrincipal User user) {
+        Optional<String> accessToken = jwtService.extractAccessToken(request);
+        Optional<String> refreshToken = jwtService.extractRefreshToken(request);
+        userService.withdraw(user.getId(), accessToken, refreshToken);
         return ResponseEntity.noContent().build();
     }
 
@@ -44,12 +47,5 @@ public class UserController {
     @GetMapping("/info")
     public UserInfoResponse getUserInfo(@AuthenticationPrincipal User user) {
         return UserInfoResponse.of(user);
-    }
-
-    //    테스트용 컨트롤러
-    @ApiResponse(description = "테스트용 (무시해주세요)")
-    @GetMapping("/jwt-test")
-    public String jwtTest(@AuthenticationPrincipal User user) {
-        return "jwtTest 요청 성공";
     }
 }

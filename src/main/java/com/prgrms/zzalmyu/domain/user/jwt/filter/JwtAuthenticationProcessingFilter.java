@@ -25,17 +25,11 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
     private final RedisService redisService;
     private final UserRepository userRepository;
 
-    private static String NO_CHECK_URL = "/api/v1/user/logout";
-
     private GrantedAuthoritiesMapper authoritiesMapper = new NullAuthoritiesMapper();
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
-        if (request.getRequestURI().equals(NO_CHECK_URL)) {
-            filterChain.doFilter(request, response);
-            return;
-        }
         checkLogout(request); //로그아웃한 사용자면 인증 처리 안함
 
         jwtService.extractAccessToken(request)

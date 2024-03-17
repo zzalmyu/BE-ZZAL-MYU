@@ -141,7 +141,7 @@ class TagServiceTest {
     @Test
     void createTag() {
         String requestTagName = "요청태그이름";
-        TagResponseDto responseDto = tagService.createTag(requestTagName);
+        TagResponseDto responseDto = tagService.createTag(user1, requestTagName);
         assertThat(responseDto.getTagName()).isEqualTo(requestTagName);
     }
 
@@ -218,7 +218,7 @@ class TagServiceTest {
         List<String> expectedTagNameList = new ArrayList<>();
         for (int i = 0; i < 20; i++) {
             String tagName = "tagName" + i;
-            TagResponseDto tagResponseDto = tagService.createTag(tagName);
+            TagResponseDto tagResponseDto = tagService.createTag(user1, tagName);
             TagUser tagUser = TagUser.builder()
                     .userId(user1.getId())
                     .tagId(tagResponseDto.getTagId())
