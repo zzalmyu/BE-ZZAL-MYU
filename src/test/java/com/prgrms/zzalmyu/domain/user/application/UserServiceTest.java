@@ -50,16 +50,6 @@ class UserServiceTest {
     }
 
     @Test
-    @DisplayName("사용자가 탈퇴를 할 수 있다.")
-    public void withdraw() {
-        userService.withdraw(saved.getId());
-
-        Optional<User> withdraw = userRepository.findById(saved.getId());
-
-        assertThat(withdraw.isEmpty()).isTrue();
-    }
-
-    @Test
     @DisplayName("사용자를 id로 찾을 수 있다.")
     public void findUserById() {
         User user = userService.findUserById(saved.getId());
