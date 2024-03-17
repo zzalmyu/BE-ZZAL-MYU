@@ -59,7 +59,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/v1/chat").permitAll()
                 .requestMatchers("/chat").permitAll()
                     .requestMatchers("/api/v1/login").permitAll()
-                    .requestMatchers("/swagger-ui/**").permitAll())
+                    .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll())
             .exceptionHandling(customizer -> customizer
                 .authenticationEntryPoint(customAuthenticationEntryPoint())
                 .accessDeniedHandler(customAccessDeniedHandler()))
