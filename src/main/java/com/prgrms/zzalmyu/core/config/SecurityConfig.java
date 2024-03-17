@@ -58,7 +58,8 @@ public class SecurityConfig {
                 .requestMatchers("/api/v1/image/**").authenticated()
                 .requestMatchers("/api/v1/chat").permitAll()
                 .requestMatchers("/chat").permitAll()
-                    .requestMatchers("/api/v1/login").permitAll())
+                    .requestMatchers("/api/v1/login").permitAll()
+                    .requestMatchers("/swagger-ui/**").permitAll())
             .exceptionHandling(customizer -> customizer
                 .authenticationEntryPoint(customAuthenticationEntryPoint())
                 .accessDeniedHandler(customAccessDeniedHandler()))
