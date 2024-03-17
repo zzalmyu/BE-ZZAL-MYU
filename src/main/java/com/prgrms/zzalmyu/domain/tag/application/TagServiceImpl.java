@@ -44,13 +44,18 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public TagResponseDto createTag(String tagName) {
+    public TagResponseDto createTag(User user, String tagName) {
         if (tagRepository.existsByName(tagName)) {
             throw new TagException(ErrorCode.TAG_ALREADY_EXIST_ERROR);
         }
         String splitTagName = splitTagName(tagName);
         Tag newTag = Tag.from(tagName, splitTagName);
         tagRepository.save(newTag);
+        TagUser tagUser = TagUser.builder()
+                .tagId(newTag.getId())
+                .userId(user.getId())
+                .build();
+        tagUserRepository.save(tagUser);
         return new TagResponseDto(newTag);
     }
 

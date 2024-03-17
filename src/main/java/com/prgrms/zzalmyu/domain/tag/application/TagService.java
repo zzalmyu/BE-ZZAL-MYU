@@ -31,7 +31,7 @@ public interface TagService {
     /**
      * 태그 생성
      */
-    TagResponseDto createTag(String tagName);
+    TagResponseDto createTag(User user, String tagName);
 
 
     // 전체 태그 자동완성 검색
