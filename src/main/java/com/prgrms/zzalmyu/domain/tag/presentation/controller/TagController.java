@@ -49,8 +49,8 @@ public class TagController {
 
     @ApiResponse(description = "태그 생성")
     @PostMapping
-    public TagResponseDto createTag(@RequestBody TagRequestDto dto) {
-        return tagService.createTag(dto.getName());
+    public TagResponseDto createTag(@AuthenticationPrincipal User user, @RequestBody TagRequestDto dto) {
+        return tagService.createTag(user, dto.getName());
     }
 
     @ApiResponse(description = "태그 자동 검색")
