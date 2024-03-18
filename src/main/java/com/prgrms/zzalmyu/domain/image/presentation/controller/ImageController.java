@@ -43,7 +43,11 @@ public class ImageController {
             }
             return imageMainService.getRecommendedImage(user, pageable);
         }
-        return imageSearchService.searchImages(tagNames, pageable);
+        //여기서도 로그인 유무에 따라 imageLikeYn 때문에 쿼리 다르게 나가야함
+        if (user == null) {
+            return imageSearchService.searchImages(tagNames, pageable);
+        };
+        return imageSearchService.searchImagesByUser(tagNames, user, pageable);
     }
 
     @ApiResponse(description = "좋아요 누른 짤 전체 또는 태그 검색")

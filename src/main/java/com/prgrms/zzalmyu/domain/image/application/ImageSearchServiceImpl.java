@@ -1,8 +1,8 @@
 package com.prgrms.zzalmyu.domain.image.application;
 
 import com.prgrms.zzalmyu.domain.image.domain.entity.Image;
+import com.prgrms.zzalmyu.domain.image.infrastructure.ImageLikeRepository;
 import com.prgrms.zzalmyu.domain.image.infrastructure.ImageTagRepository;
-import com.prgrms.zzalmyu.domain.image.presentation.dto.res.AwsS3ResponseDto;
 import com.prgrms.zzalmyu.domain.image.presentation.dto.res.ImageResponseDto;
 import com.prgrms.zzalmyu.domain.tag.infrastructure.TagRepository;
 import com.prgrms.zzalmyu.domain.user.domain.entity.User;
@@ -16,6 +16,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ImageSearchServiceImpl implements ImageSearchService {
     private final ImageTagRepository imageTagRepository;
+    private final ImageLikeRepository imageLikeRepository;
     private final TagRepository tagRepository;
 
     @Override
@@ -32,9 +33,17 @@ public class ImageSearchServiceImpl implements ImageSearchService {
     }
 
     @Override
+    public List<ImageResponseDto> searchImagesByUser(List<String> tagNames, User user, Pageable pageable) {
+        List<Long> tagIdList = tagRepository.findTagIdListByTagNameList(tagNames);
+        return imageTagRepository.findImagesByTagIdListAndUser(tagIdList, user.getId(), pageable);
+    }
+
+    @Override
     public List<ImageResponseDto> searchImages(List<String> tagNames, Pageable pageable) {
         List<Long> tagIdList = tagRepository.findTagIdListByTagNameList(tagNames);
-        return imageTagRepository.findImagesByTagIdList(tagIdList, pageable);
+        return imageTagRepository.findImagesByTagIdList(tagIdList, pageable).stream()
+                .map(image -> ImageResponseDto.of(image, false))
+                .toList();
     }
 
     private List<ImageResponseDto> convertLikeListToResponseDtoList(List<Image> imageList) {

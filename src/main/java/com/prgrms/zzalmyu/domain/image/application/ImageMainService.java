@@ -24,7 +24,8 @@ public class ImageMainService {
 
     private static final int MAX = 150;
     private static final int PER_COUNT = 15;
-    private static final int BEST_IMAGE = 30;
+    private static final int ALL = 180;
+    private static final int BEST_IMAGE = 60;
 
     private TagUserRepository tagUserRepository;
     private ImageRepository imageRepository;
@@ -93,22 +94,32 @@ public class ImageMainService {
                 .mapToInt(TagUser::getCount)
                 .sum();
 
+        if (totalCount==0){
+            imageRepository.findTopImageLike(ALL,user.getId())
+                    .forEach(imageResponseDto -> {
+                        setOperations.add(user.getId().toString(), imageResponseDto);
+                    });
+            return;
+        }
+
+        imageRepository.findTopImageLike(BEST_IMAGE, user.getId())
+                .forEach(imageResponseDto -> {
+                    setOperations.add(user.getId().toString(), imageResponseDto);
+                });
+
         tagUsers.stream()
                 .filter(tagUser -> ((tagUser.getCount() * MAX) / totalCount) > 0)
                 .forEach(tagUser -> {
                     //가져와야할 image개수
                     int limit = (tagUser.getCount() * MAX) / totalCount;
 
-                    imageTagRepository.findImageByTagIdAndLimit(tagUser.getTagId(), limit)
+                    imageTagRepository.findImageByTagIdAndLimit(tagUser.getTagId(),user.getId(), limit)
                             .forEach(imageResponseDto -> {
                                 setOperations.add(user.getId().toString(), imageResponseDto);
                             });
                 });
 
-        imageRepository.findTopImageLike(BEST_IMAGE)
-                .forEach(imageResponseDto -> {
-                    setOperations.add(user.getId().toString(), imageResponseDto);
-                });
+
 
     }
 

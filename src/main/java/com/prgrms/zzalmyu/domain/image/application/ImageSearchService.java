@@ -20,7 +20,12 @@ public interface ImageSearchService {
     List<ImageResponseDto> searchUploadImages(User user, List<String> tagNames, Pageable pageable);
 
     /**
-     * 전체 짤 태그 필터링
+     * 전체 짤 태그 필터링(로그인X유저)
      */
     List<ImageResponseDto> searchImages(List<String> tagNames, Pageable pageable);
+    /**
+     * 전체 짤 태그 필터링(로그인 유저)
+     */
+    List<ImageResponseDto> searchImagesByUser(List<String>tagNames, User user, Pageable pageable);
+
 }
