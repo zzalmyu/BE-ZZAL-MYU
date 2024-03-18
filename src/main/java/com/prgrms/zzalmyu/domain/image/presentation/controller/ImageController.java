@@ -39,18 +39,14 @@ public class ImageController {
     List<ImageResponseDto> getImages(@AuthenticationPrincipal User user,@RequestParam(name = "tagName", required = false) List<String> tagNames, @PageableDefault(page = 0, size = 15) Pageable pageable) {
         if (CollectionUtils.isNullOrEmpty(tagNames)) {
             if (user == null) {
-                System.out.println(1);
                 return imageMainService.getTopUserUsedImage(pageable);
             }
-            System.out.println(2);
             return imageMainService.getRecommendedImage(user, pageable);
         }
         //여기서도 로그인 유무에 따라 imageLikeYn 때문에 쿼리 다르게 나가야함
         if (user == null) {
-            System.out.println(3);
             return imageSearchService.searchImages(tagNames, pageable);
         };
-        System.out.println(4);
         return imageSearchService.searchImagesByUser(tagNames, user, pageable);
     }
 
