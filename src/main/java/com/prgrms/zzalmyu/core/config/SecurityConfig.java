@@ -48,6 +48,7 @@ public class SecurityConfig {
                     SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(authorize -> authorize
                 .requestMatchers("/h2-console/*").permitAll()
+                .requestMatchers("/").permitAll()
                 .requestMatchers("/api/v1/user/reissue").permitAll()
                 .requestMatchers("/api/v1/user/**").authenticated()
                 .requestMatchers(HttpMethod.GET, "/api/v1/tag", "/api/v1/tag/search", "/api/v1/tag/popular").permitAll()
