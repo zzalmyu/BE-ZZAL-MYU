@@ -2,7 +2,9 @@ package com.prgrms.zzalmyu.domain.image.infrastructure;
 
 import com.prgrms.zzalmyu.domain.image.domain.entity.Image;
 import com.prgrms.zzalmyu.domain.image.presentation.dto.res.ImageResponseDto;
+import com.prgrms.zzalmyu.domain.user.domain.entity.User;
 import com.querydsl.core.types.Projections;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -35,10 +37,15 @@ public class ImageTagRepositoryImpl implements ImageTagRepositoryCustom {
     @Override
     public List<ImageResponseDto> findUploadImagesByUserIdAndTagIdList(Long userId, List<Long> tagIdList, Pageable pageable) {
         return queryFactory.select(Projections.constructor(ImageResponseDto.class,
-                        image.id,image.title,image.path,imageLike.id.isNotNull()))
+                        image.id, image.title, image.path,
+                        JPAExpressions
+                                .selectOne()
+                                .from(imageLike)
+                                .where(imageLike.user.id.eq(userId)
+                                        .and(imageLike.image.id.eq(image.id)))
+                                .exists()))
                 .from(image)
                 .join(imageTag).on(imageTag.image.eq(image))
-                .leftJoin(imageLike).on(image.id.eq(imageLike.image.id))
                 .where(image.userId.eq(userId))
                 .where(imageTag.tag.id.in(tagIdList))
                 .groupBy(image)
@@ -49,11 +56,16 @@ public class ImageTagRepositoryImpl implements ImageTagRepositoryCustom {
     }
 
     @Override
-    public List<ImageResponseDto> findImageByTagIdAndLimit(Long tagId, int limit) {
+    public List<ImageResponseDto> findImageByTagIdAndLimit(Long tagId, Long userId, int limit) {
         return queryFactory.select(Projections.constructor(ImageResponseDto.class,
-                        image.id,image.title,image.path,imageLike.id.isNotNull()))
+                        image.id, image.title, image.path,
+                        JPAExpressions
+                                .selectOne()
+                                .from(imageLike)
+                                .where(imageLike.user.id.eq(userId)
+                                        .and(imageLike.image.id.eq(image.id)))
+                                .exists()))
                 .from(image)
-                .leftJoin(imageLike).on(image.id.eq(imageLike.image.id))
                 .join(imageTag).on(imageTag.image.eq(image))
                 .where(imageTag.tag.id.eq(tagId))
                 .limit(limit)
@@ -61,12 +73,30 @@ public class ImageTagRepositoryImpl implements ImageTagRepositoryCustom {
     }
 
     @Override
-    public List<ImageResponseDto> findImagesByTagIdList(List<Long> tagIdList, Pageable pageable) {
-        return queryFactory.select(Projections.constructor(ImageResponseDto.class,
-                        image.id,image.title,image.path,imageLike.id.isNotNull()))
+    public List<Image> findImagesByTagIdList(List<Long> tagIdList, Pageable pageable) {
+        return queryFactory.select(image)
                 .from(image)
                 .join(imageTag).on(imageTag.image.eq(image))
-                .leftJoin(imageLike).on(image.id.eq(imageLike.image.id))
+                .where(imageTag.tag.id.in(tagIdList))
+                .groupBy(image)
+                .having(imageTag.tag.id.countDistinct().eq(Long.valueOf(tagIdList.size())))
+                .limit(pageable.getPageSize())
+                .offset(pageable.getOffset())
+                .fetch();
+    }
+
+    @Override
+    public List<ImageResponseDto> findImagesByTagIdListAndUser(List<Long> tagIdList, Long userId, Pageable pageable) {
+        return queryFactory.select(Projections.constructor(ImageResponseDto.class,
+                        image.id, image.title, image.path,
+                        JPAExpressions
+                                .selectOne()
+                                .from(imageLike)
+                                .where(imageLike.user.id.eq(userId)
+                                        .and(imageLike.image.id.eq(image.id)))
+                                .exists()))
+                .from(image)
+                .join(imageTag).on(imageTag.image.eq(image))
                 .where(imageTag.tag.id.in(tagIdList))
                 .groupBy(image)
                 .having(imageTag.tag.id.countDistinct().eq(Long.valueOf(tagIdList.size())))
