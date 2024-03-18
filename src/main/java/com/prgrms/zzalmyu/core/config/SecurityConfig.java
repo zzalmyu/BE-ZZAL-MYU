@@ -48,8 +48,7 @@ public class SecurityConfig {
                     SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(authorize -> authorize
                 .requestMatchers("/h2-console/*").permitAll()
-                .requestMatchers("/**").permitAll())
-//                .requestMatchers("/").permitAll()
+                .requestMatchers("/**").permitAll()
 //                .requestMatchers("/api/v1/user/reissue").permitAll()
 //                .requestMatchers("/api/v1/user/**").authenticated()
 //                .requestMatchers(HttpMethod.GET, "/api/v1/tag", "/api/v1/tag/search", "/api/v1/tag/popular").permitAll()
@@ -59,7 +58,7 @@ public class SecurityConfig {
 //                .requestMatchers(HttpMethod.GET, "/api/v1/image", "/api/v1/image/{imageId}").permitAll()
 //                .requestMatchers("/api/v1/image/**").authenticated()
 //                .requestMatchers("/api/v1/chat").permitAll()
-//                .requestMatchers("/chat").permitAll()
+                .requestMatchers("/chat/**").permitAll())
 //                    .requestMatchers("/api/v1/login").permitAll()
 //                    .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll())
             .exceptionHandling(customizer -> customizer
