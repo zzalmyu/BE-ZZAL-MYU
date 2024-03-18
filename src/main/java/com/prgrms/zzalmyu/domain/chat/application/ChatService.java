@@ -92,7 +92,8 @@ public class ChatService {
                 message.getNickname(),
                 message.getMessage(),
                 message.getCreatedAt(),
-                message.getType()
+                message.getType(),
+                    message.getEmail()
             ))
             .collect(Collectors.toList());
     }
