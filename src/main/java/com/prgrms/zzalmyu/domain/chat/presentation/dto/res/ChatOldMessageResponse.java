@@ -17,12 +17,15 @@ public class ChatOldMessageResponse {
 
     private MessageType type;
 
-    public static ChatOldMessageResponse of(String nickname, String message, LocalDateTime createdAt, MessageType type) {
+    private String email;
+
+    public static ChatOldMessageResponse of(String nickname, String message, LocalDateTime createdAt, MessageType type, String email) {
         return ChatOldMessageResponse.builder()
             .nickname(nickname)
             .message(message)
             .createdAt(createdAt)
             .type(type)
+                .email(email)
             .build();
     }
 }
