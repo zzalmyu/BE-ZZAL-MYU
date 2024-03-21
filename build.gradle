@@ -51,16 +51,22 @@ dependencies {
     implementation 'com.auth0:java-jwt:4.2.1'
     //H2
     runtimeOnly 'com.h2database:h2'
+    //spring batch
+    implementation 'org.springframework.boot:spring-boot-starter-batch'
+    //spring quartz
+    implementation 'org.springframework.boot:spring-boot-starter-quartz'
 
     // spring cloud aws
     implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
 
+    //websocket
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 
     //SpringBoot Test
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
+    testImplementation 'org.springframework.batch:spring-batch-test'
 }
 
 tasks.named('test') {

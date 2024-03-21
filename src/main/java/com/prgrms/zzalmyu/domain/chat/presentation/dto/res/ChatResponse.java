@@ -6,6 +6,7 @@ import lombok.Getter;
 @Getter
 @Builder
 public class ChatResponse {
+
     private String email;
 
     private String nickname;
