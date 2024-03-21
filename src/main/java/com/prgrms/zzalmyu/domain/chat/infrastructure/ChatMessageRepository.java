@@ -10,4 +10,7 @@ public interface ChatMessageRepository extends JpaRepository<ChatMessage, Long> 
 
     @Query("select c from ChatMessage c order by c.createdAt desc")
     List<ChatMessage> findAllByLatest(Pageable pageable);
+
+    @Query("select c from ChatMessage c where c.createdAt < current_date - 2")
+    List<ChatMessage> findBeforeTwoDays();
 }
