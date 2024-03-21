@@ -3,6 +3,7 @@ package com.prgrms.zzalmyu.domain.chat.application;
 import com.prgrms.zzalmyu.common.redis.RedisService;
 import com.prgrms.zzalmyu.core.properties.ErrorCode;
 import com.prgrms.zzalmyu.domain.chat.domain.entity.ChatMessage;
+import com.prgrms.zzalmyu.domain.chat.exception.ChatException;
 import com.prgrms.zzalmyu.domain.chat.infrastructure.ChatMessageRepository;
 import com.prgrms.zzalmyu.domain.chat.presentation.dto.req.ChatNameRequest;
 import com.prgrms.zzalmyu.domain.chat.presentation.dto.res.ChatNameResponse;
@@ -72,14 +73,19 @@ public class ChatService {
 
     @Transactional(readOnly = true)
     public List<ChatOldMessageResponse> getOldChats(Pageable pageable) {
-        return chatMessageRepository.findAllByLatest(pageable)
-                .stream()
-                .map(message -> ChatOldMessageResponse.of(
-                        message.getNickname(),
-                        message.getMessage(),
-                        message.getCreatedAt(),
-                        message.getEmail()
-                ))
-                .collect(Collectors.toList());
+        List<ChatOldMessageResponse> response = chatMessageRepository.findAllByLatest(pageable)
+            .stream()
+            .map(message -> ChatOldMessageResponse.of(
+                message.getNickname(),
+                message.getMessage(),
+                message.getCreatedAt(),
+                message.getEmail()
+            ))
+            .collect(Collectors.toList());
+
+        if(response.isEmpty()) {
+            throw new ChatException(ErrorCode.NO_MORE_CHAT_MESSAGE);
+        }
+        return response;
     }
 }
