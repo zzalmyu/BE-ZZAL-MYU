@@ -9,10 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -30,7 +27,7 @@ public class ChatController {
     }
 
     @ApiResponse(description = "채팅 이름 생성하기")
-    @GetMapping("/nickname")
+    @PostMapping("/nickname")
     public ResponseEntity<ChatNameResponse> getChatName(@RequestBody ChatNameRequest request) {
         ChatNameResponse response = chatService.generateNickname(request);
         return ResponseEntity.ok(response);
