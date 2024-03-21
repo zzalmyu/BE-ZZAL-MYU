@@ -24,13 +24,13 @@ public class ChatController {
     private final ChatService chatService;
 
     @ApiResponse(description = "채팅 내역 불러오기")
-    @GetMapping
+    @GetMapping()
     public List<ChatOldMessageResponse> getOldChats(@PageableDefault(size = 10) Pageable pageable) {
         return chatService.getOldChats(pageable);
     }
 
     @ApiResponse(description = "채팅 이름 생성하기")
-    @GetMapping
+    @GetMapping("/nickname")
     public ResponseEntity<ChatNameResponse> getChatName(@RequestBody ChatNameRequest request) {
         ChatNameResponse response = chatService.generateNickname(request);
         return ResponseEntity.ok(response);
