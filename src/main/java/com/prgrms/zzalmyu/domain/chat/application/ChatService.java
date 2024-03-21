@@ -73,7 +73,7 @@ public class ChatService {
 
     @Transactional(readOnly = true)
     public List<ChatOldMessageResponse> getOldChats(Pageable pageable) {
-        List<ChatOldMessageResponse> response = chatMessageRepository.findAllByLatest(pageable)
+        return chatMessageRepository.findAllByLatest(pageable)
             .stream()
             .map(message -> ChatOldMessageResponse.of(
                 message.getNickname(),
@@ -82,10 +82,5 @@ public class ChatService {
                 message.getEmail()
             ))
             .collect(Collectors.toList());
-
-        if(response.isEmpty()) {
-            throw new ChatException(ErrorCode.NO_MORE_CHAT_MESSAGE);
-        }
-        return response;
     }
 }
