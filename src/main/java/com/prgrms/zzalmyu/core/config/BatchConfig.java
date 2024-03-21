@@ -29,17 +29,19 @@ import org.springframework.transaction.TransactionManager;
 public class BatchConfig {
 
     private final ChatMessageRepository chatMessageRepository;
+    private final JobRepository jobRepository;
+    private final PlatformTransactionManager transactionManager;
 
     @Bean
-    public Job deleteChatMessageJob(JobRepository jobRepository, Step deleteChatMessageStep) {
+    public Job deleteChatMessageJob() {
         return new JobBuilder("deleteChatMessageJob", jobRepository)
-                .start(deleteChatMessageStep)
+                .start(deleteChatMessageStep())
                 .build();
     }
 
     @Bean
     @JobScope
-    public Step deleteChatMessageStep(JobRepository jobRepository, PlatformTransactionManager transactionManager) {
+    public Step deleteChatMessageStep() {
         return new StepBuilder("deleteChatMessageStep", jobRepository)
                 .<ChatMessage, ChatMessage>chunk(1000, transactionManager)
                 .reader(chatMessageReader())
