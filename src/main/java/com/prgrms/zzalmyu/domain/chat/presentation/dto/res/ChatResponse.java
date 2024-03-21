@@ -1,6 +1,5 @@
 package com.prgrms.zzalmyu.domain.chat.presentation.dto.res;
 
-import com.prgrms.zzalmyu.domain.chat.domain.enums.MessageType;
 import lombok.Builder;
 import lombok.Getter;
 

@@ -4,9 +4,7 @@ import com.prgrms.zzalmyu.domain.chat.application.ChatService;
 import com.prgrms.zzalmyu.domain.chat.presentation.dto.req.ChatNameRequest;
 import com.prgrms.zzalmyu.domain.chat.presentation.dto.res.ChatNameResponse;
 import com.prgrms.zzalmyu.domain.chat.presentation.dto.res.ChatOldMessageResponse;
-import com.prgrms.zzalmyu.domain.chat.presentation.dto.res.ChatResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -15,6 +13,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor

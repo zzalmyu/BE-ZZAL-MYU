@@ -1,7 +1,6 @@
 package com.prgrms.zzalmyu.domain.chat.presentation.controller;
 
 import com.prgrms.zzalmyu.domain.chat.application.ChatService;
-import com.prgrms.zzalmyu.domain.chat.domain.enums.MessageType;
 import com.prgrms.zzalmyu.domain.chat.presentation.dto.req.ChatPhotoRequest;
 import com.prgrms.zzalmyu.domain.chat.presentation.dto.res.ChatResponse;
 import lombok.RequiredArgsConstructor;
