@@ -64,9 +64,10 @@ public class BatchConfig {
     }
 
     @Bean
-    public Job deleteChatMessageJob() {
+    public Job deleteJob() {
         return new JobBuilder("deleteChatMessageJob", jobRepository)
                 .start(deleteChatMessageStep())
+                .next(deleteUserStep())
                 .build();
     }
 
@@ -104,13 +105,6 @@ public class BatchConfig {
                 .repository(chatMessageRepository)
                 .methodName("delete")
                 .build();
-    }
-
-    @Bean
-    public Job deleteUserJob() {
-        return new JobBuilder("deleteUserJob", jobRepository)
-            .start(deleteUserStep())
-            .build();
     }
 
     @Bean
