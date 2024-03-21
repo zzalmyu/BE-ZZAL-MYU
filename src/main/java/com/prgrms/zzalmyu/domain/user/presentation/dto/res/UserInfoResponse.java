@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 public class UserInfoResponse {
+
     private Long userId;
     private String email;
     private Role role;
@@ -18,6 +19,7 @@ public class UserInfoResponse {
         this.email = email;
         this.role = role;
     }
+
     public static UserInfoResponse of(User user) {
         return new UserInfoResponse(user.getId(), user.getEmail(), user.getRole());
     }

@@ -1,17 +1,13 @@
 package com.prgrms.zzalmyu.domain.user.oauth2.handler;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.prgrms.zzalmyu.domain.user.jwt.service.JwtService;
 import com.prgrms.zzalmyu.domain.user.oauth2.CustomOAuth2User;
-import com.prgrms.zzalmyu.domain.user.oauth2.LoginSuccessResponse;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
@@ -38,10 +34,10 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
         //응답 보내기
         response.sendRedirect(UriComponentsBuilder.fromUriString("https://zzalmyu.site")
-                .queryParam("accessToken", accessToken)
-                .queryParam("refreshToken", refreshToken)
-                .build()
-                .encode(StandardCharsets.UTF_8)
-                .toUriString());
+            .queryParam("accessToken", accessToken)
+            .queryParam("refreshToken", refreshToken)
+            .build()
+            .encode(StandardCharsets.UTF_8)
+            .toUriString());
     }
 }

@@ -11,12 +11,18 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/user")
 public class UserController {
+
     private final UserService userService;
     private final JwtService jwtService;
 
@@ -25,6 +31,7 @@ public class UserController {
     public void reissueTokens(HttpServletRequest request, HttpServletResponse response) {
         userService.reissueTokens(request, response);
     }
+
     @ApiResponse(description = "로그아웃")
     @PatchMapping("/logout")
     public ResponseEntity<Void> logout(HttpServletRequest request) {
@@ -36,7 +43,8 @@ public class UserController {
 
     @ApiResponse(description = "유저 탈퇴")
     @DeleteMapping
-    public ResponseEntity<Void> withdraw(HttpServletRequest request, @AuthenticationPrincipal User user) {
+    public ResponseEntity<Void> withdraw(HttpServletRequest request,
+        @AuthenticationPrincipal User user) {
         Optional<String> accessToken = jwtService.extractAccessToken(request);
         Optional<String> refreshToken = jwtService.extractRefreshToken(request);
         userService.withdraw(user.getId(), accessToken, refreshToken);

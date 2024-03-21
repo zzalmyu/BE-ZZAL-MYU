@@ -17,13 +17,14 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @Transactional
 public class UserService {
+
     private final UserRepository userRepository;
     private final JwtService jwtService;
     private final ChatService chatService;
 
     public void reissueTokens(HttpServletRequest request, HttpServletResponse response) {
         String refreshToken = jwtService.extractRefreshToken(request)
-                .orElseThrow(() -> new UserException(ErrorCode.REFRESH_TOKEN_REQUIRED));
+            .orElseThrow(() -> new UserException(ErrorCode.REFRESH_TOKEN_REQUIRED));
         jwtService.isTokenValid(refreshToken);
 
         jwtService.reissueAndSendTokens(response, refreshToken);

@@ -2,6 +2,8 @@ package com.prgrms.zzalmyu.core.config;
 
 import com.prgrms.zzalmyu.domain.chat.domain.entity.ChatMessage;
 import com.prgrms.zzalmyu.domain.chat.infrastructure.ChatMessageRepository;
+import com.prgrms.zzalmyu.domain.user.domain.entity.User;
+import com.prgrms.zzalmyu.domain.user.infrastructure.UserRepository;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -44,6 +46,7 @@ import org.springframework.util.StringUtils;
 public class BatchConfig {
 
     private final ChatMessageRepository chatMessageRepository;
+    private final UserRepository userRepository;
     private final JobRepository jobRepository;
     private final PlatformTransactionManager transactionManager;
 
@@ -61,9 +64,10 @@ public class BatchConfig {
     }
 
     @Bean
-    public Job deleteChatMessageJob() {
+    public Job deleteJob() {
         return new JobBuilder("deleteChatMessageJob", jobRepository)
                 .start(deleteChatMessageStep())
+                .next(deleteUserStep())
                 .build();
     }
 
@@ -101,5 +105,41 @@ public class BatchConfig {
                 .repository(chatMessageRepository)
                 .methodName("delete")
                 .build();
+    }
+
+    @Bean
+    @JobScope
+    public Step deleteUserStep() {
+        return new StepBuilder("deleteUserStep", jobRepository)
+            .<User, User>chunk(1000, transactionManager)
+            .reader(userReader())
+            .writer(userWriter())
+            .build();
+    }
+
+    @Bean
+    @StepScope
+    public RepositoryItemReader<User> userReader() {
+        LocalDate today = LocalDate.now();
+        LocalDateTime oneWeekAgo = LocalDateTime.of(today.minusDays(7), LocalTime.MIDNIGHT);
+        Map<String, Direction> sortProperties = new HashMap<>();
+        sortProperties.put("id", Direction.ASC);
+        return new RepositoryItemReaderBuilder<User>()
+            .repository(userRepository)
+            .methodName("findDeletedOneWeekAgo")
+            .arguments(oneWeekAgo)
+            .name("userReader")
+            .pageSize(1000)
+            .sorts(sortProperties)
+            .build();
+    }
+
+    @Bean
+    @StepScope
+    public RepositoryItemWriter<User> userWriter() {
+        return new RepositoryItemWriterBuilder<User>()
+            .repository(userRepository)
+            .methodName("delete")
+            .build();
     }
 }
