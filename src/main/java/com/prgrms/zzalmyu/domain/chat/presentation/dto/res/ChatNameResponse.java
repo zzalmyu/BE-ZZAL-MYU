@@ -12,6 +12,9 @@ public class ChatNameResponse {
     private String email;
 
     public static ChatNameResponse of(String email, String nickname) {
-        return new ChatNameResponse(email, nickname);
+        return ChatNameResponse.builder()
+            .email(email)
+            .nickname(nickname)
+            .build();
     }
 }
