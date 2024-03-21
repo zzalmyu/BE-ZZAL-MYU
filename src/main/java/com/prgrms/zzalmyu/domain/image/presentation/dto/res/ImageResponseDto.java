@@ -1,12 +1,10 @@
 package com.prgrms.zzalmyu.domain.image.presentation.dto.res;
 
 import com.prgrms.zzalmyu.domain.image.domain.entity.Image;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Getter
+@EqualsAndHashCode
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ImageResponseDto {
     private Long imageId;

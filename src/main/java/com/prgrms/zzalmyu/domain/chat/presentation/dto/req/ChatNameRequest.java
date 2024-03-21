@@ -8,8 +8,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ChatHelloRequest {
+public class ChatNameRequest {
 
-    private String channelId;
     private String email;
 }

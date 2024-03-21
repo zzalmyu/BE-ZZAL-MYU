@@ -56,7 +56,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/v1/report/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.GET, "/api/v1/image", "/api/v1/image/{imageId}").permitAll()
                 .requestMatchers("/api/v1/image/**").authenticated()
-                .requestMatchers("/api/v1/chat").permitAll()
+                .requestMatchers("/api/v1/chat/**").permitAll()
                 .requestMatchers("/chat/**").permitAll()
                     .requestMatchers("/api/v1/login").permitAll()
                     .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll())

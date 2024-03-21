@@ -29,6 +29,7 @@ public enum ErrorCode {
     REFRESH_TOKEN_REQUIRED(BAD_REQUEST, "refresh token이 필요합니다."),
     EMAIL_NOT_EXTRACTED(BAD_REQUEST, "이메일을 추출할 수 없습니다."),
     CHAT_NICKNAME_NOT_FOUND(BAD_REQUEST, "이메일에 매칭되는 채팅 닉네임이 존재하지 않습니다."),
+    NO_MORE_CHAT_MESSAGE(BAD_REQUEST, "더 이상 채팅 내역이 없습니다."),
 
     // 401
     SECURITY_UNAUTHORIZED(UNAUTHORIZED, "인증 정보가 유효하지 않습니다"),
