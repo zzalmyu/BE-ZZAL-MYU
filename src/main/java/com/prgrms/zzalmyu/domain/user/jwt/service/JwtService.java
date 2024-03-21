@@ -45,20 +45,22 @@ public class JwtService {
 
     private final UserRepository userRepository;
     private final RedisService redisService;
+
     public String createAccessToken(String email) {
         Date now = new Date();
         return JWT.create()
-                .withSubject(ACCESS_TOKEN_SUBJECT)
-                .withExpiresAt(new Date(now.getTime() + accessTokenExpirationPeriod))
-                .withClaim(EMAIL_CLAIM, email)
-                .sign(Algorithm.HMAC512(secretKey));
+            .withSubject(ACCESS_TOKEN_SUBJECT)
+            .withExpiresAt(new Date(now.getTime() + accessTokenExpirationPeriod))
+            .withClaim(EMAIL_CLAIM, email)
+            .sign(Algorithm.HMAC512(secretKey));
     }
+
     public String createRefreshToken() {
         Date now = new Date();
         return JWT.create()
-                .withSubject(REFRESH_TOKEN_SUBJECT)
-                .withExpiresAt(new Date(now.getTime() + refreshTokenExpirationPeriod))
-                .sign(Algorithm.HMAC512(secretKey));
+            .withSubject(REFRESH_TOKEN_SUBJECT)
+            .withExpiresAt(new Date(now.getTime() + refreshTokenExpirationPeriod))
+            .sign(Algorithm.HMAC512(secretKey));
     }
 
     public String reissueRefreshToken(String email) {
@@ -69,30 +71,34 @@ public class JwtService {
 
     public Optional<String> extractRefreshToken(HttpServletRequest request) {
         return Optional.ofNullable(request.getHeader(refreshHeader))
-                .filter(refreshToken -> refreshToken.startsWith(BEARER))
-                .map(refreshToken -> refreshToken.replace(BEARER, ""));
+            .filter(refreshToken -> refreshToken.startsWith(BEARER))
+            .map(refreshToken -> refreshToken.replace(BEARER, ""));
     }
+
     public Optional<String> extractAccessToken(HttpServletRequest request) {
         return Optional.ofNullable(request.getHeader(accessHeader))
-                .filter(accessToken -> accessToken.startsWith(BEARER))
-                .map(accessToken -> accessToken.replace(BEARER, ""));
+            .filter(accessToken -> accessToken.startsWith(BEARER))
+            .map(accessToken -> accessToken.replace(BEARER, ""));
     }
+
     public Optional<String> extractEmail(String accessToken) {
         try {
             return Optional.ofNullable(JWT.require(Algorithm.HMAC512(secretKey))
-                    .build()
-                    .verify(accessToken) //검증
-                    .getClaim(EMAIL_CLAIM) //추출
-                    .asString());
+                .build()
+                .verify(accessToken) //검증
+                .getClaim(EMAIL_CLAIM) //추출
+                .asString());
         } catch (JWTVerificationException e) {
             throw new UserException(ErrorCode.SECURITY_UNAUTHORIZED);
         }
     }
+
     //RefreshToken redis 저장
     public void updateRefreshToken(String refreshToken, String email) {
         redisService.setValues(refreshToken, email,
-                Duration.ofMillis(refreshTokenExpirationPeriod));
+            Duration.ofMillis(refreshTokenExpirationPeriod));
     }
+
     public boolean isTokenValid(String token) {
         try {
             JWT.require(Algorithm.HMAC512(secretKey)).build().verify(token);
@@ -108,9 +114,10 @@ public class JwtService {
         }
         redisService.delete(refreshToken);
     }
+
     public void invalidAccessToken(String accessToken) {
         redisService.setValues(accessToken, "logout",
-                Duration.ofMillis(accessTokenExpirationPeriod));
+            Duration.ofMillis(accessTokenExpirationPeriod));
     }
 
     public String findRefreshTokenAndExtractEmail(String refreshToken) {
@@ -122,7 +129,8 @@ public class JwtService {
         return email;
     }
 
-    private void sendTokens(HttpServletResponse response, String reissuedAccessToken, String reissuedRefreshToken) {
+    private void sendTokens(HttpServletResponse response, String reissuedAccessToken,
+        String reissuedRefreshToken) {
         response.setHeader(accessHeader, BEARER + reissuedAccessToken);
         response.setHeader(refreshHeader, BEARER + reissuedRefreshToken);
     }

@@ -17,7 +17,7 @@ public class LoginSuccessResponse {
     public static LoginSuccessResponse of(String email, String nickname, Role role) {
         return LoginSuccessResponse.builder()
             .email(email)
-                .nickname(nickname)
+            .nickname(nickname)
             .role(role)
             .build();
     }
