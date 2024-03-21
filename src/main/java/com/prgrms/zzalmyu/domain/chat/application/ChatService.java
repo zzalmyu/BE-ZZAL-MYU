@@ -7,15 +7,14 @@ import com.prgrms.zzalmyu.domain.chat.domain.enums.MessageType;
 import com.prgrms.zzalmyu.domain.chat.infrastructure.ChatMessageRepository;
 import com.prgrms.zzalmyu.domain.chat.presentation.dto.res.ChatOldMessageResponse;
 import com.prgrms.zzalmyu.domain.user.exception.UserException;
+import java.time.Duration;
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.time.Duration;
-import java.util.Random;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
@@ -32,9 +31,9 @@ public class ChatService {
     @Value("${jwt.refresh.expiration}")
     private Long nicknameExpirationPeriod;
 
-    String[] suffix = { "순", "식", "돌", "민", "숙", "둥",
-                        "동", "석", "갑", "복", "진", "윤",
-                        "준", "범", "섭", "숭", "익", "용" };
+    String[] suffix = {"순", "식", "돌", "민", "숙", "둥",
+        "동", "석", "갑", "복", "진", "윤",
+        "준", "범", "섭", "숭", "익", "용"};
 
     public String generateNickname() {
         Random random = new Random();
@@ -51,9 +50,10 @@ public class ChatService {
     @Transactional(readOnly = true)
     public String getNickname(String email) {
         String nickname = redisService.getValues(email);
-        if(nickname.equals(NOT_EXIST)) {
+        if (nickname.equals(NOT_EXIST)) {
             throw new UserException(ErrorCode.CHAT_NICKNAME_NOT_FOUND);
-        };
+        }
+        ;
         return nickname;
     }
 
@@ -93,7 +93,7 @@ public class ChatService {
                 message.getMessage(),
                 message.getCreatedAt(),
                 message.getType(),
-                    message.getEmail()
+                message.getEmail()
             ))
             .collect(Collectors.toList());
     }

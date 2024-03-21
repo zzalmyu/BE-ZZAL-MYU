@@ -19,13 +19,14 @@ public class ChatOldMessageResponse {
 
     private String email;
 
-    public static ChatOldMessageResponse of(String nickname, String message, LocalDateTime createdAt, MessageType type, String email) {
+    public static ChatOldMessageResponse of(String nickname, String message,
+        LocalDateTime createdAt, MessageType type, String email) {
         return ChatOldMessageResponse.builder()
             .nickname(nickname)
             .message(message)
             .createdAt(createdAt)
             .type(type)
-                .email(email)
+            .email(email)
             .build();
     }
 }

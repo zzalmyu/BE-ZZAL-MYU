@@ -24,13 +24,15 @@ public class WebSocketController {
         String nickname = chatService.generateNickname();
         chatService.saveNickname(request.getEmail(), nickname);
         String message = chatService.saveHelloMessage(request.getEmail(), nickname);
-        simpMessageSendingOperations.convertAndSend("/sub/" + request.getChannelId(), ChatResponse.of(request.getEmail(), nickname, message, MessageType.HELLO));
+        simpMessageSendingOperations.convertAndSend("/sub/" + request.getChannelId(),
+            ChatResponse.of(request.getEmail(), nickname, message, MessageType.HELLO));
     }
 
     @MessageMapping("/image")
     public void sendPhoto(ChatPhotoRequest request) {
         String nickname = chatService.getNickname(request.getEmail());
         chatService.saveImageMessage(request.getEmail(), nickname, request.getImage());
-        simpMessageSendingOperations.convertAndSend("/sub/" + request.getChannelId(), ChatResponse.of(request.getEmail(), nickname, request.getImage(), MessageType.IMAGE));
+        simpMessageSendingOperations.convertAndSend("/sub/" + request.getChannelId(),
+            ChatResponse.of(request.getEmail(), nickname, request.getImage(), MessageType.IMAGE));
     }
 }
