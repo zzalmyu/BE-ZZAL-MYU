@@ -2,6 +2,9 @@ package com.prgrms.zzalmyu.core.config;
 
 import com.prgrms.zzalmyu.domain.chat.domain.entity.ChatMessage;
 import com.prgrms.zzalmyu.domain.chat.infrastructure.ChatMessageRepository;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
@@ -18,6 +21,7 @@ import org.springframework.batch.item.data.builder.RepositoryItemReaderBuilder;
 import org.springframework.batch.item.data.builder.RepositoryItemWriterBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.cglib.core.Local;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -52,9 +56,12 @@ public class BatchConfig {
     @Bean
     @StepScope
     public RepositoryItemReader<ChatMessage> chatMessageReader() {
+        LocalDate today = LocalDate.now();
+        LocalDateTime twoDaysAgo = LocalDateTime.of(today.minusDays(2), LocalTime.MIDNIGHT);
         return new RepositoryItemReaderBuilder<ChatMessage>()
                 .repository(chatMessageRepository)
                 .methodName("findBeforeTwoDays")
+            .arguments(twoDaysAgo)
                 .name("chatMessageReader")
                 .pageSize(1000)
                 .build();

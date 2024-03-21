@@ -21,7 +21,7 @@ public class BatchScheduler {
     private final JobLauncher jobLauncher;
     private final BatchConfig batchConfig;
 
-    @Scheduled(cron = "0 0 0 * * *")
+    @Scheduled(cron = "0 42 20 * * *")
     public void runJob() {
         JobParameters jobParameters = new JobParametersBuilder()
                 .addLong("time", System.currentTimeMillis())
