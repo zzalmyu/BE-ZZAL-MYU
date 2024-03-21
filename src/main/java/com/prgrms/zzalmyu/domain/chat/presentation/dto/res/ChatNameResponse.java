@@ -6,14 +6,13 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class ChatResponse {
-    private String email;
+public class ChatNameResponse {
 
     private String nickname;
 
-    private String message;
+    private String email;
 
-    public static ChatResponse of(String email, String nickname, String message) {
-        return new ChatResponse(email, nickname, message);
+    public static ChatNameResponse of(String email, String nickname) {
+        return new ChatNameResponse(email, nickname);
     }
 }
