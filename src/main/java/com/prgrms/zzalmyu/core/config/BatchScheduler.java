@@ -21,13 +21,14 @@ public class BatchScheduler {
     private final JobLauncher jobLauncher;
     private final BatchConfig batchConfig;
 
-    @Scheduled(cron = "0 0 0 * * *")
+    @Scheduled(cron = "0 45 3 * * *")
     public void runJob() {
         JobParameters jobParameters = new JobParametersBuilder()
                 .addLong("time", System.currentTimeMillis())
                 .toJobParameters();
         try {
             jobLauncher.run(batchConfig.deleteChatMessageJob(), jobParameters);
+            jobLauncher.run(batchConfig.deleteUserJob(), jobParameters);
         } catch (JobExecutionAlreadyRunningException | JobInstanceAlreadyCompleteException |
                  JobParametersInvalidException | JobRestartException e) {
             throw new ChatException(ErrorCode.SERVER_ERROR);
