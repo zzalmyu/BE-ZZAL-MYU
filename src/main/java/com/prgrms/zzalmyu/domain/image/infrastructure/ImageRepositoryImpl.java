@@ -2,6 +2,7 @@ package com.prgrms.zzalmyu.domain.image.infrastructure;
 
 import com.prgrms.zzalmyu.domain.image.domain.entity.Image;
 import com.prgrms.zzalmyu.domain.image.presentation.dto.res.ImageResponseDto;
+import com.prgrms.zzalmyu.domain.user.domain.entity.User;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -79,6 +80,23 @@ public class ImageRepositoryImpl implements ImageRepositoryCustom {
                 .where(image.userId.eq(userId))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
+                .fetch();
+    }
+
+    @Override
+    public List<ImageResponseDto> findAllByOrderByCreatedAtDesc(User user,int size) {
+        return queryFactory.select(Projections.constructor(ImageResponseDto.class,
+                        image.id, image.title, image.path,
+                        JPAExpressions
+                                .selectOne()
+                                .from(imageLike)
+                                .where(imageLike.user.id.eq(user.getId())
+                                        .and(imageLike.image.id.eq(image.id)))
+                                .exists()))
+                .from(image)
+                .leftJoin(imageLike).on(image.id.eq(imageLike.image.id))
+                .orderBy(image.createdAt.desc())
+                .limit(size)
                 .fetch();
     }
 }

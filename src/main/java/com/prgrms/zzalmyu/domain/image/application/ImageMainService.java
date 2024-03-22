@@ -15,6 +15,7 @@ import org.springframework.data.redis.core.SetOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -26,6 +27,7 @@ public class ImageMainService {
     private static final int PER_COUNT = 15;
     private static final int ALL = 180;
     private static final int BEST_IMAGE = 60;
+    private static final int RECENT_IMAGE = 50;
 
     private TagUserRepository tagUserRepository;
     private ImageRepository imageRepository;
@@ -69,8 +71,8 @@ public class ImageMainService {
              * Redis에 값이 없어서 새로 불러와야할 때
              */
             else {
-                addRecommendedImageNew(user);
-                return getImageList(user);
+//                addRecommendedImageNew(user);
+                return new ArrayList<>();
             }
         }
     }
@@ -94,7 +96,14 @@ public class ImageMainService {
                 .mapToInt(TagUser::getCount)
                 .sum();
 
+        imageRepository.findAllByOrderByCreatedAtDesc(user, RECENT_IMAGE)
+                .forEach(imageResponseDto -> {
+                    setOperations.add(user.getId().toString(), imageResponseDto);
+                });
+
+
         if (totalCount==0){
+
             imageRepository.findTopImageLike(ALL,user.getId())
                     .forEach(imageResponseDto -> {
                         setOperations.add(user.getId().toString(), imageResponseDto);
