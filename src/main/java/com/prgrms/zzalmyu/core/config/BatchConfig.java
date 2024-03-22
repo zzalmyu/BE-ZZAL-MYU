@@ -2,6 +2,9 @@ package com.prgrms.zzalmyu.core.config;
 
 import com.prgrms.zzalmyu.domain.chat.domain.entity.ChatMessage;
 import com.prgrms.zzalmyu.domain.chat.infrastructure.ChatMessageRepository;
+import com.prgrms.zzalmyu.domain.image.application.ImageRemoveService;
+import com.prgrms.zzalmyu.domain.report.infrastructure.ReportRepository;
+import com.prgrms.zzalmyu.domain.report.infrastructure.tasklet.ReportDeletingTasklet;
 import com.prgrms.zzalmyu.domain.user.domain.entity.User;
 import com.prgrms.zzalmyu.domain.user.infrastructure.UserRepository;
 import java.time.LocalDate;
@@ -49,25 +52,15 @@ public class BatchConfig {
     private final UserRepository userRepository;
     private final JobRepository jobRepository;
     private final PlatformTransactionManager transactionManager;
-
-    @Bean
-    @ConditionalOnMissingBean
-    @ConditionalOnProperty(prefix = "spring.batch.job", name = "enabled", havingValue = "true", matchIfMissing = true)
-    public JobLauncherApplicationRunner jobLauncherApplicationRunner(JobLauncher jobLauncher, JobExplorer jobExplorer,
-        JobRepository jobRepository, BatchProperties properties) {
-        JobLauncherApplicationRunner runner = new JobLauncherApplicationRunner(jobLauncher, jobExplorer, jobRepository);
-        String jobNames = properties.getJob().getName();
-        if (StringUtils.hasText(jobNames)) {
-            runner.setJobName(jobNames);
-        }
-        return runner;
-    }
+    private final ReportRepository reportRepository;
+    private final ImageRemoveService imageRemoveService;
 
     @Bean
     public Job deleteJob() {
         return new JobBuilder("deleteChatMessageJob", jobRepository)
                 .start(deleteChatMessageStep())
                 .next(deleteUserStep())
+                .next(deleteReportStep())
                 .build();
     }
 
@@ -109,12 +102,16 @@ public class BatchConfig {
 
     @Bean
     @JobScope
-    public Step deleteUserStep() {
-        return new StepBuilder("deleteUserStep", jobRepository)
-            .<User, User>chunk(1000, transactionManager)
-            .reader(userReader())
-            .writer(userWriter())
+    public Step deleteReportStep() {
+        return new StepBuilder("deleteReportStep", jobRepository)
+            .tasklet(reportDeletingTasklet(), transactionManager)
             .build();
+    }
+
+    @Bean
+    @StepScope
+    public ReportDeletingTasklet reportDeletingTasklet() {
+        return new ReportDeletingTasklet(reportRepository, imageRemoveService);
     }
 
     @Bean
@@ -141,5 +138,15 @@ public class BatchConfig {
             .repository(userRepository)
             .methodName("delete")
             .build();
+    }
+
+    @Bean
+    @JobScope
+    public Step deleteUserStep() {
+        return new StepBuilder("deleteUserStep", jobRepository)
+                .<User, User>chunk(1000, transactionManager)
+                .reader(userReader())
+                .writer(userWriter())
+                .build();
     }
 }

@@ -22,7 +22,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -74,6 +73,7 @@ public class ReportService {
     public void deleteReportedImage(Long imageId) {
         int reportCount = reportRepository.countByImageId(imageId);
         if (reportCount >= 3) {
+            reportRepository.deleteByImageId(imageId);
             imageRemoveService.deleteReportImage(imageId);
         } else {
             throw new ReportException(ErrorCode.IMAGE_DELETION_NOT_ALLOWED);
