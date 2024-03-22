@@ -1,7 +1,6 @@
 package com.prgrms.zzalmyu.domain.report.presentation.dto.response;
 
 import com.prgrms.zzalmyu.domain.image.domain.entity.Image;
-import com.prgrms.zzalmyu.domain.tag.presentation.dto.res.TagResponseDto;
 import lombok.Builder;
 import lombok.Getter;
 
