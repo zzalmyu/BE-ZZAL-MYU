@@ -74,6 +74,7 @@ public class ReportService {
     public void deleteReportedImage(Long imageId) {
         int reportCount = reportRepository.countByImageId(imageId);
         if (reportCount >= 3) {
+            reportRepository.deleteByImageId(imageId);
             imageRemoveService.deleteReportImage(imageId);
         } else {
             throw new ReportException(ErrorCode.IMAGE_DELETION_NOT_ALLOWED);
