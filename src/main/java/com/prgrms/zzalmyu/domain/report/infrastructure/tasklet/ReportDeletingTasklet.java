@@ -9,8 +9,10 @@ import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.data.domain.Pageable;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -23,10 +25,16 @@ public class ReportDeletingTasklet implements Tasklet, InitializingBean {
 
     @Override
     public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
-        List<Long> imageIdReportedOverThree = reportRepository.getImageIdReportedOverThree();
+        LocalDate today = LocalDate.now();
+        LocalDateTime fiveDaysAgo = LocalDateTime.of(today.minusDays(5), LocalTime.MIDNIGHT);
+        List<Long> imageIdReportedOverThreeAgo = reportRepository.getImageIdReportedOverThreeFiveDaysAgo(fiveDaysAgo);
+
         try {
-            imageIdReportedOverThree
-                    .forEach(imageRemoveService::deleteReportImage);
+            imageIdReportedOverThreeAgo
+                    .forEach(imageId -> {
+                        reportRepository.deleteByImageId(imageId);
+                        imageRemoveService.deleteReportImage(imageId);
+                    });
         } catch (Exception e) {
             log.error("신고된 이미지 자동 삭제 예외 발생");
         }
