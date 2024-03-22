@@ -96,8 +96,8 @@ class ReportServiceTest {
 
     @AfterEach
     public void afterEach() {
-        imageChatCountRepository.deleteAll();
         reportRepository.deleteAll();
+        imageChatCountRepository.deleteAll();
         userRepository.deleteAll();
         imageRepository.deleteAll();
     }
