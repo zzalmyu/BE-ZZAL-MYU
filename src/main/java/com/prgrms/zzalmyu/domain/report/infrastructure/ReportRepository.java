@@ -22,5 +22,8 @@ public interface ReportRepository extends JpaRepository<Report, Long>, ReportRep
     @Query("SELECT r.imageId FROM Report r GROUP BY r.imageId HAVING COUNT(*) >= 3")
     List<Long> getImageIdReportedOverThree(Pageable pageable);
 
+    @Query("SELECT r.imageId FROM Report r GROUP BY r.imageId HAVING COUNT(*) >= 3")
+    List<Long> getImageIdReportedOverThree();
+
     Optional<Report> findByImageIdAndReportUserId(Long imageId, Long userId);
 }
